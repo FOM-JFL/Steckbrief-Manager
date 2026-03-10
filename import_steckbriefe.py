@@ -139,7 +139,7 @@ def extract_steckbrief(docx_path):
 
 def main():
     """Hauptfunktion zum Importieren aller Steckbriefe."""
-    steckbriefe_dir = r'p:\Steckbrief-Manager\Volle Steckbriefe_2026_03_02'
+    steckbriefe_dir = r'p:\Steckbrief-Manager\Steckbriefe Hochschulentwicklungsplan'
     output_file = r'p:\Steckbrief-Manager\steckbriefe.json'
     
     steckbriefe = []
