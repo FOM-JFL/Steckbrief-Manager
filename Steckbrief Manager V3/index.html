@@ -1,0 +1,3240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steckbrief-Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header im Genesis-Stil */
+        header {
+            background: linear-gradient(135deg, #009688 0%, #00796b 100%);
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            gap: 30px;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-right: auto;
+        }
+
+        .header-logo h1 {
+            color: white;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 5px;
+        }
+
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .nav-item .icon {
+            font-size: 1.2em;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #f39200;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e87722;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .btn-logout {
+            background: #666;
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-logout:hover {
+            background: #555;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-export {
+            background: #009688;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #00796b;
+        }
+
+        .btn-success {
+            background: #f39200;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #e87722;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h2 {
+            color: #333;
+            font-size: 1.8em;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        /* Übersicht - Karten im Genesis-Stil */
+        #overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 1000px) {
+            #overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            #overview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .steckbrief-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #e8e8e8;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .steckbrief-card:hover {
+            border-color: #009688;
+            box-shadow: 0 4px 20px rgba(0,150,136,0.15);
+        }
+
+        .steckbrief-card .card-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: #009688;
+            margin-bottom: 20px;
+        }
+
+        .steckbrief-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .steckbrief-card .meta {
+            display: block;
+            font-size: 0.9em;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .steckbrief-card .meta-item {
+            color: #888;
+        }
+
+        .steckbrief-card .meta-item strong {
+            display: none;
+        }
+
+        .aufwand-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        .aufwand-klein {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .aufwand-mittel {
+            background: #fff8e1;
+            color: #f57c00;
+        }
+
+        .aufwand-gross {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* Detail-Seite */
+        .detail-page {
+            padding-top: 20px;
+        }
+
+        .detail-page .page-title {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .detail-page .page-title h2 {
+            margin-top: 15px;
+            font-size: 1.8em;
+        }
+
+        .detail-page .page-title .detail-url {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .detail-page .page-title .detail-url a {
+            color: #009688;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: #009688;
+            border: 1px solid #009688;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #009688;
+            color: white;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .detail-header h2 {
+            color: #009688;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+            font-size: 0.9em;
+        }
+
+        .btn-copy:hover {
+            background: #e0e0e0;
+        }
+
+        /* Modal (nur noch für Export-Dialog) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        /* Formular */
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        .form-section h3 {
+            color: #009688;
+            margin-bottom: 20px;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.85em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #009688;
+        }
+
+        .form-group textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        /* Bewertung */
+        .bewertung-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .bewertung-table th,
+        .bewertung-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bewertung-table th {
+            background: #009688;
+            color: white;
+            font-weight: 500;
+        }
+
+        .bewertung-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .bewertung-table select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .bewertung-table input {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        /* Suche */
+        .search-box {
+            padding: 10px 18px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            font-size: 0.9em;
+            width: 250px;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255,255,255,0.2);
+            width: 300px;
+        }
+
+        /* Detailansicht (Nur-Lesen) */
+        .detail-view .field-group {
+            margin-bottom: 18px;
+        }
+
+        .detail-view .field-label {
+            font-weight: 500;
+            color: #009688;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        .detail-view .field-value {
+            color: #333;
+            line-height: 1.5;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsiv */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .search-box:focus {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .empty-state h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #009688;
+        }
+
+        .tab:hover:not(.active) {
+            background: #e5e5e5;
+        }
+
+        /* Ansichts-Toggle */
+        .view-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .view-toggle button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85em;
+            background: transparent;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .view-toggle button.active {
+            background: #009688;
+            color: white;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .result-count {
+            color: #666;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-select-all {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .btn-select-all:hover {
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .btn-select-all.active {
+            background: #009688;
+            color: white;
+            border-color: #009688;
+        }
+
+        .btn-export-selected {
+            background: #f39200 !important;
+            color: white !important;
+            padding: 6px 14px !important;
+            font-size: 0.85em !important;
+        }
+
+        .btn-export-selected:hover {
+            background: #e87722 !important;
+        }
+
+        /* Checkbox für Karten */
+        .steckbrief-card .card-checkbox {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .steckbrief-card:hover .card-checkbox,
+        .steckbrief-card.selected .card-checkbox {
+            opacity: 1;
+        }
+
+        .steckbrief-card.selected .card-checkbox {
+            background: #009688;
+            border-color: #009688;
+            color: white;
+        }
+
+        .steckbrief-card.selected {
+            border-color: #009688;
+            background: #f0faf9;
+        }
+
+        .steckbrief-card {
+            position: relative;
+        }
+
+        /* Tabellenansicht */
+        .table-view {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .overview-table th {
+            background: #009688;
+            color: white;
+            padding: 14px 12px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 0.85em;
+        }
+
+        .overview-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+        .overview-table tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .overview-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .overview-table tbody tr.selected {
+            background: #f0faf9;
+        }
+
+        .overview-table tbody tr.selected:hover {
+            background: #e5f5f3;
+        }
+
+        .overview-table .title-cell {
+            font-weight: 500;
+            color: #009688;
+        }
+
+        /* Filter */
+        .filter-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+            margin-bottom: 25px;
+        }
+
+        .filter-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-bar-header h3 {
+            color: #009688;
+            font-size: 0.95em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .filter-toggle-btn {
+            background: none;
+            border: none;
+            color: #009688;
+            cursor: pointer;
+            font-size: 0.85em;
+            padding: 5px 10px;
+        }
+
+        .filter-toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.8em;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9em;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #009688;
+        }
+
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e0f2f1;
+            color: #009688;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+
+        .filter-tag button {
+            background: none;
+            border: none;
+            color: #009688;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .filter-tag button:hover {
+            color: #00695c;
+        }
+
+        /* Export Modal */
+        .export-modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 20px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .export-option:hover {
+            border-color: #009688;
+            background: #f9fffe;
+        }
+
+        .export-option .icon {
+            font-size: 2em;
+        }
+
+        .export-option .label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .export-option .desc {
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .export-count {
+            background: #e0f2f1;
+            color: #009688;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Login & Rollen */
+        .login-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .login-btn.logged-in {
+            background: #f39200;
+            border-color: #f39200;
+        }
+
+        .header-logo-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .fom-logo {
+            height: 40px;
+            width: auto;
+            background: white;
+            border-radius: 4px;
+            padding: 4px 8px;
+        }
+
+        .role-badge {
+            background: #f39200;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .role-badge.editor {
+            background: #4caf50;
+        }
+
+        .login-modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-modal-content h2 {
+            color: #009688;
+            margin-bottom: 10px;
+        }
+
+        .login-modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .login-modal-content .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .login-modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .login-modal-content .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .login-tabs button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.95em;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .login-tabs button.active {
+            color: #009688;
+            border-bottom-color: #009688;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .editor-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .editor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .editor-item:last-child {
+            border-bottom: none;
+        }
+
+        .editor-item .remove-btn {
+            background: #ff5252;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .add-editor-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-editor-form input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-logo">
+            <span style="font-size: 1.8em;">📋</span>
+            <h1>Steckbrief-Manager</h1>
+        </div>
+        
+        <nav class="header-nav">
+            <div class="nav-item active">
+                <span class="icon">📄</span>
+                <span>Steckbriefe</span>
+            </div>
+        </nav>
+
+        <div class="header-buttons">
+            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Suchen...">
+            <button class="btn btn-primary admin-only hidden" id="btnNew" onclick="openNewSteckbrief()">+ Neu</button>
+            <button class="btn btn-secondary admin-only hidden" id="btnImport" onclick="document.getElementById('importFile').click()">Import</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            <button class="login-btn" id="loginBtn" onclick="openLoginModal()">
+                <span>🔑</span>
+                <span id="loginBtnText">Anmelden</span>
+            </button>
+        </div>
+        <div class="header-logo-right">
+            <img src="fom-logo.svg" alt="FOM Hochschule" class="fom-logo">
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h2>Steckbriefe</h2>
+            <p>Wählen Sie einen Steckbrief aus, um Details einzusehen oder zu bearbeiten</p>
+        </div>
+
+        <div class="view-controls">
+            <div class="result-count">
+                <span id="resultCount">0 Steckbriefe</span>
+                <button class="btn-select-all" id="btnSelectAll" onclick="toggleSelectAll()">☐ Alle auswählen</button>
+                <button class="btn btn-export-selected" id="btnExportSelected" onclick="exportSelected()" style="display:none;">📥 Auswahl exportieren</button>
+            </div>
+            <div class="view-toggle">
+                <button class="active" onclick="setView('cards')" id="btnCards">🔲 Kacheln</button>
+                <button onclick="setView('table')" id="btnTable">📋 Tabelle</button>
+            </div>
+        </div>
+
+        <div class="filter-bar" id="filterBar">
+            <div class="filter-bar-header">
+                <h3>Filter</h3>
+                <button class="filter-toggle-btn" onclick="resetFilters()">↻ Zurücksetzen</button>
+            </div>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="filterCluster">Prozesscluster</label>
+                    <select id="filterCluster" onchange="applyFilters()">
+                        <option value="">Alle Cluster</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterAuftraggeber">Auftraggeber/-in</label>
+                    <select id="filterAuftraggeber" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterStatusOptimierung">Status Optimierung</label>
+                    <select id="filterStatusOptimierung" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                </div>
+            </div>
+            <div class="active-filters" id="activeFilters"></div>
+        </div>
+
+        <div id="overview">
+            <!-- Steckbrief-Karten werden hier eingefügt -->
+        </div>
+    </div>
+
+    <!-- Detail-Seite (ersetzt Modal) -->
+    <div class="container detail-page" id="detailPage" style="display: none;">
+        <div class="page-title">
+            <button class="btn btn-back" onclick="goBack()">← Zurück zur Übersicht</button>
+            <h2>Prozess-/Projektsteckbrief</h2>
+            <p class="detail-url" id="detailUrl"></p>
+        </div>
+        
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2 id="modalTitle">Steckbrief</h2>
+            </div>
+            
+            <div class="tabs" id="editTabs" style="display: none;">
+                <button class="tab active" onclick="switchTab('view')" id="tabViewBtn">Ansicht</button>
+                <button class="tab" id="tabEditBtn" onclick="switchTab('edit')">Bearbeiten</button>
+            </div>
+
+            <!-- Ansicht -->
+            <div id="viewTab" class="detail-view">
+                <div id="viewContent"></div>
+                <div class="detail-actions">
+                    <button class="btn btn-primary" onclick="switchTab('edit')">✏️ Bearbeiten</button>
+                    <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
+                    <button class="btn btn-secondary admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+                    <button class="btn btn-danger admin-only hidden" onclick="deleteSteckbrief()">🗑️ Löschen</button>
+                </div>
+            </div>
+
+            <!-- Bearbeiten -->
+            <div id="editTab" style="display:none;">
+                <form id="steckbriefForm" onsubmit="saveSteckbrief(event)">
+                    <input type="hidden" id="steckbriefId">
+                    
+                    <!-- Rahmendaten -->
+                    <div class="form-section">
+                        <h3>1. Rahmendaten</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="titel">Titel *</label>
+                                <input type="text" id="titel" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="auftraggeber">Auftraggeber/-in *</label>
+                                <input type="text" id="auftraggeber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prozessmanager">Prozessmanager/-in</label>
+                                <input type="text" id="prozessmanager">
+                            </div>
+                            <div class="form-group">
+                                <label for="anforderungsmanager">Anforderungsmanager/-in</label>
+                                <input type="text" id="anforderungsmanager">
+                            </div>
+                            <div class="form-group">
+                                <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
+                                <input type="text" id="prozessverantwortlicher">
+                            </div>
+                            <div class="form-group">
+                                <label for="projektteam">Prozess-/Projektteam (Name & OE)</label>
+                                <input type="text" id="projektteam">
+                            </div>
+                            <div class="form-group">
+                                <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
+                                <input type="text" id="prozesscluster">
+                            </div>
+                            <div class="form-group">
+                                <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
+                                <select id="umsetzungsaufwand">
+                                    <option value="">-- Bitte wählen --</option>
+                                    <option value="klein">Klein</option>
+                                    <option value="mittel">Mittel</option>
+                                    <option value="gross">Groß</option>
+                                    <option value="mittel-gross">Mittel/Groß</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
+                                <input type="text" id="betroffener_lifecycle">
+                            </div>
+                            <div class="form-group">
+                                <label for="status_optimierung">Status Optimierung</label>
+                                <input type="text" id="status_optimierung">
+                            </div>
+                            <div class="form-group">
+                                <label for="status_steckbrief">Status Steckbrief</label>
+                                <input type="text" id="status_steckbrief">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Beschreibung -->
+                    <div class="form-section">
+                        <h3>2. Beschreibung</h3>
+                        <div class="form-group">
+                            <label for="ziel_vision">Ziel/Vision</label>
+                            <textarea id="ziel_vision"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="warum">Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Ist-Situation & Ausformulierung von 4.)</span></label>
+                            <textarea id="warum"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="wer">Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Aufzählung der Organisationseinheiten)</span></label>
+                            <textarea id="wer"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="welche">Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(ggfs. Verweis auf 3.)</span></label>
+                            <textarea id="welche"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="was">Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Kurzbeschreibung)</span></label>
+                            <textarea id="was"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="wie">Wie sollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Beschreibung erster Lösungsansätze)</span></label>
+                            <textarea id="wie"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="wo">Wo sind IT-Systeme von der Prozessoptimierung betroffen?</label>
+                            <textarea id="wo"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="wann">Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?</label>
+                            <textarea id="wann"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Einordnung in den Gesamtprozess -->
+                    <div class="form-section">
+                        <h3>3. Einordnung in den Gesamtprozess</h3>
+                        <div class="form-group">
+                            <label for="einordnung_gesamtprozess">Welcher strategische Prozess ist hauptsächlich betroffen?</label>
+                            <textarea id="einordnung_gesamtprozess"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Zwänge & Anforderungen -->
+                    <div class="form-section">
+                        <h3>4. Zwänge & Anforderungen</h3>
+                        <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                            <strong>Gewichtung</strong><br>
+                            0 = irrelevant<br>
+                            1 = förderlich<br>
+                            2 = wichtig<br>
+                            3 = zwingend notwendig
+                        </div>
+                        <table class="bewertung-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Kriterium</th>
+                                    <th style="width: 15%">Gewichtung</th>
+                                    <th style="width: 45%">Erläuterung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span></td>
+                                    <td><select id="bewertung_strategie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_strategie_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span></td>
+                                    <td><select id="bewertung_recht"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_recht_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span></td>
+                                    <td><select id="bewertung_technik"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_technik_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
+                                    <td><select id="bewertung_kunden"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_kunden_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
+                                    <td><select id="bewertung_lehrende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_lehrende_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span></td>
+                                    <td><select id="bewertung_lieferanten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_lieferanten_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span></td>
+                                    <td><select id="bewertung_mitarbeitende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="bewertung_mitarbeitende_text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Zu erwartende Optimierungen -->
+                    <div class="form-section">
+                        <h3>5. Zu erwartende Optimierungen</h3>
+                        <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                            <strong>Gewichtung</strong><br>
+                            0 = irrelevant<br>
+                            1 = geringerer Nutzen<br>
+                            2 = mittlerer Nutzen<br>
+                            3 = hoher Nutzen
+                        </div>
+                        <table class="bewertung-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%">Kriterium</th>
+                                    <th style="width: 15%">Gewichtung</th>
+                                    <th style="width: 45%">Erläuterung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Senkung der Durchlaufzeiten</td>
+                                    <td><select id="nutzen_durchlaufzeiten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_durchlaufzeiten_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Vermeidung von Fehlerwiederholungsraten</td>
+                                    <td><select id="nutzen_fehler"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_fehler_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Senkung der Prozesskosten</td>
+                                    <td><select id="nutzen_kosten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_kosten_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Reduktion nicht wertschöpfender Prozesse</td>
+                                    <td><select id="nutzen_reduktion"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_reduktion_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Steigerung der Studierendenzahlen</td>
+                                    <td><select id="nutzen_studierende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_studierende_text"></td>
+                                </tr>
+                                <tr>
+                                    <td>Qualitätszuwachs</td>
+                                    <td><select id="nutzen_qualitaet"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                    <td><input type="text" id="nutzen_qualitaet_text"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="detail-actions">
+                        <button type="submit" class="btn btn-success">💾 Speichern</button>
+                        <button type="button" class="btn btn-secondary" onclick="goBack()">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Format Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content export-modal-content">
+            <div class="modal-header">
+                <h2>Export-Format wählen</h2>
+                <button class="close-btn" onclick="closeExportModal()">&times;</button>
+            </div>
+            <div class="export-count" id="exportCount">1 Steckbrief wird exportiert</div>
+            <div class="export-options">
+                <div class="export-option" onclick="doExport('pdf')">
+                    <span class="icon">📕</span>
+                    <div>
+                        <div class="label">PDF-Dokument</div>
+                        <div class="desc">Formatiertes Dokument zum Drucken</div>
+                    </div>
+                </div>
+                <div class="export-option admin-only hidden" id="wordExportOption" onclick="doExport('word')">
+                    <span class="icon">📘</span>
+                    <div>
+                        <div class="label">Word-Dokument (Neu)</div>
+                        <div class="desc">Neues DOCX-Dokument erstellen</div>
+                    </div>
+                </div>
+                <div class="export-option admin-only hidden" id="wordOriginalExportOption" onclick="doExport('wordOriginal')">
+                    <span class="icon">📄</span>
+                    <div>
+                        <div class="label">Word-Dokument (Original)</div>
+                        <div class="desc">Original-Datei mit aktuellen Daten aktualisieren</div>
+                    </div>
+                </div>
+            </div>
+            <input type="file" id="originalWordFile" accept=".docx" style="display:none" onchange="handleOriginalWordFile(event)">
+            <button class="btn btn-secondary" onclick="closeExportModal()" style="width: 100%;">Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content login-modal-content">
+            <div class="modal-header">
+                <h2 id="loginModalTitle">🔐 Anmelden</h2>
+                <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+
+            <div class="login-tabs">
+                <button class="active" onclick="switchLoginTab('admin')" id="tabAdmin">Admin</button>
+                <button onclick="switchLoginTab('editor')" id="tabEditor">Bearbeiter</button>
+            </div>
+
+            <!-- Admin Login -->
+            <div id="adminLoginTab">
+                <p>Melden Sie sich als Administrator an, um alle Funktionen zu nutzen.</p>
+                <div class="form-group">
+                    <label>Passwort</label>
+                    <input type="password" id="adminPassword" placeholder="Admin-Passwort eingeben" onkeypress="if(event.key==='Enter') loginAdmin()">
+                </div>
+                <button class="btn btn-primary" onclick="loginAdmin()">Anmelden</button>
+            </div>
+
+            <!-- Editor Login -->
+            <div id="editorLoginTab" style="display: none;">
+                <p>Geben Sie Ihren Namen ein, um Steckbriefe zu bearbeiten, für die Sie berechtigt sind.</p>
+                <div class="form-group">
+                    <label>Ihr Name</label>
+                    <input type="text" id="editorName" placeholder="Vor- und Nachname" onkeypress="if(event.key==='Enter') loginEditor()">
+                </div>
+                <button class="btn btn-primary" onclick="loginEditor()">Als Bearbeiter anmelden</button>
+            </div>
+
+            <!-- Bereits angemeldet -->
+            <div id="loggedInTab" style="display: none;">
+                <p>Sie sind angemeldet als:</p>
+                <h3 id="loggedInName" style="color: #009688; margin: 15px 0;"></h3>
+                <span class="role-badge" id="roleBadge">Admin</span>
+                <button class="btn btn-logout" onclick="logout()" style="margin-top: 20px;">Abmelden</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Management Modal -->
+    <div class="modal" id="editorModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>👥 Bearbeiter verwalten</h2>
+                <button class="close-btn" onclick="closeEditorModal()">&times;</button>
+            </div>
+            <p style="color: #666; margin-bottom: 15px;">Fügen Sie Personen hinzu, die diesen Steckbrief bearbeiten dürfen:</p>
+            <h3 id="editorModalTitle" style="color: #009688; margin-bottom: 15px;"></h3>
+            
+            <div class="editor-list" id="editorList">
+                <!-- Editoren werden hier eingefügt -->
+            </div>
+            
+            <div class="add-editor-form">
+                <input type="text" id="newEditorName" placeholder="Name des Bearbeiters" onkeypress="if(event.key==='Enter') addEditor()">
+                <button class="btn btn-primary" onclick="addEditor()">+ Hinzufügen</button>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="closeEditorModal()" style="width: 100%; margin-top: 20px;">Schließen</button>
+        </div>
+    </div>
+
+    <script>
+        // ====== AUTHENTIFIZIERUNG ======
+        const AUTH_KEY = 'steckbrief_auth';
+        const ADMIN_PASSWORD = 'Admin2026!'; // In Produktion durch sichereren Mechanismus ersetzen
+        
+        // Rollen: 'admin', 'editor', 'guest'
+        let currentUser = {
+            role: 'guest',
+            name: ''
+        };
+
+        // Auth laden
+        function loadAuth() {
+            const saved = sessionStorage.getItem(AUTH_KEY);
+            if (saved) {
+                currentUser = JSON.parse(saved);
+            }
+            updateUIForRole();
+        }
+
+        // Auth speichern
+        function saveAuth() {
+            sessionStorage.setItem(AUTH_KEY, JSON.stringify(currentUser));
+        }
+
+        // Admin Login
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                currentUser = { role: 'admin', name: 'Administrator' };
+                saveAuth();
+                updateUIForRole();
+                closeLoginModal();
+                alert('Erfolgreich als Administrator angemeldet!');
+            } else {
+                alert('Falsches Passwort!');
+            }
+        }
+
+        // Editor Login
+        function loginEditor() {
+            const name = document.getElementById('editorName').value.trim();
+            if (!name) {
+                alert('Bitte geben Sie Ihren Namen ein.');
+                return;
+            }
+            currentUser = { role: 'editor', name: name };
+            saveAuth();
+            updateUIForRole();
+            closeLoginModal();
+            alert(`Willkommen, ${name}! Sie können nun Steckbriefe bearbeiten, für die Sie berechtigt sind.`);
+        }
+
+        // Logout
+        function logout() {
+            currentUser = { role: 'guest', name: '' };
+            sessionStorage.removeItem(AUTH_KEY);
+            updateUIForRole();
+            closeLoginModal();
+            alert('Sie wurden erfolgreich abgemeldet.');
+            // Bei Detail-Seite die Buttons aktualisieren
+            if (document.getElementById('detailPage').style.display !== 'none') {
+                handleRouting();
+            }
+        }
+
+        // UI basierend auf Rolle aktualisieren
+        function updateUIForRole() {
+            const isAdmin = currentUser.role === 'admin';
+            const isEditor = currentUser.role === 'editor';
+            const isLoggedIn = isAdmin || isEditor;
+
+            // Admin-only Elemente
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.classList.toggle('hidden', !isAdmin);
+            });
+
+            // Login Button aktualisieren
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            if (isLoggedIn) {
+                loginBtn.classList.add('logged-in');
+                loginBtnText.textContent = isAdmin ? '👤 Admin' : `👤 ${currentUser.name}`;
+            } else {
+                loginBtn.classList.remove('logged-in');
+                loginBtnText.textContent = 'Anmelden';
+            }
+
+            // Detail-Seite Buttons aktualisieren (falls sichtbar)
+            updateDetailButtons();
+        }
+
+        // Prüfen ob Benutzer Steckbrief bearbeiten darf
+        function canEditSteckbrief(steckbrief) {
+            if (currentUser.role === 'admin') return true;
+            if (currentUser.role === 'editor' && steckbrief.editors) {
+                return steckbrief.editors.some(e => 
+                    e.toLowerCase() === currentUser.name.toLowerCase()
+                );
+            }
+            return false;
+        }
+
+        // Detail-Buttons basierend auf Berechtigung aktualisieren
+        function updateDetailButtons() {
+            const editBtn = document.querySelector('#viewTab .btn-primary');
+            const deleteBtn = document.querySelector('#viewTab .btn-danger');
+            const manageEditorsBtn = document.getElementById('btnManageEditors');
+            const tabEditBtn = document.getElementById('tabEditBtn');
+            const editTabs = document.getElementById('editTabs');
+            
+            if (!currentSteckbriefId) return;
+            
+            const steckbriefe = getSteckbriefe();
+            const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
+            if (!steckbrief) return;
+
+            const canEdit = canEditSteckbrief(steckbrief);
+            const isAdmin = currentUser.role === 'admin';
+
+            // Edit-Button in der Ansicht
+            if (editBtn) {
+                editBtn.classList.toggle('hidden', !canEdit);
+            }
+            // Tabs nur anzeigen wenn Bearbeitung möglich
+            if (editTabs) {
+                editTabs.style.display = canEdit ? 'flex' : 'none';
+            }
+            // Bearbeiten-Tab
+            if (tabEditBtn) {
+                tabEditBtn.classList.toggle('hidden', !canEdit);
+            }
+            // Löschen-Button (nur Admin)
+            if (deleteBtn) {
+                deleteBtn.classList.toggle('hidden', !isAdmin);
+            }
+            // Bearbeiter verwalten (nur Admin)
+            if (manageEditorsBtn) {
+                manageEditorsBtn.classList.toggle('hidden', !isAdmin);
+            }
+        }
+
+        // Login Modal
+        function openLoginModal() {
+            const isLoggedIn = currentUser.role !== 'guest';
+            
+            // Tabs ausblenden wenn bereits eingeloggt
+            document.querySelector('.login-tabs').style.display = isLoggedIn ? 'none' : 'flex';
+            
+            document.getElementById('adminLoginTab').style.display = isLoggedIn ? 'none' : 'block';
+            document.getElementById('editorLoginTab').style.display = 'none';
+            document.getElementById('loggedInTab').style.display = isLoggedIn ? 'block' : 'none';
+            document.getElementById('tabAdmin').classList.toggle('active', !isLoggedIn);
+            document.getElementById('tabEditor').classList.remove('active');
+            
+            if (isLoggedIn) {
+                document.getElementById('loggedInName').textContent = currentUser.name;
+                document.getElementById('roleBadge').textContent = currentUser.role === 'admin' ? 'Admin' : 'Bearbeiter';
+                document.getElementById('roleBadge').classList.toggle('editor', currentUser.role === 'editor');
+                document.getElementById('loginModalTitle').textContent = '👤 Angemeldet';
+            } else {
+                document.getElementById('loginModalTitle').textContent = '🔐 Anmelden';
+            }
+            
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('editorName').value = '';
+        }
+
+        function switchLoginTab(tab) {
+            document.getElementById('tabAdmin').classList.toggle('active', tab === 'admin');
+            document.getElementById('tabEditor').classList.toggle('active', tab === 'editor');
+            document.getElementById('adminLoginTab').style.display = tab === 'admin' ? 'block' : 'none';
+            document.getElementById('editorLoginTab').style.display = tab === 'editor' ? 'block' : 'none';
+        }
+
+        // Editor Management
+        function openEditorModal(steckbriefId) {
+            const steckbriefe = getSteckbriefe();
+            const steckbrief = steckbriefe.find(s => s.id === steckbriefId);
+            if (!steckbrief) return;
+
+            document.getElementById('editorModalTitle').textContent = steckbrief.titel;
+            renderEditorList(steckbrief);
+            document.getElementById('editorModal').classList.add('active');
+        }
+
+        function closeEditorModal() {
+            document.getElementById('editorModal').classList.remove('active');
+            document.getElementById('newEditorName').value = '';
+        }
+
+        function renderEditorList(steckbrief) {
+            const container = document.getElementById('editorList');
+            const editors = steckbrief.editors || [];
+            
+            if (editors.length === 0) {
+                container.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">Noch keine Bearbeiter hinzugefügt</div>';
+                return;
+            }
+            
+            container.innerHTML = editors.map(name => `
+                <div class="editor-item">
+                    <span>👤 ${escapeHtml(name)}</span>
+                    <button class="remove-btn" onclick="removeEditor('${escapeHtml(name)}')">Entfernen</button>
+                </div>
+            `).join('');
+        }
+
+        function addEditor() {
+            const name = document.getElementById('newEditorName').value.trim();
+            if (!name) {
+                alert('Bitte geben Sie einen Namen ein.');
+                return;
+            }
+
+            const steckbriefe = getSteckbriefe();
+            const index = steckbriefe.findIndex(s => s.id === currentSteckbriefId);
+            if (index < 0) return;
+
+            if (!steckbriefe[index].editors) {
+                steckbriefe[index].editors = [];
+            }
+
+            if (steckbriefe[index].editors.some(e => e.toLowerCase() === name.toLowerCase())) {
+                alert('Diese Person ist bereits als Bearbeiter eingetragen.');
+                return;
+            }
+
+            steckbriefe[index].editors.push(name);
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
+            document.getElementById('newEditorName').value = '';
+        }
+
+        function removeEditor(name) {
+            const steckbriefe = getSteckbriefe();
+            const index = steckbriefe.findIndex(s => s.id === currentSteckbriefId);
+            if (index < 0) return;
+
+            steckbriefe[index].editors = (steckbriefe[index].editors || []).filter(
+                e => e.toLowerCase() !== name.toLowerCase()
+            );
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
+        }
+
+        // ====== HAUPT-ANWENDUNG ======
+        
+        // Daten im localStorage speichern
+        const STORAGE_KEY = 'steckbriefe';
+        let currentSteckbriefId = null;
+        let currentView = 'cards'; // 'cards' oder 'table'
+        let selectedSteckbriefe = new Set();
+        let exportSteckbriefe = []; // Für den Export vorgemerkte Steckbriefe
+        let activeFilters = {
+            cluster: '',
+            auftraggeber: '',
+            statusOptimierung: ''
+        };
+
+        // Initialisierung
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Auth laden
+            loadAuth();
+            
+            // Automatisch steckbriefe.json laden, falls localStorage leer ist
+            if (!localStorage.getItem(STORAGE_KEY) || getSteckbriefe().length === 0) {
+                try {
+                    const response = await fetch('steckbriefe.json');
+                    if (response.ok) {
+                        const data = await response.json();
+                        saveSteckbriefe(data);
+                        console.log(`${data.length} Steckbriefe automatisch geladen.`);
+                    }
+                } catch (e) {
+                    console.log('Keine steckbriefe.json gefunden oder Fehler beim Laden:', e);
+                }
+            }
+            updateFilterDropdowns();
+            
+            // URL-Routing: Prüfen ob Detail-Seite geöffnet werden soll
+            handleRouting();
+            
+            // Browser-Navigation (Zurück/Vor) behandeln
+            window.addEventListener('popstate', handleRouting);
+            
+            document.getElementById('searchInput').addEventListener('input', renderOverview);
+        });
+
+        // URL-Routing Handler
+        function handleRouting() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const steckbriefId = urlParams.get('id');
+            const editMode = urlParams.get('edit') === 'true';
+            const newMode = urlParams.get('neu') === 'true';
+            
+            if (newMode) {
+                showOverview(false);
+                showDetailPage(true);
+                openNewSteckbriefPage();
+            } else if (steckbriefId) {
+                showOverview(false);
+                showDetailPage(true);
+                showSteckbriefDetail(steckbriefId, editMode);
+            } else {
+                showOverview(true);
+                showDetailPage(false);
+                renderOverview();
+            }
+        }
+
+        // Übersicht anzeigen/ausblenden
+        function showOverview(show) {
+            document.querySelector('.container:not(.detail-page)').style.display = show ? 'block' : 'none';
+        }
+
+        // Detail-Seite anzeigen/ausblenden
+        function showDetailPage(show) {
+            document.getElementById('detailPage').style.display = show ? 'block' : 'none';
+        }
+
+        // Zur Übersicht zurück
+        function goBack() {
+            window.history.pushState({}, '', window.location.pathname);
+            handleRouting();
+        }
+
+        // Alle Steckbriefe laden
+        function getSteckbriefe() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        // Steckbriefe speichern
+        function saveSteckbriefe(steckbriefe) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(steckbriefe));
+        }
+
+        // Übersicht rendern
+        function renderOverview() {
+            const container = document.getElementById('overview');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let steckbriefe = getSteckbriefe();
+
+            // Textsuche
+            if (searchTerm) {
+                steckbriefe = steckbriefe.filter(s => 
+                    s.titel.toLowerCase().includes(searchTerm) ||
+                    s.auftraggeber.toLowerCase().includes(searchTerm) ||
+                    (s.prozessmanager && s.prozessmanager.toLowerCase().includes(searchTerm)) ||
+                    (s.prozesscluster && s.prozesscluster.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            // Filter anwenden
+            if (activeFilters.cluster) {
+                steckbriefe = steckbriefe.filter(s => s.prozesscluster === activeFilters.cluster);
+            }
+            if (activeFilters.auftraggeber) {
+                steckbriefe = steckbriefe.filter(s => s.auftraggeber === activeFilters.auftraggeber);
+            }
+            if (activeFilters.statusOptimierung) {
+                steckbriefe = steckbriefe.filter(s => s.status_optimierung === activeFilters.statusOptimierung);
+            }
+
+            // Aktive Filter-Tags anzeigen
+            renderActiveFilterTags();
+
+            // Ergebnis-Anzahl aktualisieren
+            document.getElementById('resultCount').textContent = `${steckbriefe.length} Steckbrief${steckbriefe.length !== 1 ? 'e' : ''}`;
+
+            if (steckbriefe.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <h3>${searchTerm ? 'Keine Ergebnisse gefunden' : 'Noch keine Steckbriefe vorhanden'}</h3>
+                        <p>${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff.' : 'Erstellen Sie Ihren ersten Steckbrief oder importieren Sie bestehende Daten.'}</p>
+                        ${!searchTerm ? '<button class="btn btn-primary" onclick="openNewSteckbrief()">+ Neuer Steckbrief</button>' : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            if (currentView === 'table') {
+                renderTableView(container, steckbriefe);
+            } else {
+                renderCardsView(container, steckbriefe);
+            }
+        }
+
+        // Kachel-Ansicht rendern
+        function renderCardsView(container, steckbriefe) {
+            container.className = '';
+            container.style.display = '';
+            container.style.gridTemplateColumns = '';
+            container.style.gap = '';
+
+            container.innerHTML = steckbriefe.map(s => `
+                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
+                    <div class="card-checkbox" onclick="event.stopPropagation(); toggleSelection('${s.id}')">${selectedSteckbriefe.has(s.id) ? '✓' : ''}</div>
+                    <h3>${escapeHtml(s.titel)}</h3>
+                    <div class="meta">
+                        ${escapeHtml(s.prozesscluster || 'Kein Prozesscluster')}
+                    </div>
+                    <div class="meta" style="margin-top: 8px; font-style: italic;">
+                        ${escapeHtml(s.ziel_vision || '')}
+                    </div>
+                    ${s.status_optimierung ? `<div class="meta" style="margin-top: 8px;"><strong>Status:</strong> ${escapeHtml(s.status_optimierung)}</div>` : ''}
+                </div>
+            `).join('');
+            
+            updateSelectionUI();
+        }
+
+        // Tabellen-Ansicht rendern
+        function renderTableView(container, steckbriefe) {
+            container.className = 'table-view';
+            container.style.display = 'block';
+            container.style.gridTemplateColumns = '';
+            container.style.gap = '';
+
+            container.innerHTML = `
+                <table class="overview-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"></th>
+                            <th>Titel</th>
+                            <th>Auftraggeber/-in</th>
+                            <th>Prozessmanager/-in</th>
+                            <th>Prozesscluster</th>
+                            <th>Aufwand</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${steckbriefe.map(s => `
+                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
+                                <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="text-align: center; cursor: pointer;">
+                                    <span style="color: ${selectedSteckbriefe.has(s.id) ? '#009688' : '#ccc'}; font-size: 1.2em;">${selectedSteckbriefe.has(s.id) ? '☑' : '☐'}</span>
+                                </td>
+                                <td class="title-cell">${escapeHtml(s.titel)}</td>
+                                <td>${escapeHtml(s.auftraggeber || '-')}</td>
+                                <td>${escapeHtml(s.prozessmanager || '-')}</td>
+                                <td>${escapeHtml(s.prozesscluster || '-')}</td>
+                                <td>${s.umsetzungsaufwand ? `<span class="aufwand-badge aufwand-${s.umsetzungsaufwand.replace('/', '-')}">${getAufwandLabel(s.umsetzungsaufwand)}</span>` : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            updateSelectionUI();
+        }
+
+        // Ansicht wechseln
+        function setView(view) {
+            currentView = view;
+            document.getElementById('btnCards').classList.toggle('active', view === 'cards');
+            document.getElementById('btnTable').classList.toggle('active', view === 'table');
+            renderOverview();
+        }
+
+        // Filter-Dropdowns mit Werten befüllen
+        function updateFilterDropdowns() {
+            const steckbriefe = getSteckbriefe();
+            
+            // Eindeutige Werte sammeln
+            const clusters = [...new Set(steckbriefe.map(s => s.prozesscluster).filter(Boolean))].sort();
+            const auftraggeber = [...new Set(steckbriefe.map(s => s.auftraggeber).filter(Boolean))].sort();
+            const statusOptimierung = [...new Set(steckbriefe.map(s => s.status_optimierung).filter(Boolean))].sort();
+            
+            // Cluster-Dropdown
+            const clusterSelect = document.getElementById('filterCluster');
+            clusterSelect.innerHTML = '<option value="">Alle Cluster</option>' + 
+                clusters.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+            
+            // Auftraggeber-Dropdown
+            const agSelect = document.getElementById('filterAuftraggeber');
+            agSelect.innerHTML = '<option value="">Alle Auftraggeber</option>' + 
+                auftraggeber.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+            
+            // Status Optimierung-Dropdown
+            const soSelect = document.getElementById('filterStatusOptimierung');
+            soSelect.innerHTML = '<option value="">Alle Status</option>' + 
+                statusOptimierung.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+        }
+
+        // Filter anwenden
+        function applyFilters() {
+            activeFilters.cluster = document.getElementById('filterCluster').value;
+            activeFilters.auftraggeber = document.getElementById('filterAuftraggeber').value;
+            activeFilters.statusOptimierung = document.getElementById('filterStatusOptimierung').value;
+            renderOverview();
+        }
+
+        // Filter zurücksetzen
+        function resetFilters() {
+            activeFilters = { cluster: '', auftraggeber: '', statusOptimierung: '' };
+            document.getElementById('filterCluster').value = '';
+            document.getElementById('filterAuftraggeber').value = '';
+            document.getElementById('filterStatusOptimierung').value = '';
+            renderOverview();
+        }
+
+        // Aktive Filter als Tags anzeigen
+        function renderActiveFilterTags() {
+            const container = document.getElementById('activeFilters');
+            const tags = [];
+            
+            if (activeFilters.cluster) {
+                tags.push({ label: 'Cluster', value: activeFilters.cluster, key: 'cluster' });
+            }
+            if (activeFilters.auftraggeber) {
+                tags.push({ label: 'Auftraggeber', value: activeFilters.auftraggeber, key: 'auftraggeber' });
+            }
+            if (activeFilters.statusOptimierung) {
+                tags.push({ label: 'Status', value: activeFilters.statusOptimierung, key: 'statusOptimierung' });
+            }
+            
+            container.innerHTML = tags.map(t => `
+                <span class="filter-tag">
+                    ${t.label}: ${escapeHtml(t.value)}
+                    <button onclick="removeFilter('${t.key}')">&times;</button>
+                </span>
+            `).join('');
+        }
+
+        // Einzelnen Filter entfernen
+        function removeFilter(key) {
+            activeFilters[key] = '';
+            const selectId = {
+                cluster: 'filterCluster',
+                auftraggeber: 'filterAuftraggeber',
+                statusOptimierung: 'filterStatusOptimierung'
+            }[key];
+            if (selectId) {
+                document.getElementById(selectId).value = '';
+            }
+            renderOverview();
+        }
+
+        function getAufwandLabel(aufwand) {
+            const labels = {
+                'klein': 'Klein',
+                'mittel': 'Mittel',
+                'gross': 'Groß',
+                'mittel-gross': 'Mittel/Groß'
+            };
+            return labels[aufwand] || aufwand;
+        }
+
+        // Neuen Steckbrief öffnen (URL ändern)
+        function openNewSteckbrief() {
+            if (currentUser.role !== 'admin') {
+                alert('Nur Administratoren können neue Steckbriefe anlegen.');
+                return;
+            }
+            window.history.pushState({}, '', '?neu=true');
+            handleRouting();
+        }
+
+        // Neuen Steckbrief Seite anzeigen
+        function openNewSteckbriefPage() {
+            if (currentUser.role !== 'admin') {
+                goBack();
+                return;
+            }
+            currentSteckbriefId = null;
+            document.getElementById('steckbriefForm').reset();
+            document.getElementById('steckbriefId').value = '';
+            document.getElementById('modalTitle').textContent = 'Neuer Steckbrief';
+            document.getElementById('detailUrl').innerHTML = '';
+            switchTab('edit');
+        }
+
+        // Steckbrief öffnen (URL ändern)
+        function openSteckbrief(id) {
+            window.history.pushState({}, '', '?id=' + encodeURIComponent(id));
+            handleRouting();
+        }
+
+        // Steckbrief Detail anzeigen
+        function showSteckbriefDetail(id, editMode = false) {
+            const steckbriefe = getSteckbriefe();
+            const steckbrief = steckbriefe.find(s => s.id === id);
+            if (!steckbrief) {
+                goBack();
+                return;
+            }
+
+            currentSteckbriefId = id;
+            document.getElementById('modalTitle').textContent = steckbrief.titel;
+            
+            // Link zum Teilen anzeigen
+            const shareUrl = window.location.href;
+            document.getElementById('detailUrl').innerHTML = `
+                <span>Link zum Teilen: </span>
+                <a href="${shareUrl}" onclick="copyLink(event)">${shareUrl}</a>
+                <button class="btn-copy" onclick="copyLink(event)" title="Link kopieren">📋</button>
+            `;
+            
+            // Ansicht füllen
+            renderViewContent(steckbrief);
+            
+            // Formular füllen
+            fillForm(steckbrief);
+            
+            // Buttons basierend auf Berechtigung aktualisieren
+            updateDetailButtons();
+            
+            switchTab(editMode ? 'edit' : 'view');
+        }
+
+        // Link kopieren
+        function copyLink(event) {
+            event.preventDefault();
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Link wurde in die Zwischenablage kopiert!');
+            });
+        }
+
+        // Ansicht rendern
+        function renderViewContent(s) {
+            const container = document.getElementById('viewContent');
+            container.innerHTML = `
+                <div class="form-section">
+                    <h3>1. Rahmendaten</h3>
+                    <div class="form-grid">
+                        ${renderField('Titel', s.titel)}
+                        ${renderField('Auftraggeber/-in', s.auftraggeber)}
+                        ${renderField('Prozessmanager/-in', s.prozessmanager)}
+                        ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
+                        ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
+                        ${renderField('Prozess-/Projektteam', s.projektteam)}
+                        ${renderField('Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span>', s.prozesscluster)}
+                        ${renderField('Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span>', getAufwandLabel(s.umsetzungsaufwand))}
+                        ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                        ${renderField('Status Optimierung', s.status_optimierung)}
+                        ${renderField('Status Steckbrief', s.status_steckbrief)}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>2. Beschreibung</h3>
+                    ${renderField('Ziel/Vision', s.ziel_vision, true)}
+                    ${renderField('Warum soll der Prozess optimiert werden?<br><span style="color: #888; font-size: 0.85em;">(Ist-Situation & Ausformulierung von 4.)</span>', s.warum, true)}
+                    ${renderField('Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?<br><span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer, true)}
+                    ${renderField('Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen?<br><span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche, true)}
+                    ${renderField('Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?<br><span style="color: #888; font-size: 0.85em;">(Kurzbeschreibung)</span>', s.was, true)}
+                    ${renderField('Wie sollen die Ziele erreicht werden?<br><span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie, true)}
+                    ${renderField('Wo sind IT-Systeme von der Prozessoptimierung betroffen?', s.wo, true)}
+                    ${renderField('Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann, true)}
+                </div>
+
+                <div class="form-section">
+                    <h3>3. Einordnung in den Gesamtprozess</h3>
+                    ${renderField('Welcher strategische Prozess ist hauptsächlich betroffen?', s.einordnung_gesamtprozess, true)}
+                </div>
+
+                <div class="form-section">
+                    <h3>4. Zwänge & Anforderungen</h3>
+                    <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                        <strong>Gewichtung</strong><br>
+                        0 = irrelevant<br>
+                        1 = förderlich<br>
+                        2 = wichtig<br>
+                        3 = zwingend notwendig
+                    </div>
+                    <table class="bewertung-table">
+                        <thead>
+                            <tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr>
+                        </thead>
+                        <tbody>
+                            ${renderBewertungRow('Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span>', s.bewertung_strategie, s.bewertung_strategie_text)}
+                            ${renderBewertungRow('Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span>', s.bewertung_recht, s.bewertung_recht_text)}
+                            ${renderBewertungRow('Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span>', s.bewertung_technik, s.bewertung_technik_text)}
+                            ${renderBewertungRow('Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span>', s.bewertung_kunden, s.bewertung_kunden_text)}
+                            ${renderBewertungRow('Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span>', s.bewertung_lehrende, s.bewertung_lehrende_text)}
+                            ${renderBewertungRow('Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span>', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
+                            ${renderBewertungRow('Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span>', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-section">
+                    <h3>5. Zu erwartende Optimierungen</h3>
+                    <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                        <strong>Gewichtung</strong><br>
+                        0 = irrelevant<br>
+                        1 = geringerer Nutzen<br>
+                        2 = mittlerer Nutzen<br>
+                        3 = hoher Nutzen
+                    </div>
+                    <table class="bewertung-table">
+                        <thead>
+                            <tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr>
+                        </thead>
+                        <tbody>
+                            ${renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)}
+                            ${renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)}
+                            ${renderBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten, s.nutzen_kosten_text)}
+                            ${renderBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion, s.nutzen_reduktion_text)}
+                            ${renderBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende, s.nutzen_studierende_text)}
+                            ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderField(label, value, fullWidth = false) {
+            return `
+                <div class="field-group" ${fullWidth ? 'style="grid-column: 1/-1;"' : ''}>
+                    <div class="field-label">${label}</div>
+                    <div class="field-value">${escapeHtml(value) || '-'}</div>
+                </div>
+            `;
+        }
+
+        function renderBewertungRow(label, gewichtung, text) {
+            return `<tr><td>${label}</td><td>${gewichtung || '0'}</td><td>${escapeHtml(text) || '-'}</td></tr>`;
+        }
+
+        // Formular füllen
+        function fillForm(s) {
+            document.getElementById('steckbriefId').value = s.id;
+            document.getElementById('titel').value = s.titel || '';
+            document.getElementById('auftraggeber').value = s.auftraggeber || '';
+            document.getElementById('prozessmanager').value = s.prozessmanager || '';
+            document.getElementById('anforderungsmanager').value = s.anforderungsmanager || '';
+            document.getElementById('prozessverantwortlicher').value = s.prozessverantwortlicher || '';
+            document.getElementById('projektteam').value = s.projektteam || '';
+            document.getElementById('prozesscluster').value = s.prozesscluster || '';
+            document.getElementById('umsetzungsaufwand').value = s.umsetzungsaufwand || '';
+            document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
+            document.getElementById('status_optimierung').value = s.status_optimierung || '';
+            document.getElementById('status_steckbrief').value = s.status_steckbrief || '';
+            
+            document.getElementById('ziel_vision').value = s.ziel_vision || '';
+            document.getElementById('warum').value = s.warum || '';
+            document.getElementById('wer').value = s.wer || '';
+            document.getElementById('welche').value = s.welche || '';
+            document.getElementById('was').value = s.was || '';
+            document.getElementById('wie').value = s.wie || '';
+            document.getElementById('wo').value = s.wo || '';
+            document.getElementById('wann').value = s.wann || '';
+            
+            document.getElementById('einordnung_gesamtprozess').value = s.einordnung_gesamtprozess || '';
+            
+            // Bewertungskriterien
+            document.getElementById('bewertung_strategie').value = s.bewertung_strategie || '0';
+            document.getElementById('bewertung_strategie_text').value = s.bewertung_strategie_text || '';
+            document.getElementById('bewertung_recht').value = s.bewertung_recht || '0';
+            document.getElementById('bewertung_recht_text').value = s.bewertung_recht_text || '';
+            document.getElementById('bewertung_technik').value = s.bewertung_technik || '0';
+            document.getElementById('bewertung_technik_text').value = s.bewertung_technik_text || '';
+            document.getElementById('bewertung_kunden').value = s.bewertung_kunden || '0';
+            document.getElementById('bewertung_kunden_text').value = s.bewertung_kunden_text || '';
+            document.getElementById('bewertung_lehrende').value = s.bewertung_lehrende || '0';
+            document.getElementById('bewertung_lehrende_text').value = s.bewertung_lehrende_text || '';
+            document.getElementById('bewertung_lieferanten').value = s.bewertung_lieferanten || '0';
+            document.getElementById('bewertung_lieferanten_text').value = s.bewertung_lieferanten_text || '';
+            document.getElementById('bewertung_mitarbeitende').value = s.bewertung_mitarbeitende || '0';
+            document.getElementById('bewertung_mitarbeitende_text').value = s.bewertung_mitarbeitende_text || '';
+            
+            // Nutzen
+            document.getElementById('nutzen_durchlaufzeiten').value = s.nutzen_durchlaufzeiten || '0';
+            document.getElementById('nutzen_durchlaufzeiten_text').value = s.nutzen_durchlaufzeiten_text || '';
+            document.getElementById('nutzen_fehler').value = s.nutzen_fehler || '0';
+            document.getElementById('nutzen_fehler_text').value = s.nutzen_fehler_text || '';
+            document.getElementById('nutzen_kosten').value = s.nutzen_kosten || '0';
+            document.getElementById('nutzen_kosten_text').value = s.nutzen_kosten_text || '';
+            document.getElementById('nutzen_reduktion').value = s.nutzen_reduktion || '0';
+            document.getElementById('nutzen_reduktion_text').value = s.nutzen_reduktion_text || '';
+            document.getElementById('nutzen_studierende').value = s.nutzen_studierende || '0';
+            document.getElementById('nutzen_studierende_text').value = s.nutzen_studierende_text || '';
+            document.getElementById('nutzen_qualitaet').value = s.nutzen_qualitaet || '0';
+            document.getElementById('nutzen_qualitaet_text').value = s.nutzen_qualitaet_text || '';
+        }
+
+        // Steckbrief speichern
+        function saveSteckbrief(e) {
+            e.preventDefault();
+            
+            const steckbriefe = getSteckbriefe();
+            const id = document.getElementById('steckbriefId').value || generateId();
+            const isNew = !document.getElementById('steckbriefId').value;
+            
+            // Berechtigungsprüfung
+            if (isNew && currentUser.role !== 'admin') {
+                alert('Nur Administratoren können neue Steckbriefe anlegen.');
+                return;
+            }
+            
+            if (!isNew) {
+                const existingSteckbrief = steckbriefe.find(s => s.id === id);
+                if (existingSteckbrief && !canEditSteckbrief(existingSteckbrief)) {
+                    alert('Sie haben keine Berechtigung, diesen Steckbrief zu bearbeiten.');
+                    return;
+                }
+            }
+            
+            // Bestehende Editors beibehalten
+            const existingSteckbrief = steckbriefe.find(s => s.id === id);
+            const existingEditors = existingSteckbrief?.editors || [];
+            
+            const steckbrief = {
+                id: id,
+                editors: existingEditors,
+                titel: document.getElementById('titel').value,
+                auftraggeber: document.getElementById('auftraggeber').value,
+                prozessmanager: document.getElementById('prozessmanager').value,
+                anforderungsmanager: document.getElementById('anforderungsmanager').value,
+                prozessverantwortlicher: document.getElementById('prozessverantwortlicher').value,
+                projektteam: document.getElementById('projektteam').value,
+                prozesscluster: document.getElementById('prozesscluster').value,
+                umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
+                betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
+                status_optimierung: document.getElementById('status_optimierung').value,
+                status_steckbrief: document.getElementById('status_steckbrief').value,
+                
+                ziel_vision: document.getElementById('ziel_vision').value,
+                warum: document.getElementById('warum').value,
+                wer: document.getElementById('wer').value,
+                welche: document.getElementById('welche').value,
+                was: document.getElementById('was').value,
+                wie: document.getElementById('wie').value,
+                wo: document.getElementById('wo').value,
+                wann: document.getElementById('wann').value,
+                
+                einordnung_gesamtprozess: document.getElementById('einordnung_gesamtprozess').value,
+                
+                bewertung_strategie: document.getElementById('bewertung_strategie').value,
+                bewertung_strategie_text: document.getElementById('bewertung_strategie_text').value,
+                bewertung_recht: document.getElementById('bewertung_recht').value,
+                bewertung_recht_text: document.getElementById('bewertung_recht_text').value,
+                bewertung_technik: document.getElementById('bewertung_technik').value,
+                bewertung_technik_text: document.getElementById('bewertung_technik_text').value,
+                bewertung_kunden: document.getElementById('bewertung_kunden').value,
+                bewertung_kunden_text: document.getElementById('bewertung_kunden_text').value,
+                bewertung_lehrende: document.getElementById('bewertung_lehrende').value,
+                bewertung_lehrende_text: document.getElementById('bewertung_lehrende_text').value,
+                bewertung_lieferanten: document.getElementById('bewertung_lieferanten').value,
+                bewertung_lieferanten_text: document.getElementById('bewertung_lieferanten_text').value,
+                bewertung_mitarbeitende: document.getElementById('bewertung_mitarbeitende').value,
+                bewertung_mitarbeitende_text: document.getElementById('bewertung_mitarbeitende_text').value,
+                
+                nutzen_durchlaufzeiten: document.getElementById('nutzen_durchlaufzeiten').value,
+                nutzen_durchlaufzeiten_text: document.getElementById('nutzen_durchlaufzeiten_text').value,
+                nutzen_fehler: document.getElementById('nutzen_fehler').value,
+                nutzen_fehler_text: document.getElementById('nutzen_fehler_text').value,
+                nutzen_kosten: document.getElementById('nutzen_kosten').value,
+                nutzen_kosten_text: document.getElementById('nutzen_kosten_text').value,
+                nutzen_reduktion: document.getElementById('nutzen_reduktion').value,
+                nutzen_reduktion_text: document.getElementById('nutzen_reduktion_text').value,
+                nutzen_studierende: document.getElementById('nutzen_studierende').value,
+                nutzen_studierende_text: document.getElementById('nutzen_studierende_text').value,
+                nutzen_qualitaet: document.getElementById('nutzen_qualitaet').value,
+                nutzen_qualitaet_text: document.getElementById('nutzen_qualitaet_text').value,
+                
+                updatedAt: new Date().toISOString()
+            };
+            
+            const existingIndex = steckbriefe.findIndex(s => s.id === id);
+            if (existingIndex >= 0) {
+                steckbriefe[existingIndex] = steckbrief;
+            } else {
+                steckbrief.createdAt = new Date().toISOString();
+                steckbriefe.push(steckbrief);
+            }
+            
+            saveSteckbriefe(steckbriefe);
+            updateFilterDropdowns();
+            
+            // Nach dem Speichern zur Detail-Ansicht des Steckbriefs navigieren
+            window.history.pushState({}, '', '?id=' + encodeURIComponent(id));
+            showSteckbriefDetail(id, false);
+        }
+
+        // Steckbrief löschen
+        function deleteSteckbrief() {
+            if (!currentSteckbriefId) return;
+            
+            if (currentUser.role !== 'admin') {
+                alert('Nur Administratoren können Steckbriefe löschen.');
+                return;
+            }
+            
+            if (!confirm('Möchten Sie diesen Steckbrief wirklich löschen?')) return;
+            
+            let steckbriefe = getSteckbriefe();
+            steckbriefe = steckbriefe.filter(s => s.id !== currentSteckbriefId);
+            saveSteckbriefe(steckbriefe);
+            updateFilterDropdowns();
+            goBack();
+        }
+
+        // Tab wechseln
+        function switchTab(tab) {
+            // Berechtigungsprüfung beim Wechsel zu Bearbeiten
+            if (tab === 'edit' && currentSteckbriefId) {
+                const steckbriefe = getSteckbriefe();
+                const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
+                if (steckbrief && !canEditSteckbrief(steckbrief)) {
+                    alert('Sie haben keine Berechtigung, diesen Steckbrief zu bearbeiten.');
+                    return;
+                }
+            }
+            
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab:nth-child(${tab === 'view' ? 1 : 2})`).classList.add('active');
+            
+            document.getElementById('viewTab').style.display = tab === 'view' ? 'block' : 'none';
+            document.getElementById('editTab').style.display = tab === 'edit' ? 'block' : 'none';
+        }
+
+        // Modal schließen (Kompatibilität - verwendet goBack)
+        function closeModal() {
+            goBack();
+        }
+
+        // Auswahl umschalten
+        function toggleSelection(id) {
+            if (selectedSteckbriefe.has(id)) {
+                selectedSteckbriefe.delete(id);
+            } else {
+                selectedSteckbriefe.add(id);
+            }
+            renderOverview();
+        }
+
+        // Alle auswählen/abwählen
+        function toggleSelectAll() {
+            const steckbriefe = getSteckbriefe();
+            if (selectedSteckbriefe.size === steckbriefe.length) {
+                selectedSteckbriefe.clear();
+            } else {
+                steckbriefe.forEach(s => selectedSteckbriefe.add(s.id));
+            }
+            renderOverview();
+        }
+
+        // Selection UI aktualisieren
+        function updateSelectionUI() {
+            const steckbriefe = getSteckbriefe();
+            const btnSelectAll = document.getElementById('btnSelectAll');
+            const btnExportSelected = document.getElementById('btnExportSelected');
+            
+            if (selectedSteckbriefe.size === steckbriefe.length && steckbriefe.length > 0) {
+                btnSelectAll.innerHTML = '☑ Alle abwählen';
+                btnSelectAll.classList.add('active');
+            } else if (selectedSteckbriefe.size > 0) {
+                btnSelectAll.innerHTML = `☐ ${selectedSteckbriefe.size} ausgewählt`;
+                btnSelectAll.classList.remove('active');
+            } else {
+                btnSelectAll.innerHTML = '☐ Alle auswählen';
+                btnSelectAll.classList.remove('active');
+            }
+            
+            btnExportSelected.style.display = selectedSteckbriefe.size > 0 ? 'inline-block' : 'none';
+        }
+
+        // Ausgewählte exportieren
+        function exportSelected() {
+            if (selectedSteckbriefe.size === 0) {
+                alert('Bitte wählen Sie mindestens einen Steckbrief aus.');
+                return;
+            }
+            
+            const steckbriefe = getSteckbriefe();
+            exportSteckbriefe = steckbriefe.filter(s => selectedSteckbriefe.has(s.id));
+            document.getElementById('exportCount').textContent = `${exportSteckbriefe.length} Steckbrief${exportSteckbriefe.length !== 1 ? 'e' : ''} werden exportiert`;
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        // Einzelnen Steckbrief exportieren (aus Detailansicht)
+        function exportSingleSteckbrief() {
+            if (!currentSteckbriefId) return;
+            
+            const steckbriefe = getSteckbriefe();
+            const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
+            if (!steckbrief) return;
+            
+            exportSteckbriefe = [steckbrief];
+            document.getElementById('exportCount').textContent = '1 Steckbrief wird exportiert';
+            document.getElementById('exportModal').classList.add('active');
+        }
+
+        // Export Modal schließen
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('active');
+        }
+
+        // Export durchführen
+        function doExport(format) {
+            if (format === 'wordOriginal') {
+                // Nur für einzelne Steckbriefe
+                if (exportSteckbriefe.length !== 1) {
+                    alert('Original-Word-Export funktioniert nur für einzelne Steckbriefe.');
+                    return;
+                }
+                // Dateiauswahl öffnen
+                document.getElementById('originalWordFile').click();
+                return;
+            }
+            
+            closeExportModal();
+            closeModal();
+            
+            if (format === 'pdf') {
+                exportAsPDF(exportSteckbriefe);
+            } else if (format === 'word') {
+                exportAsWord(exportSteckbriefe);
+            }
+        }
+        
+        // Original Word-Datei verarbeiten
+        async function handleOriginalWordFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            closeExportModal();
+            
+            try {
+                const steckbrief = exportSteckbriefe[0];
+                const arrayBuffer = await file.arrayBuffer();
+                const zip = await JSZip.loadAsync(arrayBuffer);
+                
+                // document.xml lesen
+                const documentXml = await zip.file('word/document.xml').async('string');
+                
+                // XML mit neuen Werten aktualisieren
+                let updatedXml = updateWordDocument(documentXml, steckbrief);
+                
+                // Aktualisiertes XML zurückschreiben
+                zip.file('word/document.xml', updatedXml);
+                
+                // Neue DOCX-Datei erstellen
+                const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                
+                // Download
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = steckbrief.titel.replace(/[^a-zA-Z0-9äöüÄÖÜß\-_ ]/g, '').substring(0, 50) + '_aktualisiert.docx';
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                alert('Word-Dokument erfolgreich aktualisiert und exportiert!');
+            } catch (err) {
+                console.error('Fehler beim Verarbeiten der Word-Datei:', err);
+                alert('Fehler beim Verarbeiten der Word-Datei: ' + err.message);
+            }
+            
+            event.target.value = '';
+        }
+        
+        // Word-Dokument XML aktualisieren
+        function updateWordDocument(xml, steckbrief) {
+            // Mapping von Feldnamen zu Steckbrief-Eigenschaften
+            const fieldMappings = [
+                { label: 'Titel', field: 'titel' },
+                { label: 'Auftraggeber', field: 'auftraggeber' },
+                { label: 'Prozessmanager', field: 'prozessmanager' },
+                { label: 'Prozessverantwortliche', field: 'prozessverantwortlicher' },
+                { label: 'Prozessteam', field: 'projektteam' },
+                { label: 'Prozesscluster', field: 'prozesscluster' },
+                { label: 'Umsetzungsaufwand', field: 'umsetzungsaufwand' },
+                { label: 'Betroffener Life-Cycle', field: 'betroffener_lifecycle' },
+                { label: 'Status Optimierung', field: 'status_optimierung' },
+                { label: 'Status Steckbrief', field: 'status_steckbrief' },
+                { label: 'Ziel/Vision', field: 'ziel_vision' },
+                { label: 'Warum', field: 'warum' },
+                { label: 'Wer', field: 'wer' },
+                { label: 'Welche', field: 'welche' },
+                { label: 'Was', field: 'was' },
+                { label: 'Wie', field: 'wie' },
+                { label: 'Wo', field: 'wo' },
+                { label: 'Wann', field: 'wann' },
+                { label: 'Einordnung', field: 'einordnung_gesamtprozess' }
+            ];
+            
+            // Parser für XML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xml, 'application/xml');
+            
+            // Alle Tabellen finden
+            const tables = doc.getElementsByTagName('w:tbl');
+            
+            for (let table of tables) {
+                const rows = table.getElementsByTagName('w:tr');
+                
+                for (let row of rows) {
+                    const cells = row.getElementsByTagName('w:tc');
+                    if (cells.length >= 2) {
+                        // Erste Zelle: Label, Zweite Zelle: Wert
+                        const labelCell = cells[0];
+                        const valueCell = cells[1];
+                        
+                        // Text aus Label-Zelle extrahieren
+                        const labelTexts = labelCell.getElementsByTagName('w:t');
+                        let labelText = '';
+                        for (let t of labelTexts) {
+                            labelText += t.textContent;
+                        }
+                        
+                        // Prüfen ob dieses Label zu einem Feld passt
+                        for (let mapping of fieldMappings) {
+                            if (labelText.toLowerCase().includes(mapping.label.toLowerCase())) {
+                                const newValue = steckbrief[mapping.field] || '';
+                                
+                                // Alle Textknoten in der Wert-Zelle finden
+                                const valueTexts = valueCell.getElementsByTagName('w:t');
+                                if (valueTexts.length > 0) {
+                                    // Ersten Text-Knoten mit neuem Wert ersetzen
+                                    valueTexts[0].textContent = newValue;
+                                    // Restliche Text-Knoten leeren
+                                    for (let i = 1; i < valueTexts.length; i++) {
+                                        valueTexts[i].textContent = '';
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // XML zurück als String serialisieren
+            const serializer = new XMLSerializer();
+            return serializer.serializeToString(doc);
+        }
+
+        // PDF Export
+        function exportAsPDF(steckbriefe) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPos = 15;
+            const pageHeight = 280;
+            const margin = 15;
+            const tableWidth = 180;
+            const labelWidth = 70;
+            const valueWidth = 110;
+            const cellPadding = 2;
+            const lineHeight = 5;
+            
+            // Hilfsfunktion für Tabellenzelle mit Umbruch
+            function drawTableCell(x, y, width, text, isBold, isHeader, bgColor) {
+                const lines = doc.splitTextToSize(text || '', width - 4);
+                const cellHeight = Math.max(lines.length * lineHeight + cellPadding * 2, 8);
+                
+                // Hintergrund
+                if (bgColor) {
+                    doc.setFillColor(bgColor.r, bgColor.g, bgColor.b);
+                    doc.rect(x, y, width, cellHeight, 'F');
+                }
+                
+                // Rahmen
+                doc.setDrawColor(180, 180, 180);
+                doc.setLineWidth(0.2);
+                doc.rect(x, y, width, cellHeight);
+                
+                // Text
+                doc.setFontSize(8);
+                doc.setTextColor(0, 0, 0);
+                if (isBold || isHeader) {
+                    doc.setFont(undefined, 'bold');
+                } else {
+                    doc.setFont(undefined, 'normal');
+                }
+                
+                lines.forEach((line, i) => {
+                    doc.text(line, x + 2, y + cellPadding + 3 + i * lineHeight);
+                });
+                
+                return cellHeight;
+            }
+            
+            // Hilfsfunktion für Tabellenzeile
+            function drawTableRow(y, cells, colWidths, bgColor) {
+                const heights = cells.map((cell, i) => {
+                    const lines = doc.splitTextToSize(cell.text || '', colWidths[i] - 4);
+                    return Math.max(lines.length * lineHeight + cellPadding * 2, 8);
+                });
+                const rowHeight = Math.max(...heights);
+                
+                let x = margin;
+                cells.forEach((cell, i) => {
+                    if (bgColor) {
+                        doc.setFillColor(bgColor.r, bgColor.g, bgColor.b);
+                        doc.rect(x, y, colWidths[i], rowHeight, 'F');
+                    }
+                    doc.setDrawColor(180, 180, 180);
+                    doc.setLineWidth(0.2);
+                    doc.rect(x, y, colWidths[i], rowHeight);
+                    
+                    doc.setFontSize(8);
+                    doc.setTextColor(0, 0, 0);
+                    if (cell.bold) {
+                        doc.setFont(undefined, 'bold');
+                    } else {
+                        doc.setFont(undefined, 'normal');
+                    }
+                    
+                    const lines = doc.splitTextToSize(cell.text || '', colWidths[i] - 4);
+                    lines.forEach((line, j) => {
+                        doc.text(line, x + 2, y + cellPadding + 3 + j * lineHeight);
+                    });
+                    x += colWidths[i];
+                });
+                
+                return rowHeight;
+            }
+            
+            // Seitenumbruch prüfen
+            function checkPageBreak(neededHeight) {
+                if (yPos + neededHeight > pageHeight) {
+                    doc.addPage();
+                    yPos = 15;
+                    return true;
+                }
+                return false;
+            }
+            
+            steckbriefe.forEach((s, index) => {
+                if (index > 0) {
+                    doc.addPage();
+                    yPos = 15;
+                }
+                
+                // ===== TABELLE 1: STAMMDATEN =====
+                const stammdaten = [
+                    ['Titel*', s.titel || 'Ohne Titel'],
+                    ['Auftraggeber/-in*', s.auftraggeber || ''],
+                    ['Prozessmanager/-in', s.prozessmanager || ''],
+                    ['Prozessverantwortliche/r', s.prozessverantwortlicher || ''],
+                    ['Prozessteam (Name & OE)', s.projektteam || ''],
+                    ['Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''],
+                    ['Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''],
+                    ['Betroffener Life-Cycle', s.betroffener_lifecycle || ''],
+                    ['Status Optimierung', s.status_optimierung || ''],
+                    ['Status Steckbrief', s.status_steckbrief || '']
+                ];
+                
+                stammdaten.forEach(([label, value]) => {
+                    checkPageBreak(15);
+                    const height = drawTableRow(yPos, 
+                        [{text: label, bold: true}, {text: value}],
+                        [labelWidth, valueWidth],
+                        null
+                    );
+                    yPos += height;
+                });
+                
+                yPos += 10;
+                
+                // ===== TABELLE 2: BESCHREIBUNG =====
+                checkPageBreak(20);
+                
+                const beschreibung = [
+                    ['Ziel/Vision', s.ziel_vision || ''],
+                    ['Warum\nsoll der Prozess optimiert werden?\n(Ist-Situation & Ausformulierung von 4.)', s.warum || ''],
+                    ['Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?\n(Aufzählung der Organisationseinheiten)', s.wer || ''],
+                    ['Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen?\n(ggfs. Verweis auf 3.)', s.welche || ''],
+                    ['Was\nsind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?\n(Kurzbeschreibung)', s.was || ''],
+                    ['Wie\nsollen die Ziele erreicht werden?\n(Beschreibung erster Lösungsansätze)', s.wie || ''],
+                    ['Wo\nsind IT-Systeme von der Prozessoptimierung betroffen?', s.wo || ''],
+                    ['Wann\nsoll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann || '']
+                ];
+                
+                beschreibung.forEach(([label, value]) => {
+                    checkPageBreak(20);
+                    const height = drawTableRow(yPos,
+                        [{text: label, bold: true}, {text: value}],
+                        [labelWidth, valueWidth],
+                        null
+                    );
+                    yPos += height;
+                });
+                
+                yPos += 10;
+                
+                // ===== TABELLE 3: EINORDNUNG IN DEN GESAMTPROZESS =====
+                checkPageBreak(15);
+                
+                const einordnung = [
+                    ['Welcher strategische Prozess ist hauptsächlich betroffen?', s.einordnung_gesamtprozess || '']
+                ];
+                
+                einordnung.forEach(([label, value]) => {
+                    checkPageBreak(15);
+                    const height = drawTableRow(yPos,
+                        [{text: label, bold: true}, {text: value}],
+                        [labelWidth, valueWidth],
+                        null
+                    );
+                    yPos += height;
+                });
+                
+                yPos += 10;
+                
+                // ===== TABELLE 4: BEWERTUNGSKRITERIEN (ANFORDERUNGEN) =====
+                checkPageBreak(15);
+                
+                // Kopfzeile
+                const headerBg = {r: 240, g: 240, b: 240};
+                let height = drawTableRow(yPos,
+                    [{text: 'Bewertungskriterien', bold: true}, {text: 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig', bold: true}, {text: 'Erläuterung', bold: true}],
+                    [70, 50, 60],
+                    headerBg
+                );
+                yPos += height;
+                
+                const anforderungen = [
+                    ['Unternehmensstrategische\nAnforderungen\n(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)', s.bewertung_strategie || '0', s.bewertung_strategie_text || ''],
+                    ['Rechtliche Vorschriften\n(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)', s.bewertung_recht || '0', s.bewertung_recht_text || ''],
+                    ['Technische Zwänge\n(bspw. Ablösung VB6)', s.bewertung_technik || '0', s.bewertung_technik_text || ''],
+                    ['Anforderungen Kunden\nInteressenten, Studierende, Teilnehmende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_kunden || '0', s.bewertung_kunden_text || ''],
+                    ['Anforderungen Lehrende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_lehrende || '0', s.bewertung_lehrende_text || ''],
+                    ['Anforderungen Lieferanten\n(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)', s.bewertung_lieferanten || '0', s.bewertung_lieferanten_text || ''],
+                    ['Anforderungen Mitarbeitende\n(Optimierung der Arbeitsabläufe etc.)', s.bewertung_mitarbeitende || '0', s.bewertung_mitarbeitende_text || '']
+                ];
+                
+                anforderungen.forEach(([label, wert, text]) => {
+                    checkPageBreak(15);
+                    height = drawTableRow(yPos,
+                        [{text: label, bold: false}, {text: wert}, {text: text}],
+                        [70, 50, 60],
+                        null
+                    );
+                    yPos += height;
+                });
+                
+                yPos += 10;
+                
+                // ===== TABELLE 4: BEWERTUNGSKRITERIEN (NUTZEN) =====
+                checkPageBreak(15);
+                
+                // Kopfzeile
+                height = drawTableRow(yPos,
+                    [{text: 'Bewertungskriterien', bold: true}, {text: 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen', bold: true}, {text: 'Erläuterung', bold: true}],
+                    [70, 50, 60],
+                    headerBg
+                );
+                yPos += height;
+                
+                const nutzen = [
+                    ['Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '0', s.nutzen_durchlaufzeiten_text || ''],
+                    ['Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '0', s.nutzen_fehler_text || ''],
+                    ['Senkung der Prozesskosten', s.nutzen_kosten || '0', s.nutzen_kosten_text || ''],
+                    ['Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '0', s.nutzen_reduktion_text || ''],
+                    ['Steigerung der Studierendenzahlen', s.nutzen_studierende || '0', s.nutzen_studierende_text || ''],
+                    ['Qualitätszuwachs', s.nutzen_qualitaet || '0', s.nutzen_qualitaet_text || '']
+                ];
+                
+                nutzen.forEach(([label, wert, text]) => {
+                    checkPageBreak(12);
+                    height = drawTableRow(yPos,
+                        [{text: label, bold: false}, {text: wert}, {text: text}],
+                        [70, 50, 60],
+                        null
+                    );
+                    yPos += height;
+                });
+                
+                yPos += 10;
+                
+                // ===== TABELLE 5: MEILENSTEINE =====
+                checkPageBreak(40);
+                
+                const meilensteine = [
+                    ['Identifikationsnummer', s.identifikationsnummer || ''],
+                    ['Übermittlung Prozesssteckbrief*', s.uebermittlung_datum || ''],
+                    ['Fertigstellung Grobkonzept (optional)', s.grobkonzept_datum || ''],
+                    ['Freigabe & Priorisierung durch OL Prozessmanagement', s.freigabe_datum || ''],
+                    ['Beginn Prozessoptimierung', s.beginn_datum || ''],
+                    ['Fertigstellung Prozessoptimierung', s.fertigstellung_datum || ''],
+                    ['Prozessabnahme', s.abnahme_datum || ''],
+                    ['Ende Kommunikation', s.kommunikation_datum || ''],
+                    ['Auswertung Prozessoptimierung', s.auswertung_datum || '']
+                ];
+                
+                meilensteine.forEach(([label, value]) => {
+                    checkPageBreak(10);
+                    height = drawTableRow(yPos,
+                        [{text: label, bold: true}, {text: value}],
+                        [labelWidth, valueWidth],
+                        null
+                    );
+                    yPos += height;
+                });
+            });
+            
+            const fileName = steckbriefe.length === 1 
+                ? `${steckbriefe[0].titel.replace(/[^a-zA-Z0-9äöüÄÖÜß\-_ ]/g, '').substring(0, 50)}.pdf`
+                : `Prozesssteckbriefe_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+
+        // Word Export
+        async function exportAsWord(steckbriefe) {
+            const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle, VerticalAlign, ShadingType } = docx;
+            
+            const children = [];
+            
+            // Hilfsfunktion für 2-spaltige Tabellenzeile
+            function createTableRow2Col(label, value, labelBold = true) {
+                return new TableRow({
+                    children: [
+                        new TableCell({
+                            width: { size: 35, type: WidthType.PERCENTAGE },
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: label, bold: labelBold, size: 20 })]
+                            })],
+                            verticalAlign: VerticalAlign.TOP
+                        }),
+                        new TableCell({
+                            width: { size: 65, type: WidthType.PERCENTAGE },
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: value || '', size: 20 })]
+                            })],
+                            verticalAlign: VerticalAlign.TOP
+                        })
+                    ]
+                });
+            }
+            
+            // Hilfsfunktion für 3-spaltige Bewertungszeile
+            function createBewertungRow(kriterium, gewichtung, erlaeuterung, isHeader = false) {
+                const shading = isHeader ? { type: ShadingType.CLEAR, fill: 'E8E8E8' } : null;
+                return new TableRow({
+                    children: [
+                        new TableCell({
+                            width: { size: 40, type: WidthType.PERCENTAGE },
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: kriterium, bold: isHeader, size: 18 })]
+                            })],
+                            shading: shading,
+                            verticalAlign: VerticalAlign.TOP
+                        }),
+                        new TableCell({
+                            width: { size: 25, type: WidthType.PERCENTAGE },
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: gewichtung, bold: isHeader, size: 18 })]
+                            })],
+                            shading: shading,
+                            verticalAlign: VerticalAlign.TOP
+                        }),
+                        new TableCell({
+                            width: { size: 35, type: WidthType.PERCENTAGE },
+                            children: [new Paragraph({
+                                children: [new TextRun({ text: erlaeuterung, bold: isHeader, size: 18 })]
+                            })],
+                            shading: shading,
+                            verticalAlign: VerticalAlign.TOP
+                        })
+                    ]
+                });
+            }
+            
+            steckbriefe.forEach((s, index) => {
+                if (index > 0) {
+                    children.push(new Paragraph({ text: '' }));
+                    children.push(new Paragraph({
+                        children: [new TextRun({ text: '', break: 1 })],
+                        pageBreakBefore: true
+                    }));
+                }
+                
+                // ===== TABELLE 1: STAMMDATEN =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createTableRow2Col('Titel*', s.titel || 'Ohne Titel'),
+                        createTableRow2Col('Auftraggeber/-in*', s.auftraggeber || ''),
+                        createTableRow2Col('Prozessmanager/-in', s.prozessmanager || ''),
+                        createTableRow2Col('Prozessverantwortliche/r', s.prozessverantwortlicher || ''),
+                        createTableRow2Col('Prozessteam (Name & OE)', s.projektteam || ''),
+                        createTableRow2Col('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''),
+                        createTableRow2Col('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''),
+                        createTableRow2Col('Betroffener Life-Cycle', s.betroffener_lifecycle || ''),
+                        createTableRow2Col('Status Optimierung', s.status_optimierung || ''),
+                        createTableRow2Col('Status Steckbrief', s.status_steckbrief || '')
+                    ]
+                }));
+                
+                children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+                
+                // ===== TABELLE 2: BESCHREIBUNG =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createTableRow2Col('Ziel/Vision', s.ziel_vision || ''),
+                        createTableRow2Col('Warum\nsoll der Prozess optimiert werden?\n(Ist-Situation & Ausformulierung von 4.)', s.warum || ''),
+                        createTableRow2Col('Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?\n(Aufzählung der Organisationseinheiten)', s.wer || ''),
+                        createTableRow2Col('Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen?\n(ggfs. Verweis auf 3.)', s.welche || ''),
+                        createTableRow2Col('Was\nsind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?\n(Kurzbeschreibung)', s.was || ''),
+                        createTableRow2Col('Wie\nsollen die Ziele erreicht werden?\n(Beschreibung erster Lösungsansätze)', s.wie || ''),
+                        createTableRow2Col('Wo\nsind IT-Systeme von der Prozessoptimierung betroffen?', s.wo || ''),
+                        createTableRow2Col('Wann\nsoll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann || '')
+                    ]
+                }));
+                
+                children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+                
+                // ===== TABELLE 3: EINORDNUNG IN DEN GESAMTPROZESS =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createTableRow2Col('Welcher strategische Prozess ist hauptsächlich betroffen?', s.einordnung_gesamtprozess || '')
+                    ]
+                }));
+                
+                children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+                
+                // ===== TABELLE 4: BEWERTUNGSKRITERIEN (ANFORDERUNGEN) =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createBewertungRow('Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig', 'Erläuterung', true),
+                        createBewertungRow('Unternehmensstrategische\nAnforderungen\n(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)', s.bewertung_strategie || '0', s.bewertung_strategie_text || ''),
+                        createBewertungRow('Rechtliche Vorschriften\n(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)', s.bewertung_recht || '0', s.bewertung_recht_text || ''),
+                        createBewertungRow('Technische Zwänge\n(bspw. Ablösung VB6)', s.bewertung_technik || '0', s.bewertung_technik_text || ''),
+                        createBewertungRow('Anforderungen Kunden\nInteressenten, Studierende, Teilnehmende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_kunden || '0', s.bewertung_kunden_text || ''),
+                        createBewertungRow('Anforderungen Lehrende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_lehrende || '0', s.bewertung_lehrende_text || ''),
+                        createBewertungRow('Anforderungen Lieferanten\n(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)', s.bewertung_lieferanten || '0', s.bewertung_lieferanten_text || ''),
+                        createBewertungRow('Anforderungen Mitarbeitende\n(Optimierung der Arbeitsabläufe etc.)', s.bewertung_mitarbeitende || '0', s.bewertung_mitarbeitende_text || '')
+                    ]
+                }));
+                
+                children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+                
+                // ===== TABELLE 4: BEWERTUNGSKRITERIEN (NUTZEN) =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createBewertungRow('Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen', 'Erläuterung', true),
+                        createBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '0', s.nutzen_durchlaufzeiten_text || ''),
+                        createBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '0', s.nutzen_fehler_text || ''),
+                        createBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten || '0', s.nutzen_kosten_text || ''),
+                        createBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '0', s.nutzen_reduktion_text || ''),
+                        createBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende || '0', s.nutzen_studierende_text || ''),
+                        createBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet || '0', s.nutzen_qualitaet_text || '')
+                    ]
+                }));
+                
+                children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+                
+                // ===== TABELLE 5: MEILENSTEINE =====
+                children.push(new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    rows: [
+                        createTableRow2Col('Identifikationsnummer', s.identifikationsnummer || ''),
+                        createTableRow2Col('Übermittlung Prozesssteckbrief*', s.uebermittlung_datum || ''),
+                        createTableRow2Col('Fertigstellung Grobkonzept (optional, sofern notwendig)', s.grobkonzept_datum || ''),
+                        createTableRow2Col('Freigabe & Priorisierung durch OL Prozessmanagement', s.freigabe_datum || ''),
+                        createTableRow2Col('Beginn Prozessoptimierung', s.beginn_datum || ''),
+                        createTableRow2Col('Fertigstellung Prozessoptimierung', s.fertigstellung_datum || ''),
+                        createTableRow2Col('Prozessabnahme', s.abnahme_datum || ''),
+                        createTableRow2Col('Ende Kommunikation', s.kommunikation_datum || ''),
+                        createTableRow2Col('Auswertung Prozessoptimierung', s.auswertung_datum || '')
+                    ]
+                }));
+            });
+            
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: children
+                }]
+            });
+            
+            const blob = await Packer.toBlob(doc);
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const fileName = steckbriefe.length === 1 
+                ? `${steckbriefe[0].titel.replace(/[^a-zA-Z0-9äöüÄÖÜß\-_ ]/g, '').substring(0, 50)}.docx`
+                : `Prozesssteckbriefe_${new Date().toISOString().split('T')[0]}.docx`;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Export (alle) - wird nicht mehr verwendet, aber für Kompatibilität behalten
+        function exportData() {
+            const steckbriefe = getSteckbriefe();
+            const dataStr = JSON.stringify(steckbriefe, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `steckbriefe_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import
+        function importData(event) {
+            if (currentUser.role !== 'admin') {
+                alert('Nur Administratoren können Daten importieren.');
+                event.target.value = '';
+                return;
+            }
+            
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!Array.isArray(imported)) {
+                        alert('Ungültiges Dateiformat');
+                        return;
+                    }
+                    
+                    const existing = getSteckbriefe();
+                    const merged = [...existing];
+                    
+                    imported.forEach(imp => {
+                        if (!imp.id) imp.id = generateId();
+                        const existingIndex = merged.findIndex(s => s.id === imp.id);
+                        if (existingIndex >= 0) {
+                            merged[existingIndex] = imp;
+                        } else {
+                            merged.push(imp);
+                        }
+                    });
+                    
+                    saveSteckbriefe(merged);
+                    updateFilterDropdowns();
+                    renderOverview();
+                    alert(`${imported.length} Steckbrief(e) importiert.`);
+                } catch (err) {
+                    alert('Fehler beim Importieren: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Hilfsfunktionen
+        function generateId() {
+            return 'sb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Export-Modal schließen bei Klick außerhalb
+        document.getElementById('exportModal').addEventListener('click', (e) => {
+            if (e.target.id === 'exportModal') {
+                closeExportModal();
+            }
+        });
+
+        // Login-Modal schließen bei Klick außerhalb
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.id === 'loginModal') {
+                closeLoginModal();
+            }
+        });
+
+        // Editor-Modal schließen bei Klick außerhalb
+        document.getElementById('editorModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editorModal') {
+                closeEditorModal();
+            }
+        });
+
+        // ESC zum Schließen
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeExportModal();
+                closeLoginModal();
+                closeEditorModal();
+            }
+        });
+    </script>
+</body>
+</html>
