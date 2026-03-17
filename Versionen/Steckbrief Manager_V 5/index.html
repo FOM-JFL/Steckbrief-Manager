@@ -6,8 +6,6 @@
     <title>Steckbrief-Manager</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -157,15 +155,6 @@
             background: #00796b;
         }
 
-        .btn-editors {
-            background: #5c6bc0;
-            color: white;
-        }
-
-        .btn-editors:hover {
-            background: #3f51b5;
-        }
-
         .btn-success {
             background: #f39200;
             color: white;
@@ -229,30 +218,6 @@
         .steckbrief-card:hover {
             border-color: #009688;
             box-shadow: 0 4px 20px rgba(0,150,136,0.15);
-        }
-
-        .steckbrief-card.can-edit {
-            border-left: 4px solid #5c6bc0;
-        }
-
-        .steckbrief-card.no-edit {
-            opacity: 0.55;
-        }
-
-        .steckbrief-card.no-edit:hover {
-            opacity: 0.8;
-        }
-
-        tr.can-edit {
-            background: #f0f1fa;
-        }
-
-        tr.no-edit {
-            opacity: 0.55;
-        }
-
-        tr.no-edit:hover {
-            opacity: 0.8;
         }
 
         .steckbrief-card .card-icon {
@@ -804,26 +769,6 @@
             font-size: 0.85em;
         }
 
-        .overview-table th.sortable {
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
-        }
-
-        .overview-table th.sortable:hover {
-            background: #00796b;
-        }
-
-        .overview-table th .sort-icon {
-            margin-left: 5px;
-            opacity: 0.5;
-        }
-
-        .overview-table th.sort-asc .sort-icon,
-        .overview-table th.sort-desc .sort-icon {
-            opacity: 1;
-        }
-
         .overview-table td {
             padding: 12px;
             border-bottom: 1px solid #eee;
@@ -890,16 +835,13 @@
 
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
-            align-items: start;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
-            min-width: 0;
-            width: 100%;
         }
 
         .filter-group label {
@@ -912,74 +854,16 @@
         .filter-group select {
             padding: 8px 12px;
             border: 1px solid #ddd;
-            border-radius: 8px 0 0 8px;
+            border-radius: 8px;
             font-size: 0.9em;
             background: white;
             cursor: pointer;
             transition: border-color 0.3s;
-            flex: 1;
-            width: 100%;
-            min-width: 0;
         }
 
         .filter-group select:focus {
             outline: none;
             border-color: #009688;
-        }
-
-        .filter-select-wrapper {
-            display: flex;
-            align-items: stretch;
-            width: 100%;
-        }
-
-        .filter-search-toggle {
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-            border-left: none;
-            border-radius: 0 8px 8px 0;
-            background: #f5f5f5;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9em;
-            flex-shrink: 0;
-        }
-
-        .filter-search-toggle:hover {
-            background: #e8e8e8;
-        }
-
-        .filter-search-toggle.active {
-            background: #009688;
-            color: white;
-            border-color: #009688;
-        }
-
-        .filter-group input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9em;
-            background: white;
-            transition: all 0.3s;
-            margin-top: 6px;
-            display: none;
-            width: 100%;
-            min-width: 0;
-        }
-
-        .filter-group input[type="text"].visible {
-            display: block;
-        }
-
-        .filter-group input[type="text"]:focus {
-            outline: none;
-            border-color: #009688;
-        }
-
-        .filter-group input[type="text"]::placeholder {
-            color: #aaa;
-            font-style: italic;
         }
 
         .active-filters {
@@ -1218,220 +1102,17 @@
             border: 1px solid #ddd;
             border-radius: 6px;
         }
-
-        /* Team-Member Tags */
-        .team-members-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            min-height: 32px;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #fafafa;
-            margin-bottom: 6px;
-        }
-        .team-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #e0f2f1;
-            color: #00695c;
-            padding: 4px 8px;
-            border-radius: 16px;
-            font-size: 0.85em;
-        }
-        .team-tag .remove-tag {
-            cursor: pointer;
-            color: #c62828;
-            font-weight: bold;
-            margin-left: 2px;
-            font-size: 1.1em;
-            line-height: 1;
-        }
-        .team-tag .remove-tag:hover {
-            color: #f44336;
-        }
-        .team-members-container:empty::before {
-            content: 'Noch keine Teammitglieder hinzugefügt';
-            color: #aaa;
-            font-size: 0.85em;
-            padding: 4px;
-        }
-
-        /* Custom Dialog Modal */
-        .custom-dialog-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .custom-dialog-overlay.active {
-            display: flex;
-        }
-
-        .custom-dialog {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 420px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: dialogSlideIn 0.2s ease-out;
-        }
-
-        @keyframes dialogSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .custom-dialog-icon {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 16px;
-        }
-
-        .custom-dialog-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .custom-dialog-message {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            white-space: pre-line;
-            text-align: center;
-        }
-
-        .custom-dialog-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .custom-dialog-btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            min-width: 100px;
-        }
-
-        .custom-dialog-btn.primary {
-            background: linear-gradient(135deg, #009688 0%, #00796b 100%);
-            color: white;
-        }
-
-        .custom-dialog-btn.primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 150, 136, 0.4);
-        }
-
-        .custom-dialog-btn.secondary {
-            background: #f5f5f5;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        .custom-dialog-btn.secondary:hover {
-            background: #e8e8e8;
-        }
-
-        .custom-dialog-btn.danger {
-            background: #f44336;
-            color: white;
-        }
-
-        .custom-dialog-btn.danger:hover {
-            background: #d32f2f;
-        }
-
-        /* Personen-Autocomplete */
-        .personen-autocomplete {
-            position: relative;
-        }
-
-        /* Gewichtung Dropdown in View-Tabelle */
-        .view-gewichtung {
-            width: 50px;
-            padding: 4px 6px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.9em;
-            text-align: center;
-            background: white;
-            cursor: pointer;
-        }
-        .view-gewichtung:focus {
-            border-color: #00695c;
-            outline: none;
-        }
-        .personen-autocomplete input[type="text"] {
-            width: 100%;
-        }
-        .autocomplete-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #ccc;
-            border-top: none;
-            border-radius: 0 0 6px 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        .autocomplete-dropdown.show {
-            display: block;
-        }
-        .autocomplete-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 0.9em;
-        }
-        .autocomplete-item:hover {
-            background: #e3f2fd;
-        }
-        .autocomplete-item .person-id {
-            color: #888;
-            font-size: 0.8em;
-            margin-left: 8px;
-        }
     </style>
 </head>
 <body>
     <header>
         <div class="header-logo">
             <span style="font-size: 1.8em;">📋</span>
-            <h1 style="cursor:pointer" data-goback>Steckbrief-Manager</h1>
+            <h1>Steckbrief-Manager</h1>
         </div>
         
         <nav class="header-nav">
-            <div class="nav-item active" data-goback style="cursor: pointer;">
+            <div class="nav-item active">
                 <span class="icon">📄</span>
                 <span>Steckbriefe</span>
             </div>
@@ -1441,7 +1122,7 @@
             <input type="text" class="search-box" id="searchInput" placeholder="🔍 Suchen...">
             <button class="btn btn-primary admin-only hidden" id="btnNew" onclick="openNewSteckbrief()">+ Neu</button>
             <button class="btn btn-secondary admin-only hidden" id="btnImport" onclick="document.getElementById('importFile').click()">Import</button>
-            <input type="file" id="importFile" accept=".json,.docx" style="display:none" multiple>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
             <button class="login-btn" id="loginBtn" onclick="openLoginModal()">
                 <span>🔑</span>
                 <span id="loginBtnText">Anmelden</span>
@@ -1477,64 +1158,32 @@
             </div>
             <div class="filter-grid">
                 <div class="filter-group">
-                    <label for="filterTitel">Titel</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterTitel" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterTitelText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+                    <label for="filterCluster">Prozesscluster</label>
+                    <select id="filterCluster" onchange="applyFilters()">
+                        <option value="">Alle Cluster</option>
+                    </select>
                 </div>
                 <div class="filter-group">
-                    <label for="filterCluster">Prozesscluster</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterCluster" onchange="applyFilters()">
-                            <option value="">Alle Cluster</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterClusterText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+                    <label for="filterAufwand">Aufwand</label>
+                    <select id="filterAufwand" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                        <option value="klein">Klein</option>
+                        <option value="mittel">Mittel</option>
+                        <option value="gross">Groß</option>
+                        <option value="mittel-gross">Mittel/Groß</option>
+                    </select>
                 </div>
                 <div class="filter-group">
                     <label for="filterAuftraggeber">Auftraggeber/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterAuftraggeber" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterStatusOptimierung">Status Optimierung</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterStatusOptimierung" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+                    <select id="filterAuftraggeber" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
                 </div>
                 <div class="filter-group">
                     <label for="filterProzessmanager">Prozessmanager/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterProzessmanager" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterAnforderungsmanager">Anforderungsmanager/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterAnforderungsmanager" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+                    <select id="filterProzessmanager" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
                 </div>
             </div>
             <div class="active-filters" id="activeFilters"></div>
@@ -1548,8 +1197,9 @@
     <!-- Detail-Seite (ersetzt Modal) -->
     <div class="container detail-page" id="detailPage" style="display: none;">
         <div class="page-title">
-            <button class="btn btn-back" data-goback>← Zurück zur Übersicht</button>
+            <button class="btn btn-back" onclick="goBack()">← Zurück zur Übersicht</button>
             <h2>Prozess-/Projektsteckbrief</h2>
+            <p class="detail-url" id="detailUrl"></p>
         </div>
         
         <div class="detail-card">
@@ -1568,7 +1218,7 @@
                 <div class="detail-actions">
                     <button class="btn btn-primary" onclick="switchTab('edit')">✏️ Bearbeiten</button>
                     <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
-                    <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+                    <button class="btn btn-secondary admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
                     <button class="btn btn-danger admin-only hidden" onclick="deleteSteckbrief()">🗑️ Löschen</button>
                 </div>
             </div>
@@ -1588,43 +1238,23 @@
                             </div>
                             <div class="form-group">
                                 <label for="auftraggeber">Auftraggeber/-in *</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="auftraggeber" required autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="auftraggeberFID">
-                                    <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
-                                </div>
+                                <input type="text" id="auftraggeber" required>
                             </div>
                             <div class="form-group">
                                 <label for="prozessmanager">Prozessmanager/-in</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="prozessmanager" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="prozessmanagerFID">
-                                    <div class="autocomplete-dropdown" id="prozessmanager_dropdown"></div>
-                                </div>
+                                <input type="text" id="prozessmanager">
                             </div>
                             <div class="form-group">
                                 <label for="anforderungsmanager">Anforderungsmanager/-in</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="anforderungsmanager" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="anforderungsmanagerFID">
-                                    <div class="autocomplete-dropdown" id="anforderungsmanager_dropdown"></div>
-                                </div>
+                                <input type="text" id="anforderungsmanager">
                             </div>
                             <div class="form-group">
                                 <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="prozessverantwortlicher" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="prozessverantwortlicherFID">
-                                    <div class="autocomplete-dropdown" id="prozessverantwortlicher_dropdown"></div>
-                                </div>
+                                <input type="text" id="prozessverantwortlicher">
                             </div>
                             <div class="form-group">
-                                <label>Prozess-/Projektteam</label>
-                                <div class="team-members-container" id="teamMembersContainer"></div>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
-                                    <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
-                                </div>
+                                <label for="projektteam">Prozess-/Projektteam (Name & OE)</label>
+                                <input type="text" id="projektteam">
                             </div>
                             <div class="form-group">
                                 <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
@@ -1644,6 +1274,14 @@
                                 <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
                                 <input type="text" id="betroffener_lifecycle">
                             </div>
+                            <div class="form-group">
+                                <label for="status_optimierung">Status Optimierung</label>
+                                <input type="text" id="status_optimierung">
+                            </div>
+                            <div class="form-group">
+                                <label for="status_steckbrief">Status Steckbrief</label>
+                                <input type="text" id="status_steckbrief">
+                            </div>
                         </div>
                     </div>
 
@@ -1651,7 +1289,7 @@
                     <div class="form-section">
                         <h3>2. Beschreibung</h3>
                         <div class="form-group">
-                            <label for="ziel_vision">Vision</label>
+                            <label for="ziel_vision">Ziel/Vision</label>
                             <textarea id="ziel_vision"></textarea>
                         </div>
                         <div class="form-group">
@@ -1804,47 +1442,9 @@
                         </table>
                     </div>
 
-                    <!-- Status -->
-                    <div class="form-section">
-                        <h3>6. Status</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="start_datum">Start</label>
-                                <input type="date" id="start_datum">
-                            </div>
-                            <div class="form-group">
-                                <label for="gesamtstatus">Gesamtstatus</label>
-                                <input type="text" id="gesamtstatus">
-                            </div>
-                            <div class="form-group">
-                                <label for="status_optimierung">Status Optimierung</label>
-                                <input type="text" id="status_optimierung">
-                            </div>
-                            <div class="form-group">
-                                <label for="status_steckbrief">Status Steckbrief</label>
-                                <input type="text" id="status_steckbrief">
-                            </div>
-                            <div class="form-group">
-                                <label for="teil_hochschulentwicklungsplan">Teil des Hochschulentwicklungsplans</label>
-                                <select id="teil_hochschulentwicklungsplan">
-                                    <option value="">-- Bitte wählen --</option>
-                                    <option value="ja">Ja</option>
-                                    <option value="nein">Nein</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>7. Änderungshistorie</h3>
-                        <div id="aenderungshistorie_container" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 13px; white-space: pre-wrap; color: #555;">
-                            <em>Noch keine Änderungen erfasst</em>
-                        </div>
-                    </div>
-
                     <div class="detail-actions">
                         <button type="submit" class="btn btn-success">💾 Speichern</button>
-                        <button type="button" class="btn btn-secondary" data-goback>Abbrechen</button>
+                        <button type="button" class="btn btn-secondary" onclick="goBack()">Abbrechen</button>
                     </div>
                 </form>
             </div>
@@ -1936,13 +1536,9 @@
                 <!-- Editoren werden hier eingefügt -->
             </div>
             
-            <div class="add-editor-form" style="position: relative;">
-                <div class="personen-autocomplete" style="flex: 1;">
-                    <input type="text" id="newEditorName" placeholder="Name eingeben..." autocomplete="off">
-                    <div class="autocomplete-dropdown" id="editor_dropdown"></div>
-                </div>
-                <button class="btn btn-primary" onclick="addEditorFromSelection()">+ Hinzufügen</button>
-                <input type="hidden" id="newEditorFID" value="">
+            <div class="add-editor-form">
+                <input type="text" id="newEditorName" placeholder="Name des Bearbeiters" onkeypress="if(event.key==='Enter') addEditor()">
+                <button class="btn btn-primary" onclick="addEditor()">+ Hinzufügen</button>
             </div>
             
             <button class="btn btn-secondary" onclick="closeEditorModal()" style="width: 100%; margin-top: 20px;">Schließen</button>
@@ -1950,71 +1546,6 @@
     </div>
 
     <script>
-        // ====== CUSTOM DIALOG FUNKTIONEN ======
-        function showCustomDialog(options) {
-            return new Promise((resolve) => {
-                const overlay = document.getElementById('customDialogOverlay');
-                const iconEl = document.getElementById('customDialogIcon');
-                const titleEl = document.getElementById('customDialogTitle');
-                const messageEl = document.getElementById('customDialogMessage');
-                const buttonsEl = document.getElementById('customDialogButtons');
-                
-                iconEl.textContent = options.icon || '📋';
-                titleEl.textContent = options.title || '';
-                messageEl.textContent = options.message || '';
-                
-                buttonsEl.innerHTML = '';
-                options.buttons.forEach(btn => {
-                    const button = document.createElement('button');
-                    button.className = `custom-dialog-btn ${btn.class || 'secondary'}`;
-                    button.textContent = btn.text;
-                    button.onclick = () => {
-                        overlay.classList.remove('active');
-                        resolve(btn.value);
-                    };
-                    buttonsEl.appendChild(button);
-                });
-                
-                overlay.classList.add('active');
-            });
-        }
-
-        function showAlert(message, title = 'Hinweis') {
-            return showCustomDialog({
-                icon: 'ℹ️',
-                title: title,
-                message: message,
-                buttons: [
-                    { text: 'OK', class: 'primary', value: true }
-                ]
-            });
-        }
-
-        function showConfirm(message, title = 'Bestätigung') {
-            return showCustomDialog({
-                icon: '❓',
-                title: title,
-                message: message,
-                buttons: [
-                    { text: 'Abbrechen', class: 'secondary', value: false },
-                    { text: 'Ja', class: 'primary', value: true }
-                ]
-            });
-        }
-
-        function showImportDialog(steckbriefTitel) {
-            return showCustomDialog({
-                icon: '📄',
-                title: 'Steckbrief existiert bereits',
-                message: `Ein Steckbrief mit dem Titel "${steckbriefTitel}" existiert bereits.\n\nWas möchten Sie tun?`,
-                buttons: [
-                    { text: 'Überspringen', class: 'secondary', value: 'skip' },
-                    { text: 'Neu anlegen', class: 'secondary', value: 'new' },
-                    { text: 'Aktualisieren', class: 'primary', value: 'update' }
-                ]
-            });
-        }
-
         // ====== AUTHENTIFIZIERUNG ======
         const AUTH_KEY = 'steckbrief_auth';
         const ADMIN_PASSWORD = 'Admin2026!'; // In Produktion durch sichereren Mechanismus ersetzen
@@ -2109,10 +1640,9 @@
         // Prüfen ob Benutzer Steckbrief bearbeiten darf
         function canEditSteckbrief(steckbrief) {
             if (currentUser.role === 'admin') return true;
-            if (currentUser.role === 'editor') {
-                const editors = parseBearbeiter(steckbrief);
-                return editors.some(ed => 
-                    ed.name && ed.name.toLowerCase() === currentUser.name.toLowerCase()
+            if (currentUser.role === 'editor' && steckbrief.editors) {
+                return steckbrief.editors.some(e => 
+                    e.toLowerCase() === currentUser.name.toLowerCase()
                 );
             }
             return false;
@@ -2129,7 +1659,7 @@
             if (!currentSteckbriefId) return;
             
             const steckbriefe = getSteckbriefe();
-            const steckbrief = steckbriefe.find(s => String(s.id) === String(currentSteckbriefId));
+            const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
             if (!steckbrief) return;
 
             const canEdit = canEditSteckbrief(steckbrief);
@@ -2198,277 +1728,87 @@
         // Editor Management
         function openEditorModal(steckbriefId) {
             const steckbriefe = getSteckbriefe();
-            const steckbrief = steckbriefe.find(s => String(s.id) === String(steckbriefId));
+            const steckbrief = steckbriefe.find(s => s.id === steckbriefId);
             if (!steckbrief) return;
 
             document.getElementById('editorModalTitle').textContent = steckbrief.titel;
             renderEditorList(steckbrief);
-            initEditorAutocomplete();
             document.getElementById('editorModal').classList.add('active');
         }
 
         function closeEditorModal() {
             document.getElementById('editorModal').classList.remove('active');
             document.getElementById('newEditorName').value = '';
-            document.getElementById('newEditorFID').value = '';
-        }
-
-        // ====== PROJEKTTEAM VERWALTUNG ======
-        let _currentTeamMembers = [];
-
-        function parseTeamMembers(steckbrief) {
-            let t = steckbrief.projektteam;
-            if (!t) return [];
-            if (typeof t === 'string') {
-                try { t = JSON.parse(t); } catch(e) { 
-                    // Rückwärtskompatibilität: Freitext als einzelner Eintrag
-                    return t.trim() ? [{ fid: null, name: t.trim() }] : [];
-                }
-            }
-            return Array.isArray(t) ? t : [];
-        }
-
-        function renderTeamTags() {
-            const container = document.getElementById('teamMembersContainer');
-            if (!container) return;
-            container.innerHTML = _currentTeamMembers.map((m, idx) => `
-                <span class="team-tag">
-                    ${escapeHtml(m.name)}
-                    <span class="remove-tag" onclick="removeTeamMember(${idx})">&times;</span>
-                </span>
-            `).join('');
-        }
-
-        function addTeamMember(fid, name) {
-            if (fid && _currentTeamMembers.some(m => String(m.fid) === String(fid))) {
-                alert('Diese Person ist bereits im Projektteam.');
-                return;
-            }
-            _currentTeamMembers.push({ fid: fid ? parseInt(fid) : null, name: name });
-            renderTeamTags();
-        }
-
-        function removeTeamMember(index) {
-            _currentTeamMembers.splice(index, 1);
-            renderTeamTags();
-        }
-
-        function initTeamAutocomplete() {
-            const input = document.getElementById('projektteamInput');
-            const dropdown = document.getElementById('projektteam_dropdown');
-            if (!input || !dropdown) return;
-            let debounceTimer = null;
-
-            input.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                const q = input.value.trim();
-                if (q.length < 2) {
-                    dropdown.classList.remove('show');
-                    return;
-                }
-                debounceTimer = setTimeout(async () => {
-                    try {
-                        const response = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
-                        if (!response.ok) return;
-                        const personen = await response.json();
-                        if (personen.length === 0) {
-                            dropdown.classList.remove('show');
-                            return;
-                        }
-                        dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
-                                ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
-                                ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
-                            </div>
-                        `).join('');
-                        dropdown.classList.add('show');
-                    } catch (e) {
-                        console.error('Team-Personen-Suche fehlgeschlagen:', e);
-                    }
-                }, 300);
-            });
-
-            dropdown.addEventListener('click', (e) => {
-                const item = e.target.closest('.autocomplete-item');
-                if (item) {
-                    addTeamMember(item.dataset.id, item.dataset.name);
-                    input.value = '';
-                    dropdown.classList.remove('show');
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('#projektteam_dropdown') && !e.target.closest('#projektteamInput')) {
-                    dropdown.classList.remove('show');
-                }
-            });
-        }
-
-        function parseBearbeiter(steckbrief) {
-            let b = steckbrief.bearbeiter;
-            if (!b) return [];
-            if (typeof b === 'string') {
-                try { b = JSON.parse(b); } catch(e) { return []; }
-            }
-            return Array.isArray(b) ? b : [];
         }
 
         function renderEditorList(steckbrief) {
             const container = document.getElementById('editorList');
-            const editors = parseBearbeiter(steckbrief);
+            const editors = steckbrief.editors || [];
             
             if (editors.length === 0) {
                 container.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">Noch keine Bearbeiter hinzugefügt</div>';
                 return;
             }
             
-            container.innerHTML = editors.map(ed => `
+            container.innerHTML = editors.map(name => `
                 <div class="editor-item">
-                    <span>👤 ${escapeHtml(ed.name)}</span>
-                    <button class="remove-btn" onclick="removeEditor(${ed.fid})">Entfernen</button>
+                    <span>👤 ${escapeHtml(name)}</span>
+                    <button class="remove-btn" onclick="removeEditor('${escapeHtml(name)}')">Entfernen</button>
                 </div>
             `).join('');
         }
 
-        function initEditorAutocomplete() {
-            const input = document.getElementById('newEditorName');
-            const fidInput = document.getElementById('newEditorFID');
-            const dropdown = document.getElementById('editor_dropdown');
-            let debounceTimer = null;
-
-            // Alte Listener entfernen durch Klonen
-            const newInput = input.cloneNode(true);
-            input.parentNode.replaceChild(newInput, input);
-
-            newInput.addEventListener('input', () => {
-                fidInput.value = '';
-                clearTimeout(debounceTimer);
-                const q = newInput.value.trim();
-                if (q.length < 2) {
-                    dropdown.classList.remove('show');
-                    return;
-                }
-                debounceTimer = setTimeout(async () => {
-                    try {
-                        const response = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
-                        if (!response.ok) return;
-                        const personen = await response.json();
-                        if (personen.length === 0) {
-                            dropdown.classList.remove('show');
-                            return;
-                        }
-                        dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
-                                ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
-                                ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
-                            </div>
-                        `).join('');
-                        dropdown.classList.add('show');
-                    } catch (e) {
-                        console.error('Personen-Suche fehlgeschlagen:', e);
-                    }
-                }, 300);
-            });
-
-            dropdown.addEventListener('click', (e) => {
-                const item = e.target.closest('.autocomplete-item');
-                if (item) {
-                    newInput.value = item.dataset.name;
-                    fidInput.value = item.dataset.id;
-                    dropdown.classList.remove('show');
-                }
-            });
-        }
-
-        async function addEditorFromSelection() {
-            const nameInput = document.getElementById('newEditorName');
-            const fidInput = document.getElementById('newEditorFID');
-            const name = nameInput.value.trim();
-            const fid = fidInput.value;
-
-            if (!name || !fid) {
-                alert('Bitte eine Person aus der Vorschlagsliste auswählen.');
+        function addEditor() {
+            const name = document.getElementById('newEditorName').value.trim();
+            if (!name) {
+                alert('Bitte geben Sie einen Namen ein.');
                 return;
             }
 
             const steckbriefe = getSteckbriefe();
-            const index = steckbriefe.findIndex(s => String(s.id) === String(currentSteckbriefId));
+            const index = steckbriefe.findIndex(s => s.id === currentSteckbriefId);
             if (index < 0) return;
 
-            let editors = parseBearbeiter(steckbriefe[index]);
+            if (!steckbriefe[index].editors) {
+                steckbriefe[index].editors = [];
+            }
 
-            if (editors.some(ed => String(ed.fid) === String(fid))) {
+            if (steckbriefe[index].editors.some(e => e.toLowerCase() === name.toLowerCase())) {
                 alert('Diese Person ist bereits als Bearbeiter eingetragen.');
                 return;
             }
 
-            editors.push({ fid: parseInt(fid), name: name });
-
-            // In DB speichern
-            try {
-                const response = await fetch(API_URL + '/steckbriefe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: currentSteckbriefId, bearbeiter: JSON.stringify(editors) })
-                });
-                if (!response.ok) throw new Error('Serverfehler');
-                await loadSteckbriefeFromAPI();
-                const updated = getSteckbriefe().find(s => String(s.id) === String(currentSteckbriefId));
-                renderEditorList(updated);
-                nameInput.value = '';
-                fidInput.value = '';
-            } catch (err) {
-                alert('Fehler beim Speichern: ' + err.message);
-            }
+            steckbriefe[index].editors.push(name);
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
+            document.getElementById('newEditorName').value = '';
         }
 
-        async function removeEditor(fid) {
+        function removeEditor(name) {
             const steckbriefe = getSteckbriefe();
-            const index = steckbriefe.findIndex(s => String(s.id) === String(currentSteckbriefId));
+            const index = steckbriefe.findIndex(s => s.id === currentSteckbriefId);
             if (index < 0) return;
 
-            let editors = parseBearbeiter(steckbriefe[index]).filter(ed => String(ed.fid) !== String(fid));
-
-            try {
-                const response = await fetch(API_URL + '/steckbriefe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: currentSteckbriefId, bearbeiter: JSON.stringify(editors) })
-                });
-                if (!response.ok) throw new Error('Serverfehler');
-                await loadSteckbriefeFromAPI();
-                const updated = getSteckbriefe().find(s => String(s.id) === String(currentSteckbriefId));
-                renderEditorList(updated);
-            } catch (err) {
-                alert('Fehler beim Speichern: ' + err.message);
-            }
+            steckbriefe[index].editors = (steckbriefe[index].editors || []).filter(
+                e => e.toLowerCase() !== name.toLowerCase()
+            );
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
         }
 
         // ====== HAUPT-ANWENDUNG ======
         
-        // API-Anbindung an MariaDB
-        const API_URL = 'http://localhost:5000/api';
+        // Daten im localStorage speichern
         const STORAGE_KEY = 'steckbriefe';
-        let _steckbriefeCache = [];
         let currentSteckbriefId = null;
         let currentView = 'cards'; // 'cards' oder 'table'
         let selectedSteckbriefe = new Set();
         let exportSteckbriefe = []; // Für den Export vorgemerkte Steckbriefe
-        let tableSortColumn = null;
-        let tableSortDirection = 'asc'; // 'asc' oder 'desc'
         let activeFilters = {
             cluster: '',
+            aufwand: '',
             auftraggeber: '',
-            prozessmanager: '',
-            anforderungsmanager: '',
-            statusOptimierung: '',
-            titel: '',
-            clusterText: '',
-            auftraggeberText: '',
-            prozessmanagerText: '',
-            anforderungsmanagerText: '',
-            statusOptimierungText: '',
-            titelText: ''
+            prozessmanager: ''
         };
 
         // Initialisierung
@@ -2476,13 +1816,19 @@
             // Auth laden
             loadAuth();
             
-            // Steckbriefe von API laden
-            await loadSteckbriefeFromAPI();
-            
-            // Personen-Autocomplete initialisieren
-            initPersonenAutocomplete();
-            initTeamAutocomplete();
-            
+            // Automatisch steckbriefe.json laden, falls localStorage leer ist
+            if (!localStorage.getItem(STORAGE_KEY) || getSteckbriefe().length === 0) {
+                try {
+                    const response = await fetch('steckbriefe.json');
+                    if (response.ok) {
+                        const data = await response.json();
+                        saveSteckbriefe(data);
+                        console.log(`${data.length} Steckbriefe automatisch geladen.`);
+                    }
+                } catch (e) {
+                    console.log('Keine steckbriefe.json gefunden oder Fehler beim Laden:', e);
+                }
+            }
             updateFilterDropdowns();
             
             // URL-Routing: Prüfen ob Detail-Seite geöffnet werden soll
@@ -2492,11 +1838,6 @@
             window.addEventListener('popstate', handleRouting);
             
             document.getElementById('searchInput').addEventListener('input', renderOverview);
-            
-            // Import-Handler für Word und JSON Dateien
-            document.getElementById('importFile').addEventListener('change', async (event) => {
-                await importData(event);
-            });
         });
 
         // URL-Routing Handler
@@ -2533,44 +1874,19 @@
 
         // Zur Übersicht zurück
         function goBack() {
-            window.history.replaceState({}, '', window.location.pathname);
-            // Zeige explizit die Übersicht und blende die Detailansicht aus
-            showOverview(true);
-            showDetailPage(false);
-            renderOverview();
+            window.history.pushState({}, '', window.location.pathname);
+            handleRouting();
         }
 
-        // Steckbriefe von API laden
-        async function loadSteckbriefeFromAPI() {
-            try {
-                const response = await fetch(API_URL + '/steckbriefe');
-                if (response.ok) {
-                    _steckbriefeCache = await response.json();
-                    // Personennamen für Frontend-Kompatibilität zusammensetzen (mit Titel)
-                    _steckbriefeCache.forEach(s => {
-                        s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
-                        s.prozessmanager = [s.prozessmanager_titel, s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
-                        s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
-                        s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
-                        s.start_datum = s.start || '';
-                    });
-                    console.log(`${_steckbriefeCache.length} Steckbriefe von API geladen.`);
-                }
-            } catch (e) {
-                console.error('API nicht erreichbar, lade aus localStorage:', e);
-                const data = localStorage.getItem(STORAGE_KEY);
-                _steckbriefeCache = data ? JSON.parse(data) : [];
-            }
-        }
-
-        // Alle Steckbriefe laden (aus Cache)
+        // Alle Steckbriefe laden
         function getSteckbriefe() {
-            return _steckbriefeCache;
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
         }
 
-        // Steckbriefe im Cache aktualisieren
+        // Steckbriefe speichern
         function saveSteckbriefe(steckbriefe) {
-            _steckbriefeCache = steckbriefe;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(steckbriefe));
         }
 
         // Übersicht rendern
@@ -2593,40 +1909,14 @@
             if (activeFilters.cluster) {
                 steckbriefe = steckbriefe.filter(s => s.prozesscluster === activeFilters.cluster);
             }
+            if (activeFilters.aufwand) {
+                steckbriefe = steckbriefe.filter(s => s.umsetzungsaufwand === activeFilters.aufwand);
+            }
             if (activeFilters.auftraggeber) {
                 steckbriefe = steckbriefe.filter(s => s.auftraggeber === activeFilters.auftraggeber);
             }
             if (activeFilters.prozessmanager) {
                 steckbriefe = steckbriefe.filter(s => s.prozessmanager === activeFilters.prozessmanager);
-            }
-            if (activeFilters.anforderungsmanager) {
-                steckbriefe = steckbriefe.filter(s => s.anforderungsmanager === activeFilters.anforderungsmanager);
-            }
-            if (activeFilters.statusOptimierung) {
-                steckbriefe = steckbriefe.filter(s => s.status_optimierung === activeFilters.statusOptimierung);
-            }
-            if (activeFilters.titel) {
-                steckbriefe = steckbriefe.filter(s => s.titel === activeFilters.titel);
-            }
-            
-            // Textfilter anwenden (Schlagwort-Suche)
-            if (activeFilters.clusterText) {
-                steckbriefe = steckbriefe.filter(s => (s.prozesscluster || '').toLowerCase().includes(activeFilters.clusterText));
-            }
-            if (activeFilters.auftraggeberText) {
-                steckbriefe = steckbriefe.filter(s => (s.auftraggeber || '').toLowerCase().includes(activeFilters.auftraggeberText));
-            }
-            if (activeFilters.prozessmanagerText) {
-                steckbriefe = steckbriefe.filter(s => (s.prozessmanager || '').toLowerCase().includes(activeFilters.prozessmanagerText));
-            }
-            if (activeFilters.anforderungsmanagerText) {
-                steckbriefe = steckbriefe.filter(s => (s.anforderungsmanager || '').toLowerCase().includes(activeFilters.anforderungsmanagerText));
-            }
-            if (activeFilters.statusOptimierungText) {
-                steckbriefe = steckbriefe.filter(s => (s.status_optimierung || '').toLowerCase().includes(activeFilters.statusOptimierungText));
-            }
-            if (activeFilters.titelText) {
-                steckbriefe = steckbriefe.filter(s => (s.titel || '').toLowerCase().includes(activeFilters.titelText));
             }
 
             // Aktive Filter-Tags anzeigen
@@ -2660,22 +1950,19 @@
             container.style.gridTemplateColumns = '';
             container.style.gap = '';
 
-            container.innerHTML = steckbriefe.map(s => {
-                const editClass = currentUser.role === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
-                return `
-                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
+            container.innerHTML = steckbriefe.map(s => `
+                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
                     <div class="card-checkbox" onclick="event.stopPropagation(); toggleSelection('${s.id}')">${selectedSteckbriefe.has(s.id) ? '✓' : ''}</div>
                     <h3>${escapeHtml(s.titel)}</h3>
                     <div class="meta">
-                        <strong>Prozesscluster:</strong> ${escapeHtml(s.prozesscluster || 'Kein Prozesscluster')}
+                        ${escapeHtml(s.prozesscluster || 'Kein Prozesscluster')}
                     </div>
-                    <div class="meta" style="margin-top: 8px;">
-                        <strong>Vision:</strong> ${escapeHtml(s.ziel_vision || '')}
+                    <div class="meta" style="margin-top: 8px; font-style: italic;">
+                        ${escapeHtml(s.ziel_vision || '')}
                     </div>
                     ${s.status_optimierung ? `<div class="meta" style="margin-top: 8px;"><strong>Status:</strong> ${escapeHtml(s.status_optimierung)}</div>` : ''}
-                    ${editClass === 'can-edit' ? '<div style="margin-top: 10px; font-size: 0.75em; color: #5c6bc0; font-weight: 600;">✏️ Bearbeitung möglich</div>' : ''}
-                </div>`;
-            }).join('');
+                </div>
+            `).join('');
             
             updateSelectionUI();
         }
@@ -2687,78 +1974,36 @@
             container.style.gridTemplateColumns = '';
             container.style.gap = '';
 
-            // Sortieren wenn aktiv
-            if (tableSortColumn) {
-                steckbriefe = [...steckbriefe].sort((a, b) => {
-                    let valA = (a[tableSortColumn] || '').toString().toLowerCase();
-                    let valB = (b[tableSortColumn] || '').toString().toLowerCase();
-                    if (valA < valB) return tableSortDirection === 'asc' ? -1 : 1;
-                    if (valA > valB) return tableSortDirection === 'asc' ? 1 : -1;
-                    return 0;
-                });
-            }
-
-            const columns = [
-                { key: 'prozesscluster', label: 'Prozesscluster' },
-                { key: 'titel', label: 'Titel' },
-                { key: 'auftraggeber', label: 'Auftraggeber/-in' },
-                { key: 'ziel_vision', label: 'Vision' },
-                { key: 'status_optimierung', label: 'Status Optimierung' }
-            ];
-
-            const getSortIcon = (key) => {
-                if (tableSortColumn !== key) return '↕';
-                return tableSortDirection === 'asc' ? '↑' : '↓';
-            };
-
-            const getSortClass = (key) => {
-                if (tableSortColumn !== key) return 'sortable';
-                return `sortable sort-${tableSortDirection}`;
-            };
-
             container.innerHTML = `
                 <table class="overview-table">
                     <thead>
                         <tr>
                             <th style="width: 40px;"></th>
-                            ${columns.map(col => `
-                                <th class="${getSortClass(col.key)}" onclick="sortTable('${col.key}')">
-                                    ${col.label}<span class="sort-icon">${getSortIcon(col.key)}</span>
-                                </th>
-                            `).join('')}
+                            <th>Titel</th>
+                            <th>Auftraggeber/-in</th>
+                            <th>Prozessmanager/-in</th>
+                            <th>Prozesscluster</th>
+                            <th>Aufwand</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${steckbriefe.map(s => {
-                            const editClass = currentUser.role === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
-                            return `
-                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
+                        ${steckbriefe.map(s => `
+                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
                                 <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="text-align: center; cursor: pointer;">
                                     <span style="color: ${selectedSteckbriefe.has(s.id) ? '#009688' : '#ccc'}; font-size: 1.2em;">${selectedSteckbriefe.has(s.id) ? '☑' : '☐'}</span>
                                 </td>
-                                <td>${escapeHtml(s.prozesscluster || '-')}</td>
                                 <td class="title-cell">${escapeHtml(s.titel)}</td>
                                 <td>${escapeHtml(s.auftraggeber || '-')}</td>
-                                <td>${escapeHtml(s.ziel_vision || '-')}</td>
-                                <td>${escapeHtml(s.status_optimierung || '-')}</td>
-                            </tr>`;
-                        }).join('')}
+                                <td>${escapeHtml(s.prozessmanager || '-')}</td>
+                                <td>${escapeHtml(s.prozesscluster || '-')}</td>
+                                <td>${s.umsetzungsaufwand ? `<span class="aufwand-badge aufwand-${s.umsetzungsaufwand.replace('/', '-')}">${getAufwandLabel(s.umsetzungsaufwand)}</span>` : '-'}</td>
+                            </tr>
+                        `).join('')}
                     </tbody>
                 </table>
             `;
             
             updateSelectionUI();
-        }
-
-        // Tabelle sortieren
-        function sortTable(column) {
-            if (tableSortColumn === column) {
-                tableSortDirection = tableSortDirection === 'asc' ? 'desc' : 'asc';
-            } else {
-                tableSortColumn = column;
-                tableSortDirection = 'asc';
-            }
-            renderOverview();
         }
 
         // Ansicht wechseln
@@ -2777,9 +2022,6 @@
             const clusters = [...new Set(steckbriefe.map(s => s.prozesscluster).filter(Boolean))].sort();
             const auftraggeber = [...new Set(steckbriefe.map(s => s.auftraggeber).filter(Boolean))].sort();
             const prozessmanager = [...new Set(steckbriefe.map(s => s.prozessmanager).filter(Boolean))].sort();
-            const anforderungsmanager = [...new Set(steckbriefe.map(s => s.anforderungsmanager).filter(Boolean))].sort();
-            const statusOptimierung = [...new Set(steckbriefe.map(s => s.status_optimierung).filter(Boolean))].sort();
-            const titel = [...new Set(steckbriefe.map(s => s.titel).filter(Boolean))].sort();
             
             // Cluster-Dropdown
             const clusterSelect = document.getElementById('filterCluster');
@@ -2795,80 +2037,24 @@
             const pmSelect = document.getElementById('filterProzessmanager');
             pmSelect.innerHTML = '<option value="">Alle Prozessmanager</option>' + 
                 prozessmanager.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
-            
-            // Anforderungsmanager-Dropdown
-            const amSelect = document.getElementById('filterAnforderungsmanager');
-            amSelect.innerHTML = '<option value="">Alle Anforderungsmanager</option>' + 
-                anforderungsmanager.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
-            
-            // Status Optimierung-Dropdown
-            const soSelect = document.getElementById('filterStatusOptimierung');
-            soSelect.innerHTML = '<option value="">Alle Status</option>' + 
-                statusOptimierung.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-            
-            // Titel-Dropdown
-            const titelSelect = document.getElementById('filterTitel');
-            titelSelect.innerHTML = '<option value="">Alle Titel</option>' + 
-                titel.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
         }
 
         // Filter anwenden
         function applyFilters() {
             activeFilters.cluster = document.getElementById('filterCluster').value;
+            activeFilters.aufwand = document.getElementById('filterAufwand').value;
             activeFilters.auftraggeber = document.getElementById('filterAuftraggeber').value;
             activeFilters.prozessmanager = document.getElementById('filterProzessmanager').value;
-            activeFilters.anforderungsmanager = document.getElementById('filterAnforderungsmanager').value;
-            activeFilters.statusOptimierung = document.getElementById('filterStatusOptimierung').value;
-            activeFilters.titel = document.getElementById('filterTitel').value;
-            // Textfilter
-            activeFilters.clusterText = document.getElementById('filterClusterText').value.toLowerCase().trim();
-            activeFilters.auftraggeberText = document.getElementById('filterAuftraggeberText').value.toLowerCase().trim();
-            activeFilters.prozessmanagerText = document.getElementById('filterProzessmanagerText').value.toLowerCase().trim();
-            activeFilters.anforderungsmanagerText = document.getElementById('filterAnforderungsmanagerText').value.toLowerCase().trim();
-            activeFilters.statusOptimierungText = document.getElementById('filterStatusOptimierungText').value.toLowerCase().trim();
-            activeFilters.titelText = document.getElementById('filterTitelText').value.toLowerCase().trim();
             renderOverview();
-        }
-
-        // Schlagwort-Suche ein-/ausblenden
-        function toggleFilterSearch(inputId, button) {
-            const input = document.getElementById(inputId);
-            const isVisible = input.classList.contains('visible');
-            
-            if (isVisible) {
-                input.classList.remove('visible');
-                button.classList.remove('active');
-                input.value = '';
-                applyFilters();
-            } else {
-                input.classList.add('visible');
-                button.classList.add('active');
-                input.focus();
-            }
         }
 
         // Filter zurücksetzen
         function resetFilters() {
-            activeFilters = { 
-                cluster: '', auftraggeber: '', prozessmanager: '', anforderungsmanager: '', statusOptimierung: '', titel: '',
-                clusterText: '', auftraggeberText: '', prozessmanagerText: '', anforderungsmanagerText: '', statusOptimierungText: '', titelText: ''
-            };
+            activeFilters = { cluster: '', aufwand: '', auftraggeber: '', prozessmanager: '' };
             document.getElementById('filterCluster').value = '';
+            document.getElementById('filterAufwand').value = '';
             document.getElementById('filterAuftraggeber').value = '';
             document.getElementById('filterProzessmanager').value = '';
-            document.getElementById('filterAnforderungsmanager').value = '';
-            document.getElementById('filterStatusOptimierung').value = '';
-            document.getElementById('filterTitel').value = '';
-            // Textfelder zurücksetzen und ausblenden
-            const textFilters = ['filterClusterText', 'filterAuftraggeberText', 'filterProzessmanagerText', 
-                                 'filterAnforderungsmanagerText', 'filterStatusOptimierungText', 'filterTitelText'];
-            textFilters.forEach(id => {
-                const input = document.getElementById(id);
-                input.value = '';
-                input.classList.remove('visible');
-            });
-            // Toggle-Buttons zurücksetzen
-            document.querySelectorAll('.filter-search-toggle').forEach(btn => btn.classList.remove('active'));
             renderOverview();
         }
 
@@ -2880,39 +2066,14 @@
             if (activeFilters.cluster) {
                 tags.push({ label: 'Cluster', value: activeFilters.cluster, key: 'cluster' });
             }
+            if (activeFilters.aufwand) {
+                tags.push({ label: 'Aufwand', value: getAufwandLabel(activeFilters.aufwand), key: 'aufwand' });
+            }
             if (activeFilters.auftraggeber) {
                 tags.push({ label: 'Auftraggeber', value: activeFilters.auftraggeber, key: 'auftraggeber' });
             }
             if (activeFilters.prozessmanager) {
                 tags.push({ label: 'PM', value: activeFilters.prozessmanager, key: 'prozessmanager' });
-            }
-            if (activeFilters.anforderungsmanager) {
-                tags.push({ label: 'AM', value: activeFilters.anforderungsmanager, key: 'anforderungsmanager' });
-            }
-            if (activeFilters.statusOptimierung) {
-                tags.push({ label: 'Status', value: activeFilters.statusOptimierung, key: 'statusOptimierung' });
-            }
-            if (activeFilters.titel) {
-                tags.push({ label: 'Titel', value: activeFilters.titel, key: 'titel' });
-            }
-            // Textfilter Tags
-            if (activeFilters.clusterText) {
-                tags.push({ label: 'Cluster enthält', value: activeFilters.clusterText, key: 'clusterText' });
-            }
-            if (activeFilters.auftraggeberText) {
-                tags.push({ label: 'Auftraggeber enthält', value: activeFilters.auftraggeberText, key: 'auftraggeberText' });
-            }
-            if (activeFilters.prozessmanagerText) {
-                tags.push({ label: 'PM enthält', value: activeFilters.prozessmanagerText, key: 'prozessmanagerText' });
-            }
-            if (activeFilters.anforderungsmanagerText) {
-                tags.push({ label: 'AM enthält', value: activeFilters.anforderungsmanagerText, key: 'anforderungsmanagerText' });
-            }
-            if (activeFilters.statusOptimierungText) {
-                tags.push({ label: 'Status enthält', value: activeFilters.statusOptimierungText, key: 'statusOptimierungText' });
-            }
-            if (activeFilters.titelText) {
-                tags.push({ label: 'Titel enthält', value: activeFilters.titelText, key: 'titelText' });
             }
             
             container.innerHTML = tags.map(t => `
@@ -2928,33 +2089,12 @@
             activeFilters[key] = '';
             const selectId = {
                 cluster: 'filterCluster',
+                aufwand: 'filterAufwand',
                 auftraggeber: 'filterAuftraggeber',
-                prozessmanager: 'filterProzessmanager',
-                anforderungsmanager: 'filterAnforderungsmanager',
-                statusOptimierung: 'filterStatusOptimierung',
-                titel: 'filterTitel'
-            }[key];
-            const textId = {
-                clusterText: 'filterClusterText',
-                auftraggeberText: 'filterAuftraggeberText',
-                prozessmanagerText: 'filterProzessmanagerText',
-                anforderungsmanagerText: 'filterAnforderungsmanagerText',
-                statusOptimierungText: 'filterStatusOptimierungText',
-                titelText: 'filterTitelText'
+                prozessmanager: 'filterProzessmanager'
             }[key];
             if (selectId) {
                 document.getElementById(selectId).value = '';
-            }
-            if (textId) {
-                const input = document.getElementById(textId);
-                input.value = '';
-                input.classList.remove('visible');
-                // Toggle-Button zurücksetzen
-                const wrapper = input.previousElementSibling;
-                if (wrapper) {
-                    const toggleBtn = wrapper.querySelector('.filter-search-toggle');
-                    if (toggleBtn) toggleBtn.classList.remove('active');
-                }
             }
             renderOverview();
         }
@@ -2969,16 +2109,6 @@
             return labels[aufwand] || aufwand;
         }
 
-        function formatTeamDisplay(projektteam) {
-            if (!projektteam) return '';
-            let data = projektteam;
-            if (typeof data === 'string') {
-                try { data = JSON.parse(data); } catch(e) { return projektteam; }
-            }
-            if (!Array.isArray(data)) return projektteam;
-            return data.map(m => m.name).join(', ');
-        }
-
         // Neuen Steckbrief öffnen (URL ändern)
         function openNewSteckbrief() {
             if (currentUser.role !== 'admin') {
@@ -2987,70 +2117,6 @@
             }
             window.history.pushState({}, '', '?neu=true');
             handleRouting();
-        }
-
-        // ====== PERSONEN-AUTOCOMPLETE ======
-        function initPersonenAutocomplete() {
-            const personFields = [
-                { input: 'auftraggeber', fid: 'auftraggeberFID', dropdown: 'auftraggeber_dropdown' },
-                { input: 'prozessmanager', fid: 'prozessmanagerFID', dropdown: 'prozessmanager_dropdown' },
-                { input: 'anforderungsmanager', fid: 'anforderungsmanagerFID', dropdown: 'anforderungsmanager_dropdown' },
-                { input: 'prozessverantwortlicher', fid: 'prozessverantwortlicherFID', dropdown: 'prozessverantwortlicher_dropdown' }
-            ];
-
-            personFields.forEach(field => {
-                const input = document.getElementById(field.input);
-                const fidInput = document.getElementById(field.fid);
-                const dropdown = document.getElementById(field.dropdown);
-                let debounceTimer = null;
-
-                input.addEventListener('input', () => {
-                    // FID zurücksetzen wenn Name manuell geändert wird
-                    fidInput.value = '';
-                    clearTimeout(debounceTimer);
-                    const q = input.value.trim();
-                    if (q.length < 2) {
-                        dropdown.classList.remove('show');
-                        return;
-                    }
-                    debounceTimer = setTimeout(async () => {
-                        try {
-                            const response = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
-                            if (!response.ok) return;
-                            const personen = await response.json();
-                            if (personen.length === 0) {
-                                dropdown.classList.remove('show');
-                                return;
-                            }
-                            dropdown.innerHTML = personen.map(p => `
-                                <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
-                                    ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
-                                    ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
-                                </div>
-                            `).join('');
-                            dropdown.classList.add('show');
-                        } catch (e) {
-                            console.error('Personen-Suche fehlgeschlagen:', e);
-                        }
-                    }, 300);
-                });
-
-                dropdown.addEventListener('click', (e) => {
-                    const item = e.target.closest('.autocomplete-item');
-                    if (item) {
-                        input.value = item.dataset.name;
-                        fidInput.value = item.dataset.id;
-                        dropdown.classList.remove('show');
-                    }
-                });
-
-                // Dropdown schließen bei Klick außerhalb
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.personen-autocomplete')) {
-                        dropdown.classList.remove('show');
-                    }
-                });
-            });
         }
 
         // Neuen Steckbrief Seite anzeigen
@@ -3062,12 +2128,6 @@
             currentSteckbriefId = null;
             document.getElementById('steckbriefForm').reset();
             document.getElementById('steckbriefId').value = '';
-            document.getElementById('auftraggeberFID').value = '';
-            document.getElementById('prozessmanagerFID').value = '';
-            document.getElementById('anforderungsmanagerFID').value = '';
-            document.getElementById('prozessverantwortlicherFID').value = '';
-            _currentTeamMembers = [];
-            renderTeamTags();
             document.getElementById('modalTitle').textContent = 'Neuer Steckbrief';
             document.getElementById('detailUrl').innerHTML = '';
             switchTab('edit');
@@ -3082,7 +2142,7 @@
         // Steckbrief Detail anzeigen
         function showSteckbriefDetail(id, editMode = false) {
             const steckbriefe = getSteckbriefe();
-            const steckbrief = steckbriefe.find(s => String(s.id) === String(id));
+            const steckbrief = steckbriefe.find(s => s.id === id);
             if (!steckbrief) {
                 goBack();
                 return;
@@ -3090,6 +2150,14 @@
 
             currentSteckbriefId = id;
             document.getElementById('modalTitle').textContent = steckbrief.titel;
+            
+            // Link zum Teilen anzeigen
+            const shareUrl = window.location.href;
+            document.getElementById('detailUrl').innerHTML = `
+                <span>Link zum Teilen: </span>
+                <a href="${shareUrl}" onclick="copyLink(event)">${shareUrl}</a>
+                <button class="btn-copy" onclick="copyLink(event)" title="Link kopieren">📋</button>
+            `;
             
             // Ansicht füllen
             renderViewContent(steckbrief);
@@ -3123,21 +2191,23 @@
                         ${renderField('Prozessmanager/-in', s.prozessmanager)}
                         ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
                         ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
-                        ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam))}
+                        ${renderField('Prozess-/Projektteam', s.projektteam)}
                         ${renderField('Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span>', s.prozesscluster)}
                         ${renderField('Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span>', getAufwandLabel(s.umsetzungsaufwand))}
                         ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                        ${renderField('Status Optimierung', s.status_optimierung)}
+                        ${renderField('Status Steckbrief', s.status_steckbrief)}
                     </div>
                 </div>
 
                 <div class="form-section">
                     <h3>2. Beschreibung</h3>
-                    ${renderField('Vision', s.ziel_vision, true)}
-                    ${renderField('Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-style: italic;">(Ist-Situation & Ausformulierung von 4.)</span>', s.warum, true)}
-                    ${renderField('Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer, true)}
-                    ${renderField('Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche, true)}
-                    ${renderField('Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)? <span style="color: #888; font-size: 0.85em;">(Kurzbeschreibung)</span>', s.was, true)}
-                    ${renderField('Wie sollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie, true)}
+                    ${renderField('Ziel/Vision', s.ziel_vision, true)}
+                    ${renderField('Warum soll der Prozess optimiert werden?<br><span style="color: #888; font-size: 0.85em;">(Ist-Situation & Ausformulierung von 4.)</span>', s.warum, true)}
+                    ${renderField('Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?<br><span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer, true)}
+                    ${renderField('Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen?<br><span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche, true)}
+                    ${renderField('Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?<br><span style="color: #888; font-size: 0.85em;">(Kurzbeschreibung)</span>', s.was, true)}
+                    ${renderField('Wie sollen die Ziele erreicht werden?<br><span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie, true)}
                     ${renderField('Wo sind IT-Systeme von der Prozessoptimierung betroffen?', s.wo, true)}
                     ${renderField('Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann, true)}
                 </div>
@@ -3195,42 +2265,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="form-section">
-                    <h3>6. Status</h3>
-                    <div class="form-grid">
-                        ${renderField('Start', s.start_datum)}
-                        ${renderField('Gesamtstatus', s.gesamtstatus)}
-                        ${renderField('Status Steckbrief', s.status_steckbrief)}
-                        ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h3>7. Änderungshistorie</h3>
-                    ${renderAenderungshistorieTable(s.aenderungshistorie)}
-                </div>
-            `;
-        }
-
-        function renderAenderungshistorieTable(historie) {
-            let parsedHistorie = historie;
-            if (typeof historie === 'string') {
-                try { parsedHistorie = JSON.parse(historie); } catch(e) { parsedHistorie = []; }
-            }
-            if (!parsedHistorie || !Array.isArray(parsedHistorie) || parsedHistorie.length === 0) {
-                return '<p style="color: #888;">Noch keine Änderungen erfasst</p>';
-            }
-            
-            return `
-                <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; max-height: 300px; overflow-y: auto; font-size: 13px;">
-                    ${parsedHistorie.map(e => `
-                        <div style="margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #dee2e6;">
-                            <strong>${escapeHtml(e.datum || '-')}</strong> — ${escapeHtml(e.benutzer || '-')}<br>
-                            ${escapeHtml(e.aenderungen || '-')}
-                        </div>
-                    `).join('')}
-                </div>
             `;
         }
 
@@ -3252,23 +2286,15 @@
             document.getElementById('steckbriefId').value = s.id;
             document.getElementById('titel').value = s.titel || '';
             document.getElementById('auftraggeber').value = s.auftraggeber || '';
-            document.getElementById('auftraggeberFID').value = s.auftraggeberFID || '';
             document.getElementById('prozessmanager').value = s.prozessmanager || '';
-            document.getElementById('prozessmanagerFID').value = s.prozessmanagerFID || '';
             document.getElementById('anforderungsmanager').value = s.anforderungsmanager || '';
-            document.getElementById('anforderungsmanagerFID').value = s.anforderungsmanagerFID || '';
             document.getElementById('prozessverantwortlicher').value = s.prozessverantwortlicher || '';
-            document.getElementById('prozessverantwortlicherFID').value = s.prozessverantwortlicherFID || '';
-            _currentTeamMembers = parseTeamMembers(s);
-            renderTeamTags();
+            document.getElementById('projektteam').value = s.projektteam || '';
             document.getElementById('prozesscluster').value = s.prozesscluster || '';
             document.getElementById('umsetzungsaufwand').value = s.umsetzungsaufwand || '';
             document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
             document.getElementById('status_optimierung').value = s.status_optimierung || '';
             document.getElementById('status_steckbrief').value = s.status_steckbrief || '';
-            document.getElementById('start_datum').value = s.start_datum || '';
-            document.getElementById('gesamtstatus').value = s.gesamtstatus || '';
-            document.getElementById('teil_hochschulentwicklungsplan').value = s.teil_hochschulentwicklungsplan || '';
             
             document.getElementById('ziel_vision').value = s.ziel_vision || '';
             document.getElementById('warum').value = s.warum || '';
@@ -3310,81 +2336,14 @@
             document.getElementById('nutzen_studierende_text').value = s.nutzen_studierende_text || '';
             document.getElementById('nutzen_qualitaet').value = s.nutzen_qualitaet || '0';
             document.getElementById('nutzen_qualitaet_text').value = s.nutzen_qualitaet_text || '';
-            
-            // Änderungshistorie laden (read-only)
-            renderAenderungshistorie(s.aenderungshistorie);
         }
 
-        // Änderungshistorie als Text rendern (read-only)
-        function renderAenderungshistorie(historie) {
-            const container = document.getElementById('aenderungshistorie_container');
-            if (!historie || historie.length === 0) {
-                container.innerHTML = '<em>Noch keine Änderungen erfasst</em>';
-                return;
-            }
-            // historie ist ein Array von JSON-Objekten
-            let parsedHistorie = historie;
-            if (typeof historie === 'string') {
-                try { parsedHistorie = JSON.parse(historie); } catch(e) { parsedHistorie = []; }
-            }
-            if (!Array.isArray(parsedHistorie) || parsedHistorie.length === 0) {
-                container.innerHTML = '<em>Noch keine Änderungen erfasst</em>';
-                return;
-            }
-            container.innerHTML = parsedHistorie.map(e =>
-                `<div style="margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #dee2e6;"><strong>${escapeHtml(e.datum || '-')}</strong> — ${escapeHtml(e.benutzer || '-')}<br>${escapeHtml(e.aenderungen || '-')}</div>`
-            ).join('');
-        }
-
-        // Feldnamen für menschenlesbare Labels
-        const FELD_LABELS = {
-            titel: 'Titel', auftraggeber: 'Auftraggeber', prozessmanager: 'Prozessmanager',
-            anforderungsmanager: 'Anforderungsmanager', prozessverantwortlicher: 'Prozessverantwortlicher',
-            projektteam: 'Projektteam', prozesscluster: 'Prozesscluster', umsetzungsaufwand: 'Umsetzungsaufwand',
-            betroffener_lifecycle: 'Betroffener Lifecycle', status_steckbrief: 'Status Steckbrief',
-            start: 'Start', gesamtstatus: 'Gesamtstatus', teil_hochschulentwicklungsplan: 'Teil des HEP',
-            ziel_vision: 'Ziel / Vision', warum: 'Warum', wer: 'Wer', welche: 'Welche', was: 'Was',
-            wie: 'Wie', wo: 'Wo', wann: 'Wann', einordnung_gesamtprozess: 'Einordnung Gesamtprozess',
-            bewertung_strategie: 'Gewichtung Strategie', bewertung_strategie_text: 'Strategie Text',
-            bewertung_recht: 'Gewichtung Recht', bewertung_recht_text: 'Recht Text',
-            bewertung_technik: 'Gewichtung Technik', bewertung_technik_text: 'Technik Text',
-            bewertung_kunden: 'Gewichtung Kunden', bewertung_kunden_text: 'Kunden Text',
-            bewertung_lehrende: 'Gewichtung Lehrende', bewertung_lehrende_text: 'Lehrende Text',
-            bewertung_lieferanten: 'Gewichtung Lieferanten', bewertung_lieferanten_text: 'Lieferanten Text',
-            bewertung_mitarbeitende: 'Gewichtung Mitarbeitende', bewertung_mitarbeitende_text: 'Mitarbeitende Text',
-            nutzen_durchlaufzeiten: 'Nutzen Durchlaufzeiten', nutzen_durchlaufzeiten_text: 'Durchlaufzeiten Text',
-            nutzen_fehler: 'Nutzen Fehler', nutzen_fehler_text: 'Fehler Text',
-            nutzen_kosten: 'Nutzen Kosten', nutzen_kosten_text: 'Kosten Text',
-            nutzen_reduktion: 'Nutzen Reduktion', nutzen_reduktion_text: 'Reduktion Text',
-            nutzen_studierende: 'Nutzen Studierende', nutzen_studierende_text: 'Studierende Text',
-            nutzen_qualitaet: 'Nutzen Qualität', nutzen_qualitaet_text: 'Qualität Text'
-        };
-
-        // Automatische Änderungserkennung: Nur geänderte Feldnamen erfassen (keine Werte)
-        function detectChanges(oldData, newData) {
-            const changed = [];
-            const skipFields = ['id', 'aenderungshistorie', 'created_at', 'updated_at',
-                'auftraggeberFID', 'prozessmanagerFID', 'anforderungsmanagerFID', 'prozessverantwortlicherFID',
-                'auftraggeber_vorname', 'auftraggeber_nachname', 'auftraggeber_titel', 'prozessmanager_vorname', 'prozessmanager_nachname', 'prozessmanager_titel',
-                'anforderungsmanager_vorname', 'anforderungsmanager_nachname', 'anforderungsmanager_titel', 'prozessverantwortlicher_vorname', 'prozessverantwortlicher_nachname', 'prozessverantwortlicher_titel'];
-            
-            for (const key of Object.keys(newData)) {
-                if (skipFields.includes(key)) continue;
-                const oldVal = String(oldData[key] || '').trim();
-                const newVal = String(newData[key] || '').trim();
-                if (oldVal !== newVal) {
-                    changed.push(FELD_LABELS[key] || key);
-                }
-            }
-            return changed;
-        }
-
-        // Steckbrief speichern (in DB via API)
-        async function saveSteckbrief(e) {
+        // Steckbrief speichern
+        function saveSteckbrief(e) {
             e.preventDefault();
             
             const steckbriefe = getSteckbriefe();
-            const id = document.getElementById('steckbriefId').value || null;
+            const id = document.getElementById('steckbriefId').value || generateId();
             const isNew = !document.getElementById('steckbriefId').value;
             
             // Berechtigungsprüfung
@@ -3394,29 +2353,31 @@
             }
             
             if (!isNew) {
-                const existingSteckbrief = steckbriefe.find(s => String(s.id) === String(id));
+                const existingSteckbrief = steckbriefe.find(s => s.id === id);
                 if (existingSteckbrief && !canEditSteckbrief(existingSteckbrief)) {
                     alert('Sie haben keine Berechtigung, diesen Steckbrief zu bearbeiten.');
                     return;
                 }
             }
             
-            // Daten für API zusammenstellen (FID-Felder für Personen)
-            const apiData = {
-                id: id ? parseInt(id) : null,
+            // Bestehende Editors beibehalten
+            const existingSteckbrief = steckbriefe.find(s => s.id === id);
+            const existingEditors = existingSteckbrief?.editors || [];
+            
+            const steckbrief = {
+                id: id,
+                editors: existingEditors,
                 titel: document.getElementById('titel').value,
-                auftraggeberFID: document.getElementById('auftraggeberFID').value || null,
-                prozessmanagerFID: document.getElementById('prozessmanagerFID').value || null,
-                anforderungsmanagerFID: document.getElementById('anforderungsmanagerFID').value || null,
-                prozessverantwortlicherFID: document.getElementById('prozessverantwortlicherFID').value || null,
-                projektteam: JSON.stringify(_currentTeamMembers),
+                auftraggeber: document.getElementById('auftraggeber').value,
+                prozessmanager: document.getElementById('prozessmanager').value,
+                anforderungsmanager: document.getElementById('anforderungsmanager').value,
+                prozessverantwortlicher: document.getElementById('prozessverantwortlicher').value,
+                projektteam: document.getElementById('projektteam').value,
                 prozesscluster: document.getElementById('prozesscluster').value,
                 umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
+                status_optimierung: document.getElementById('status_optimierung').value,
                 status_steckbrief: document.getElementById('status_steckbrief').value,
-                start: document.getElementById('start_datum').value,
-                gesamtstatus: document.getElementById('gesamtstatus').value,
-                teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
                 
                 ziel_vision: document.getElementById('ziel_vision').value,
                 warum: document.getElementById('warum').value,
@@ -3455,76 +2416,29 @@
                 nutzen_studierende: document.getElementById('nutzen_studierende').value,
                 nutzen_studierende_text: document.getElementById('nutzen_studierende_text').value,
                 nutzen_qualitaet: document.getElementById('nutzen_qualitaet').value,
-                nutzen_qualitaet_text: document.getElementById('nutzen_qualitaet_text').value
+                nutzen_qualitaet_text: document.getElementById('nutzen_qualitaet_text').value,
+                
+                updatedAt: new Date().toISOString()
             };
             
-            // Automatische Änderungshistorie erstellen
-            const heute = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            let historie = [];
-            
-            if (!isNew) {
-                // Bestehender Steckbrief: alte Daten laden und vergleichen
-                const existing = steckbriefe.find(s => String(s.id) === String(id));
-                if (existing && existing.aenderungshistorie) {
-                    if (typeof existing.aenderungshistorie === 'string') {
-                        try { historie = JSON.parse(existing.aenderungshistorie); } catch(e) { historie = []; }
-                    } else {
-                        historie = Array.isArray(existing.aenderungshistorie) ? [...existing.aenderungshistorie] : [];
-                    }
-                }
-                
-                if (existing) {
-                    const changes = detectChanges(existing, apiData);
-                    if (changes.length > 0) {
-                        historie.push({
-                            datum: heute,
-                            benutzer: currentUser.name || 'Unbekannt',
-                            aenderungen: 'Geänderte Felder: ' + changes.join(', ')
-                        });
-                    }
-                }
+            const existingIndex = steckbriefe.findIndex(s => s.id === id);
+            if (existingIndex >= 0) {
+                steckbriefe[existingIndex] = steckbrief;
             } else {
-                // Neuer Steckbrief
-                historie.push({
-                    datum: heute,
-                    benutzer: currentUser.name || 'Unbekannt',
-                    aenderungen: 'Steckbrief neu angelegt'
-                });
+                steckbrief.createdAt = new Date().toISOString();
+                steckbriefe.push(steckbrief);
             }
             
-            apiData.aenderungshistorie = JSON.stringify(historie);
+            saveSteckbriefe(steckbriefe);
+            updateFilterDropdowns();
             
-            try {
-                const response = await fetch(API_URL + '/steckbriefe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(apiData)
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Serverfehler: ' + response.status);
-                }
-                
-                const result = await response.json();
-                const savedId = result.id;
-                
-                // Cache aktualisieren
-                await loadSteckbriefeFromAPI();
-                updateFilterDropdowns();
-                
-                // Nach dem Speichern zur Detail-Ansicht des Steckbriefs navigieren
-                window.history.pushState({}, '', '?id=' + encodeURIComponent(savedId));
-                showSteckbriefDetail(savedId, false);
-                
-                console.log('Steckbrief erfolgreich in DB gespeichert (ID: ' + savedId + ')');
-            } catch (error) {
-                console.error('Fehler beim Speichern:', error);
-                alert('Fehler beim Speichern in der Datenbank: ' + error.message);
-            }
+            // Nach dem Speichern zur Detail-Ansicht des Steckbriefs navigieren
+            window.history.pushState({}, '', '?id=' + encodeURIComponent(id));
+            showSteckbriefDetail(id, false);
         }
 
-        // Steckbrief löschen (aus DB via API)
-        async function deleteSteckbrief() {
+        // Steckbrief löschen
+        function deleteSteckbrief() {
             if (!currentSteckbriefId) return;
             
             if (currentUser.role !== 'admin') {
@@ -3534,19 +2448,11 @@
             
             if (!confirm('Möchten Sie diesen Steckbrief wirklich löschen?')) return;
             
-            try {
-                const response = await fetch(API_URL + '/steckbriefe/' + currentSteckbriefId, {
-                    method: 'DELETE'
-                });
-                if (!response.ok) throw new Error('Serverfehler: ' + response.status);
-                
-                await loadSteckbriefeFromAPI();
-                updateFilterDropdowns();
-                goBack();
-            } catch (error) {
-                console.error('Fehler beim Löschen:', error);
-                alert('Fehler beim Löschen: ' + error.message);
-            }
+            let steckbriefe = getSteckbriefe();
+            steckbriefe = steckbriefe.filter(s => s.id !== currentSteckbriefId);
+            saveSteckbriefe(steckbriefe);
+            updateFilterDropdowns();
+            goBack();
         }
 
         // Tab wechseln
@@ -3554,7 +2460,7 @@
             // Berechtigungsprüfung beim Wechsel zu Bearbeiten
             if (tab === 'edit' && currentSteckbriefId) {
                 const steckbriefe = getSteckbriefe();
-                const steckbrief = steckbriefe.find(s => String(s.id) === String(currentSteckbriefId));
+                const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
                 if (steckbrief && !canEditSteckbrief(steckbrief)) {
                     alert('Sie haben keine Berechtigung, diesen Steckbrief zu bearbeiten.');
                     return;
@@ -3632,7 +2538,7 @@
             if (!currentSteckbriefId) return;
             
             const steckbriefe = getSteckbriefe();
-            const steckbrief = steckbriefe.find(s => String(s.id) === String(currentSteckbriefId));
+            const steckbrief = steckbriefe.find(s => s.id === currentSteckbriefId);
             if (!steckbrief) return;
             
             exportSteckbriefe = [steckbrief];
@@ -3761,7 +2667,7 @@
                     ['Auftraggeber/-in*', s.auftraggeber || ''],
                     ['Prozessmanager/-in', s.prozessmanager || ''],
                     ['Prozessverantwortliche/r', s.prozessverantwortlicher || ''],
-                    ['Prozessteam (Name & OE)', formatTeamDisplay(s.projektteam) || ''],
+                    ['Prozessteam (Name & OE)', s.projektteam || ''],
                     ['Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''],
                     ['Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''],
                     ['Betroffener Life-Cycle', s.betroffener_lifecycle || ''],
@@ -3785,12 +2691,12 @@
                 checkPageBreak(20);
                 
                 const beschreibung = [
-                    ['Vision', s.ziel_vision || ''],
+                    ['Ziel/Vision', s.ziel_vision || ''],
                     ['Warum\nsoll der Prozess optimiert werden?\n(Ist-Situation & Ausformulierung von 4.)', s.warum || ''],
-                    ['Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer || ''],
-                    ['Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche || ''],
+                    ['Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?\n(Aufzählung der Organisationseinheiten)', s.wer || ''],
+                    ['Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen?\n(ggfs. Verweis auf 3.)', s.welche || ''],
                     ['Was\nsind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?\n(Kurzbeschreibung)', s.was || ''],
-                    ['Wie\nsollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie || ''],
+                    ['Wie\nsollen die Ziele erreicht werden?\n(Beschreibung erster Lösungsansätze)', s.wie || ''],
                     ['Wo\nsind IT-Systeme von der Prozessoptimierung betroffen?', s.wo || ''],
                     ['Wann\nsoll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann || '']
                 ];
@@ -4002,7 +2908,7 @@
                         createTableRow2Col('Auftraggeber/-in*', s.auftraggeber || ''),
                         createTableRow2Col('Prozessmanager/-in', s.prozessmanager || ''),
                         createTableRow2Col('Prozessverantwortliche/r', s.prozessverantwortlicher || ''),
-                        createTableRow2Col('Prozessteam (Name & OE)', formatTeamDisplay(s.projektteam) || ''),
+                        createTableRow2Col('Prozessteam (Name & OE)', s.projektteam || ''),
                         createTableRow2Col('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''),
                         createTableRow2Col('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''),
                         createTableRow2Col('Betroffener Life-Cycle', s.betroffener_lifecycle || ''),
@@ -4017,12 +2923,12 @@
                 children.push(new Table({
                     width: { size: 100, type: WidthType.PERCENTAGE },
                     rows: [
-                        createTableRow2Col('Vision', s.ziel_vision || ''),
+                        createTableRow2Col('Ziel/Vision', s.ziel_vision || ''),
                         createTableRow2Col('Warum\nsoll der Prozess optimiert werden?\n(Ist-Situation & Ausformulierung von 4.)', s.warum || ''),
-                        createTableRow2Col('Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer || ''),
-                        createTableRow2Col('Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche || ''),
+                        createTableRow2Col('Wer\nist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen?\n(Aufzählung der Organisationseinheiten)', s.wer || ''),
+                        createTableRow2Col('Welche\nTeilprozesse, Projekte und Entwicklungen sind noch betroffen?\n(ggfs. Verweis auf 3.)', s.welche || ''),
                         createTableRow2Col('Was\nsind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)?\n(Kurzbeschreibung)', s.was || ''),
-                        createTableRow2Col('Wie\nsollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie || ''),
+                        createTableRow2Col('Wie\nsollen die Ziele erreicht werden?\n(Beschreibung erster Lösungsansätze)', s.wie || ''),
                         createTableRow2Col('Wo\nsind IT-Systeme von der Prozessoptimierung betroffen?', s.wo || ''),
                         createTableRow2Col('Wann\nsoll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann || '')
                     ]
@@ -4123,136 +3029,18 @@
         }
 
         // Import
-        async function importData(event) {
+        function importData(event) {
             if (currentUser.role !== 'admin') {
-                await showAlert('Nur Administratoren können Daten importieren.', 'Zugriff verweigert');
+                alert('Nur Administratoren können Daten importieren.');
                 event.target.value = '';
                 return;
             }
             
-            const files = Array.from(event.target.files);
-            if (!files || files.length === 0) return;
+            const file = event.target.files[0];
+            if (!file) return;
             
-            // Prüfen ob alle Dateien gültig sind
-            const wordFiles = files.filter(f => f.name.toLowerCase().endsWith('.docx'));
-            const jsonFiles = files.filter(f => f.name.toLowerCase().endsWith('.json'));
-            const invalidFiles = files.filter(f => !f.name.toLowerCase().endsWith('.docx') && !f.name.toLowerCase().endsWith('.json'));
-            
-            if (invalidFiles.length > 0) {
-                await showAlert(`Ungültige Dateien werden übersprungen:\n${invalidFiles.map(f => f.name).join('\n')}`, 'Hinweis');
-            }
-            
-            // JSON-Dateien verarbeiten (nur erste)
-            if (jsonFiles.length > 0) {
-                if (jsonFiles.length > 1) {
-                    await showAlert('Es kann nur eine JSON-Datei gleichzeitig importiert werden. Nur die erste wird verarbeitet.', 'Hinweis');
-                }
-                importJsonFile(jsonFiles[0]);
-            }
-            
-            // Word-Dokumente sequentiell verarbeiten
-            if (wordFiles.length > 0) {
-                await importMultipleWordDocuments(wordFiles);
-            }
-            
-            event.target.value = '';
-        }
-
-        // Mehrere Word-Dokumente importieren
-        async function importMultipleWordDocuments(files) {
-            let imported = 0;
-            let updated = 0;
-            let skipped = 0;
-            
-            for (const file of files) {
-                const result = await importWordDocumentWithDialog(file);
-                if (result === 'imported') imported++;
-                else if (result === 'updated') updated++;
-                else skipped++;
-            }
-            
-            // Abschließende Zusammenfassung
-            const messages = [];
-            if (imported > 0) messages.push(`${imported} neu angelegt`);
-            if (updated > 0) messages.push(`${updated} aktualisiert`);
-            if (skipped > 0) messages.push(`${skipped} übersprungen`);
-            
-            await showAlert(`Import abgeschlossen:\n${messages.join('\n')}`, 'Import Ergebnis');
-            
-            updateFilterDropdowns();
-            renderOverview();
-        }
-
-        // Einzelnes Word-Dokument mit Dialog importieren
-        async function importWordDocumentWithDialog(file) {
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const steckbrief = await parseWordDocument(arrayBuffer, file.name);
-                
-                if (!steckbrief.titel) {
-                    steckbrief.titel = file.name.replace('.docx', '').replace('.DOCX', '');
-                }
-                
-                const existing = getSteckbriefe();
-                const existingByTitle = existing.find(s => 
-                    s.titel && s.titel.toLowerCase().trim() === steckbrief.titel.toLowerCase().trim()
-                );
-                
-                if (existingByTitle) {
-                    // Duplikat gefunden - Custom Dialog mit 3 Optionen
-                    const choice = await showImportDialog(steckbrief.titel);
-                    
-                    if (choice === 'update') {
-                        // Bestehenden Steckbrief über API aktualisieren
-                        steckbrief.id = existingByTitle.id;
-                        const apiData = buildApiDataFromSteckbrief({ ...existingByTitle, ...steckbrief });
-                        const response = await fetch(API_URL + '/steckbriefe', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(apiData)
-                        });
-                        if (!response.ok) throw new Error('Serverfehler: ' + response.status);
-                        await loadSteckbriefeFromAPI();
-                        return 'updated';
-                    } else if (choice === 'new') {
-                        // Neuen Steckbrief über API anlegen
-                        const apiData = buildApiDataFromSteckbrief(steckbrief);
-                        apiData.id = null;
-                        const response = await fetch(API_URL + '/steckbriefe', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(apiData)
-                        });
-                        if (!response.ok) throw new Error('Serverfehler: ' + response.status);
-                        await loadSteckbriefeFromAPI();
-                        return 'imported';
-                    } else {
-                        return 'skipped';
-                    }
-                } else {
-                    // Kein Duplikat - direkt über API anlegen
-                    const apiData = buildApiDataFromSteckbrief(steckbrief);
-                    apiData.id = null;
-                    const response = await fetch(API_URL + '/steckbriefe', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(apiData)
-                    });
-                    if (!response.ok) throw new Error('Serverfehler: ' + response.status);
-                    await loadSteckbriefeFromAPI();
-                    return 'imported';
-                }
-            } catch (err) {
-                console.error('Import-Fehler bei ' + file.name + ':', err);
-                await showAlert('Fehler beim Importieren von "' + file.name + '":\n' + err.message, 'Import Fehler');
-                return 'skipped';
-            }
-        }
-
-        // JSON Import (bisherige Logik)
-        async function importJsonFile(file) {
             const reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = (e) => {
                 try {
                     const imported = JSON.parse(e.target.result);
                     if (!Array.isArray(imported)) {
@@ -4260,236 +3048,32 @@
                         return;
                     }
                     
-                    let count = 0;
-                    for (const imp of imported) {
-                        const apiData = buildApiDataFromSteckbrief(imp);
-                        apiData.id = null;
-                        const response = await fetch(API_URL + '/steckbriefe', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(apiData)
-                        });
-                        if (response.ok) count++;
-                    }
+                    const existing = getSteckbriefe();
+                    const merged = [...existing];
                     
-                    await loadSteckbriefeFromAPI();
+                    imported.forEach(imp => {
+                        if (!imp.id) imp.id = generateId();
+                        const existingIndex = merged.findIndex(s => s.id === imp.id);
+                        if (existingIndex >= 0) {
+                            merged[existingIndex] = imp;
+                        } else {
+                            merged.push(imp);
+                        }
+                    });
+                    
+                    saveSteckbriefe(merged);
                     updateFilterDropdowns();
                     renderOverview();
-                    alert(`${count} Steckbrief(e) importiert.`);
+                    alert(`${imported.length} Steckbrief(e) importiert.`);
                 } catch (err) {
                     alert('Fehler beim Importieren: ' + err.message);
                 }
             };
             reader.readAsText(file);
-        }
-
-
-
-        // Word-Dokument parsen
-        async function parseWordDocument(arrayBuffer, fileName) {
-            const steckbrief = {
-                quelldatei: fileName
-            };
-            
-            // JSZip zum Entpacken der DOCX-Datei verwenden
-            const zip = await JSZip.loadAsync(arrayBuffer);
-            const documentXml = await zip.file('word/document.xml').async('string');
-            
-            // XML parsen
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
-            
-            // Alle Tabellen-Zeilen finden
-            const rows = xmlDoc.getElementsByTagName('w:tr');
-            
-            for (let row of rows) {
-                const cells = row.getElementsByTagName('w:tc');
-                if (cells.length >= 2) {
-                    const key = getCellText(cells[0]).toLowerCase().trim();
-                    const value = getCellText(cells[1]).trim();
-                    const value2 = cells.length > 2 ? getCellText(cells[2]).trim() : '';
-                    
-                    // Stammdaten
-                    if (key.includes('titel')) {
-                        steckbrief.titel = value;
-                    } else if (key.includes('auftraggeber')) {
-                        steckbrief.auftraggeber = value;
-                    } else if (key.includes('prozessmanager')) {
-                        steckbrief.prozessmanager = value;
-                    } else if (key.includes('anforderungsmanager')) {
-                        steckbrief.anforderungsmanager = value;
-                    } else if (key.includes('prozessverantwortlich')) {
-                        steckbrief.prozessverantwortlicher = value;
-                    } else if (key.includes('projektteam') || key.includes('prozessteam')) {
-                        steckbrief.projektteam = value;
-                    } else if (key.includes('prozesscluster')) {
-                        steckbrief.prozesscluster = value;
-                    } else if (key.includes('status') && key.includes('optimierung')) {
-                        steckbrief.status_optimierung = value;
-                    } else if (key.includes('status') && key.includes('steckbrief')) {
-                        steckbrief.status_steckbrief = value;
-                    } else if (key === 'start' || key.includes('start') && !key.includes('status')) {
-                        steckbrief.start_datum = value;
-                    } else if (key.includes('gesamtstatus')) {
-                        steckbrief.gesamtstatus = value;
-                    } else if (key.includes('hochschulentwicklungsplan') || key.includes('teil des')) {
-                        steckbrief.teil_hochschulentwicklungsplan = value.toLowerCase().includes('ja') ? 'ja' : (value.toLowerCase().includes('nein') ? 'nein' : value);
-                    } else if (key.includes('umsetzungsaufwand')) {
-                        const aufwandText = (value + ' ' + value2).toLowerCase();
-                        if (aufwandText.includes('groß') || aufwandText.includes('gross')) {
-                            if (aufwandText.includes('mittel')) {
-                                steckbrief.umsetzungsaufwand = 'mittel-gross';
-                            } else {
-                                steckbrief.umsetzungsaufwand = 'gross';
-                            }
-                        } else if (aufwandText.includes('mittel')) {
-                            steckbrief.umsetzungsaufwand = 'mittel';
-                        } else if (aufwandText.includes('klein')) {
-                            steckbrief.umsetzungsaufwand = 'klein';
-                        }
-                    }
-                    // W-Fragen
-                    else if (key.includes('warum')) {
-                        steckbrief.warum = value;
-                    } else if (key.startsWith('wer')) {
-                        steckbrief.wer = value;
-                    } else if (key.includes('welche')) {
-                        steckbrief.welche = value;
-                    } else if (key.startsWith('was')) {
-                        steckbrief.was = value;
-                    } else if (key.startsWith('wie')) {
-                        steckbrief.wie = value;
-                    } else if (key.startsWith('wo')) {
-                        steckbrief.wo = value;
-                    } else if (key.includes('wann')) {
-                        steckbrief.wann = value;
-                    }
-                    // Vision (mit oder ohne "Ziel")
-                    else if (key.includes('vision')) {
-                        steckbrief.ziel_vision = value;
-                    }
-                    // Bewertungskriterien
-                    else if (key.includes('unternehmensstrategisch')) {
-                        steckbrief.bewertung_strategie = extractNumber(value);
-                        steckbrief.bewertung_strategie_text = value2;
-                    } else if (key.includes('rechtlich')) {
-                        steckbrief.bewertung_recht = extractNumber(value);
-                        steckbrief.bewertung_recht_text = value2;
-                    } else if (key.includes('technisch')) {
-                        steckbrief.bewertung_technik = extractNumber(value);
-                        steckbrief.bewertung_technik_text = value2;
-                    } else if (key.includes('kunden') && key.includes('anforderung')) {
-                        steckbrief.bewertung_kunden = extractNumber(value);
-                        steckbrief.bewertung_kunden_text = value2;
-                    } else if (key.includes('lehrende') && key.includes('anforderung')) {
-                        steckbrief.bewertung_lehrende = extractNumber(value);
-                        steckbrief.bewertung_lehrende_text = value2;
-                    } else if (key.includes('lieferanten')) {
-                        steckbrief.bewertung_lieferanten = extractNumber(value);
-                        steckbrief.bewertung_lieferanten_text = value2;
-                    } else if (key.includes('mitarbeitende') && key.includes('anforderung')) {
-                        steckbrief.bewertung_mitarbeitende = extractNumber(value);
-                        steckbrief.bewertung_mitarbeitende_text = value2;
-                    }
-                    // Nutzen-Bewertungen
-                    else if (key.includes('durchlaufzeit')) {
-                        steckbrief.nutzen_durchlaufzeiten = extractNumber(value);
-                        steckbrief.nutzen_durchlaufzeiten_text = value2;
-                    } else if (key.includes('fehlerwiederholung')) {
-                        steckbrief.nutzen_fehler = extractNumber(value);
-                        steckbrief.nutzen_fehler_text = value2;
-                    } else if (key.includes('prozesskosten')) {
-                        steckbrief.nutzen_kosten = extractNumber(value);
-                        steckbrief.nutzen_kosten_text = value2;
-                    } else if (key.includes('nicht wertschöpfend') || key.includes('reduktion')) {
-                        steckbrief.nutzen_reduktion = extractNumber(value);
-                        steckbrief.nutzen_reduktion_text = value2;
-                    } else if (key.includes('studierendenzahl')) {
-                        steckbrief.nutzen_studierende = extractNumber(value);
-                        steckbrief.nutzen_studierende_text = value2;
-                    } else if (key.includes('qualität')) {
-                        steckbrief.nutzen_qualitaet = extractNumber(value);
-                        steckbrief.nutzen_qualitaet_text = value2;
-                    }
-                }
-            }
-            
-            return steckbrief;
-        }
-
-        // Hilfsfunktion: Text aus Word-Zelle extrahieren
-        function getCellText(cell) {
-            const texts = cell.getElementsByTagName('w:t');
-            let result = '';
-            for (let t of texts) {
-                result += t.textContent || '';
-            }
-            return result;
-        }
-
-        // Hilfsfunktion: Zahl aus Text extrahieren
-        function extractNumber(text) {
-            const match = text.match(/\d+/);
-            return match ? match[0] : '0';
+            event.target.value = '';
         }
 
         // Hilfsfunktionen
-        
-        // Steckbrief-Objekt in API-Datenformat umwandeln
-        function buildApiDataFromSteckbrief(s) {
-            return {
-                id: s.id || null,
-                titel: s.titel || null,
-                auftraggeberFID: s.auftraggeberFID || null,
-                prozessmanagerFID: s.prozessmanagerFID || null,
-                anforderungsmanagerFID: s.anforderungsmanagerFID || null,
-                prozessverantwortlicherFID: s.prozessverantwortlicherFID || null,
-                projektteam: s.projektteam || null,
-                prozesscluster: s.prozesscluster || null,
-                umsetzungsaufwand: s.umsetzungsaufwand || null,
-                betroffener_lifecycle: s.betroffener_lifecycle || null,
-                ziel_vision: s.ziel_vision || null,
-                warum: s.warum || null,
-                wer: s.wer || null,
-                welche: s.welche || null,
-                was: s.was || null,
-                wie: s.wie || null,
-                wo: s.wo || null,
-                wann: s.wann || null,
-                einordnung_gesamtprozess: s.einordnung_gesamtprozess || null,
-                bewertung_strategie: s.bewertung_strategie || null,
-                bewertung_strategie_text: s.bewertung_strategie_text || null,
-                bewertung_recht: s.bewertung_recht || null,
-                bewertung_recht_text: s.bewertung_recht_text || null,
-                bewertung_technik: s.bewertung_technik || null,
-                bewertung_technik_text: s.bewertung_technik_text || null,
-                bewertung_kunden: s.bewertung_kunden || null,
-                bewertung_kunden_text: s.bewertung_kunden_text || null,
-                bewertung_lehrende: s.bewertung_lehrende || null,
-                bewertung_lehrende_text: s.bewertung_lehrende_text || null,
-                bewertung_lieferanten: s.bewertung_lieferanten || null,
-                bewertung_lieferanten_text: s.bewertung_lieferanten_text || null,
-                bewertung_mitarbeitende: s.bewertung_mitarbeitende || null,
-                bewertung_mitarbeitende_text: s.bewertung_mitarbeitende_text || null,
-                nutzen_durchlaufzeiten: s.nutzen_durchlaufzeiten || null,
-                nutzen_durchlaufzeiten_text: s.nutzen_durchlaufzeiten_text || null,
-                nutzen_fehler: s.nutzen_fehler || null,
-                nutzen_fehler_text: s.nutzen_fehler_text || null,
-                nutzen_kosten: s.nutzen_kosten || null,
-                nutzen_kosten_text: s.nutzen_kosten_text || null,
-                nutzen_reduktion: s.nutzen_reduktion || null,
-                nutzen_reduktion_text: s.nutzen_reduktion_text || null,
-                nutzen_studierende: s.nutzen_studierende || null,
-                nutzen_studierende_text: s.nutzen_studierende_text || null,
-                nutzen_qualitaet: s.nutzen_qualitaet || null,
-                nutzen_qualitaet_text: s.nutzen_qualitaet_text || null,
-                start: s.start || s.start_datum || null,
-                gesamtstatus: s.gesamtstatus || null,
-                status_steckbrief: s.status_steckbrief || null,
-                teil_hochschulentwicklungsplan: s.teil_hochschulentwicklungsplan || null
-            };
-        }
-
         function generateId() {
             return 'sb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -4522,18 +3106,6 @@
             }
         });
 
-        // GoBack-Buttons per JS binden
-        function bindGoBackButtons() {
-            document.querySelectorAll('[data-goback]').forEach(btn => {
-                btn.onclick = function(e) {
-                    e.preventDefault();
-                    goBack();
-                };
-            });
-        }
-        bindGoBackButtons();
-        document.addEventListener('DOMContentLoaded', bindGoBackButtons);
-
         // ESC zum Schließen
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -4544,15 +3116,5 @@
             }
         });
     </script>
-
-    <!-- Custom Dialog Modal -->
-    <div id="customDialogOverlay" class="custom-dialog-overlay">
-        <div class="custom-dialog">
-            <div id="customDialogIcon" class="custom-dialog-icon"></div>
-            <div id="customDialogTitle" class="custom-dialog-title"></div>
-            <div id="customDialogMessage" class="custom-dialog-message"></div>
-            <div id="customDialogButtons" class="custom-dialog-buttons"></div>
-        </div>
-    </div>
 </body>
 </html>

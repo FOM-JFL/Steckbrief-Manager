@@ -157,15 +157,6 @@
             background: #00796b;
         }
 
-        .btn-editors {
-            background: #5c6bc0;
-            color: white;
-        }
-
-        .btn-editors:hover {
-            background: #3f51b5;
-        }
-
         .btn-success {
             background: #f39200;
             color: white;
@@ -229,30 +220,6 @@
         .steckbrief-card:hover {
             border-color: #009688;
             box-shadow: 0 4px 20px rgba(0,150,136,0.15);
-        }
-
-        .steckbrief-card.can-edit {
-            border-left: 4px solid #5c6bc0;
-        }
-
-        .steckbrief-card.no-edit {
-            opacity: 0.55;
-        }
-
-        .steckbrief-card.no-edit:hover {
-            opacity: 0.8;
-        }
-
-        tr.can-edit {
-            background: #f0f1fa;
-        }
-
-        tr.no-edit {
-            opacity: 0.55;
-        }
-
-        tr.no-edit:hover {
-            opacity: 0.8;
         }
 
         .steckbrief-card .card-icon {
@@ -1219,46 +1186,6 @@
             border-radius: 6px;
         }
 
-        /* Team-Member Tags */
-        .team-members-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            min-height: 32px;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: #fafafa;
-            margin-bottom: 6px;
-        }
-        .team-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #e0f2f1;
-            color: #00695c;
-            padding: 4px 8px;
-            border-radius: 16px;
-            font-size: 0.85em;
-        }
-        .team-tag .remove-tag {
-            cursor: pointer;
-            color: #c62828;
-            font-weight: bold;
-            margin-left: 2px;
-            font-size: 1.1em;
-            line-height: 1;
-        }
-        .team-tag .remove-tag:hover {
-            color: #f44336;
-        }
-        .team-members-container:empty::before {
-            content: 'Noch keine Teammitglieder hinzugefügt';
-            color: #aaa;
-            font-size: 0.85em;
-            padding: 4px;
-        }
-
         /* Custom Dialog Modal */
         .custom-dialog-overlay {
             display: none;
@@ -1568,7 +1495,7 @@
                 <div class="detail-actions">
                     <button class="btn btn-primary" onclick="switchTab('edit')">✏️ Bearbeiten</button>
                     <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
-                    <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+                    <button class="btn btn-secondary admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
                     <button class="btn btn-danger admin-only hidden" onclick="deleteSteckbrief()">🗑️ Löschen</button>
                 </div>
             </div>
@@ -1619,12 +1546,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Prozess-/Projektteam</label>
-                                <div class="team-members-container" id="teamMembersContainer"></div>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
-                                    <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
-                                </div>
+                                <label for="projektteam">Prozess-/Projektteam (Name & OE)</label>
+                                <input type="text" id="projektteam">
                             </div>
                             <div class="form-group">
                                 <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
@@ -1936,13 +1859,9 @@
                 <!-- Editoren werden hier eingefügt -->
             </div>
             
-            <div class="add-editor-form" style="position: relative;">
-                <div class="personen-autocomplete" style="flex: 1;">
-                    <input type="text" id="newEditorName" placeholder="Name eingeben..." autocomplete="off">
-                    <div class="autocomplete-dropdown" id="editor_dropdown"></div>
-                </div>
-                <button class="btn btn-primary" onclick="addEditorFromSelection()">+ Hinzufügen</button>
-                <input type="hidden" id="newEditorFID" value="">
+            <div class="add-editor-form">
+                <input type="text" id="newEditorName" placeholder="Name des Bearbeiters" onkeypress="if(event.key==='Enter') addEditor()">
+                <button class="btn btn-primary" onclick="addEditor()">+ Hinzufügen</button>
             </div>
             
             <button class="btn btn-secondary" onclick="closeEditorModal()" style="width: 100%; margin-top: 20px;">Schließen</button>
@@ -2109,10 +2028,9 @@
         // Prüfen ob Benutzer Steckbrief bearbeiten darf
         function canEditSteckbrief(steckbrief) {
             if (currentUser.role === 'admin') return true;
-            if (currentUser.role === 'editor') {
-                const editors = parseBearbeiter(steckbrief);
-                return editors.some(ed => 
-                    ed.name && ed.name.toLowerCase() === currentUser.name.toLowerCase()
+            if (currentUser.role === 'editor' && steckbrief.editors) {
+                return steckbrief.editors.some(e => 
+                    e.toLowerCase() === currentUser.name.toLowerCase()
                 );
             }
             return false;
@@ -2203,191 +2121,35 @@
 
             document.getElementById('editorModalTitle').textContent = steckbrief.titel;
             renderEditorList(steckbrief);
-            initEditorAutocomplete();
             document.getElementById('editorModal').classList.add('active');
         }
 
         function closeEditorModal() {
             document.getElementById('editorModal').classList.remove('active');
             document.getElementById('newEditorName').value = '';
-            document.getElementById('newEditorFID').value = '';
-        }
-
-        // ====== PROJEKTTEAM VERWALTUNG ======
-        let _currentTeamMembers = [];
-
-        function parseTeamMembers(steckbrief) {
-            let t = steckbrief.projektteam;
-            if (!t) return [];
-            if (typeof t === 'string') {
-                try { t = JSON.parse(t); } catch(e) { 
-                    // Rückwärtskompatibilität: Freitext als einzelner Eintrag
-                    return t.trim() ? [{ fid: null, name: t.trim() }] : [];
-                }
-            }
-            return Array.isArray(t) ? t : [];
-        }
-
-        function renderTeamTags() {
-            const container = document.getElementById('teamMembersContainer');
-            if (!container) return;
-            container.innerHTML = _currentTeamMembers.map((m, idx) => `
-                <span class="team-tag">
-                    ${escapeHtml(m.name)}
-                    <span class="remove-tag" onclick="removeTeamMember(${idx})">&times;</span>
-                </span>
-            `).join('');
-        }
-
-        function addTeamMember(fid, name) {
-            if (fid && _currentTeamMembers.some(m => String(m.fid) === String(fid))) {
-                alert('Diese Person ist bereits im Projektteam.');
-                return;
-            }
-            _currentTeamMembers.push({ fid: fid ? parseInt(fid) : null, name: name });
-            renderTeamTags();
-        }
-
-        function removeTeamMember(index) {
-            _currentTeamMembers.splice(index, 1);
-            renderTeamTags();
-        }
-
-        function initTeamAutocomplete() {
-            const input = document.getElementById('projektteamInput');
-            const dropdown = document.getElementById('projektteam_dropdown');
-            if (!input || !dropdown) return;
-            let debounceTimer = null;
-
-            input.addEventListener('input', () => {
-                clearTimeout(debounceTimer);
-                const q = input.value.trim();
-                if (q.length < 2) {
-                    dropdown.classList.remove('show');
-                    return;
-                }
-                debounceTimer = setTimeout(async () => {
-                    try {
-                        const response = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
-                        if (!response.ok) return;
-                        const personen = await response.json();
-                        if (personen.length === 0) {
-                            dropdown.classList.remove('show');
-                            return;
-                        }
-                        dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
-                                ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
-                                ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
-                            </div>
-                        `).join('');
-                        dropdown.classList.add('show');
-                    } catch (e) {
-                        console.error('Team-Personen-Suche fehlgeschlagen:', e);
-                    }
-                }, 300);
-            });
-
-            dropdown.addEventListener('click', (e) => {
-                const item = e.target.closest('.autocomplete-item');
-                if (item) {
-                    addTeamMember(item.dataset.id, item.dataset.name);
-                    input.value = '';
-                    dropdown.classList.remove('show');
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('#projektteam_dropdown') && !e.target.closest('#projektteamInput')) {
-                    dropdown.classList.remove('show');
-                }
-            });
-        }
-
-        function parseBearbeiter(steckbrief) {
-            let b = steckbrief.bearbeiter;
-            if (!b) return [];
-            if (typeof b === 'string') {
-                try { b = JSON.parse(b); } catch(e) { return []; }
-            }
-            return Array.isArray(b) ? b : [];
         }
 
         function renderEditorList(steckbrief) {
             const container = document.getElementById('editorList');
-            const editors = parseBearbeiter(steckbrief);
+            const editors = steckbrief.editors || [];
             
             if (editors.length === 0) {
                 container.innerHTML = '<div style="padding: 15px; color: #888; text-align: center;">Noch keine Bearbeiter hinzugefügt</div>';
                 return;
             }
             
-            container.innerHTML = editors.map(ed => `
+            container.innerHTML = editors.map(name => `
                 <div class="editor-item">
-                    <span>👤 ${escapeHtml(ed.name)}</span>
-                    <button class="remove-btn" onclick="removeEditor(${ed.fid})">Entfernen</button>
+                    <span>👤 ${escapeHtml(name)}</span>
+                    <button class="remove-btn" onclick="removeEditor('${escapeHtml(name)}')">Entfernen</button>
                 </div>
             `).join('');
         }
 
-        function initEditorAutocomplete() {
-            const input = document.getElementById('newEditorName');
-            const fidInput = document.getElementById('newEditorFID');
-            const dropdown = document.getElementById('editor_dropdown');
-            let debounceTimer = null;
-
-            // Alte Listener entfernen durch Klonen
-            const newInput = input.cloneNode(true);
-            input.parentNode.replaceChild(newInput, input);
-
-            newInput.addEventListener('input', () => {
-                fidInput.value = '';
-                clearTimeout(debounceTimer);
-                const q = newInput.value.trim();
-                if (q.length < 2) {
-                    dropdown.classList.remove('show');
-                    return;
-                }
-                debounceTimer = setTimeout(async () => {
-                    try {
-                        const response = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
-                        if (!response.ok) return;
-                        const personen = await response.json();
-                        if (personen.length === 0) {
-                            dropdown.classList.remove('show');
-                            return;
-                        }
-                        dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
-                                ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
-                                ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
-                            </div>
-                        `).join('');
-                        dropdown.classList.add('show');
-                    } catch (e) {
-                        console.error('Personen-Suche fehlgeschlagen:', e);
-                    }
-                }, 300);
-            });
-
-            dropdown.addEventListener('click', (e) => {
-                const item = e.target.closest('.autocomplete-item');
-                if (item) {
-                    newInput.value = item.dataset.name;
-                    fidInput.value = item.dataset.id;
-                    dropdown.classList.remove('show');
-                }
-            });
-        }
-
-        async function addEditorFromSelection() {
-            const nameInput = document.getElementById('newEditorName');
-            const fidInput = document.getElementById('newEditorFID');
-            const name = nameInput.value.trim();
-            const fid = fidInput.value;
-
-            if (!name || !fid) {
-                alert('Bitte eine Person aus der Vorschlagsliste auswählen.');
+        function addEditor() {
+            const name = document.getElementById('newEditorName').value.trim();
+            if (!name) {
+                alert('Bitte geben Sie einen Namen ein.');
                 return;
             }
 
@@ -2395,53 +2157,31 @@
             const index = steckbriefe.findIndex(s => String(s.id) === String(currentSteckbriefId));
             if (index < 0) return;
 
-            let editors = parseBearbeiter(steckbriefe[index]);
+            if (!steckbriefe[index].editors) {
+                steckbriefe[index].editors = [];
+            }
 
-            if (editors.some(ed => String(ed.fid) === String(fid))) {
+            if (steckbriefe[index].editors.some(e => e.toLowerCase() === name.toLowerCase())) {
                 alert('Diese Person ist bereits als Bearbeiter eingetragen.');
                 return;
             }
 
-            editors.push({ fid: parseInt(fid), name: name });
-
-            // In DB speichern
-            try {
-                const response = await fetch(API_URL + '/steckbriefe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: currentSteckbriefId, bearbeiter: JSON.stringify(editors) })
-                });
-                if (!response.ok) throw new Error('Serverfehler');
-                await loadSteckbriefeFromAPI();
-                const updated = getSteckbriefe().find(s => String(s.id) === String(currentSteckbriefId));
-                renderEditorList(updated);
-                nameInput.value = '';
-                fidInput.value = '';
-            } catch (err) {
-                alert('Fehler beim Speichern: ' + err.message);
-            }
+            steckbriefe[index].editors.push(name);
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
+            document.getElementById('newEditorName').value = '';
         }
 
-        async function removeEditor(fid) {
+        function removeEditor(name) {
             const steckbriefe = getSteckbriefe();
             const index = steckbriefe.findIndex(s => String(s.id) === String(currentSteckbriefId));
             if (index < 0) return;
 
-            let editors = parseBearbeiter(steckbriefe[index]).filter(ed => String(ed.fid) !== String(fid));
-
-            try {
-                const response = await fetch(API_URL + '/steckbriefe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: currentSteckbriefId, bearbeiter: JSON.stringify(editors) })
-                });
-                if (!response.ok) throw new Error('Serverfehler');
-                await loadSteckbriefeFromAPI();
-                const updated = getSteckbriefe().find(s => String(s.id) === String(currentSteckbriefId));
-                renderEditorList(updated);
-            } catch (err) {
-                alert('Fehler beim Speichern: ' + err.message);
-            }
+            steckbriefe[index].editors = (steckbriefe[index].editors || []).filter(
+                e => e.toLowerCase() !== name.toLowerCase()
+            );
+            saveSteckbriefe(steckbriefe);
+            renderEditorList(steckbriefe[index]);
         }
 
         // ====== HAUPT-ANWENDUNG ======
@@ -2481,7 +2221,6 @@
             
             // Personen-Autocomplete initialisieren
             initPersonenAutocomplete();
-            initTeamAutocomplete();
             
             updateFilterDropdowns();
             
@@ -2546,12 +2285,12 @@
                 const response = await fetch(API_URL + '/steckbriefe');
                 if (response.ok) {
                     _steckbriefeCache = await response.json();
-                    // Personennamen für Frontend-Kompatibilität zusammensetzen (mit Titel)
+                    // Personennamen für Frontend-Kompatibilität zusammensetzen
                     _steckbriefeCache.forEach(s => {
-                        s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
-                        s.prozessmanager = [s.prozessmanager_titel, s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
-                        s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
-                        s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
+                        s.auftraggeber = [s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
+                        s.prozessmanager = [s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
+                        s.anforderungsmanager = [s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
+                        s.prozessverantwortlicher = [s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
                         s.start_datum = s.start || '';
                     });
                     console.log(`${_steckbriefeCache.length} Steckbriefe von API geladen.`);
@@ -2660,10 +2399,8 @@
             container.style.gridTemplateColumns = '';
             container.style.gap = '';
 
-            container.innerHTML = steckbriefe.map(s => {
-                const editClass = currentUser.role === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
-                return `
-                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
+            container.innerHTML = steckbriefe.map(s => `
+                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
                     <div class="card-checkbox" onclick="event.stopPropagation(); toggleSelection('${s.id}')">${selectedSteckbriefe.has(s.id) ? '✓' : ''}</div>
                     <h3>${escapeHtml(s.titel)}</h3>
                     <div class="meta">
@@ -2673,9 +2410,8 @@
                         <strong>Vision:</strong> ${escapeHtml(s.ziel_vision || '')}
                     </div>
                     ${s.status_optimierung ? `<div class="meta" style="margin-top: 8px;"><strong>Status:</strong> ${escapeHtml(s.status_optimierung)}</div>` : ''}
-                    ${editClass === 'can-edit' ? '<div style="margin-top: 10px; font-size: 0.75em; color: #5c6bc0; font-weight: 600;">✏️ Bearbeitung möglich</div>' : ''}
-                </div>`;
-            }).join('');
+                </div>
+            `).join('');
             
             updateSelectionUI();
         }
@@ -2729,10 +2465,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        ${steckbriefe.map(s => {
-                            const editClass = currentUser.role === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
-                            return `
-                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
+                        ${steckbriefe.map(s => `
+                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''}" onclick="openSteckbrief('${s.id}')">
                                 <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="text-align: center; cursor: pointer;">
                                     <span style="color: ${selectedSteckbriefe.has(s.id) ? '#009688' : '#ccc'}; font-size: 1.2em;">${selectedSteckbriefe.has(s.id) ? '☑' : '☐'}</span>
                                 </td>
@@ -2741,8 +2475,8 @@
                                 <td>${escapeHtml(s.auftraggeber || '-')}</td>
                                 <td>${escapeHtml(s.ziel_vision || '-')}</td>
                                 <td>${escapeHtml(s.status_optimierung || '-')}</td>
-                            </tr>`;
-                        }).join('')}
+                            </tr>
+                        `).join('')}
                     </tbody>
                 </table>
             `;
@@ -2969,16 +2703,6 @@
             return labels[aufwand] || aufwand;
         }
 
-        function formatTeamDisplay(projektteam) {
-            if (!projektteam) return '';
-            let data = projektteam;
-            if (typeof data === 'string') {
-                try { data = JSON.parse(data); } catch(e) { return projektteam; }
-            }
-            if (!Array.isArray(data)) return projektteam;
-            return data.map(m => m.name).join(', ');
-        }
-
         // Neuen Steckbrief öffnen (URL ändern)
         function openNewSteckbrief() {
             if (currentUser.role !== 'admin') {
@@ -3023,7 +2747,7 @@
                                 return;
                             }
                             dropdown.innerHTML = personen.map(p => `
-                                <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                                <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml(p.Vorname + ' ' + p.Nachname)}">
                                     ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
                                     ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
                                 </div>
@@ -3066,8 +2790,6 @@
             document.getElementById('prozessmanagerFID').value = '';
             document.getElementById('anforderungsmanagerFID').value = '';
             document.getElementById('prozessverantwortlicherFID').value = '';
-            _currentTeamMembers = [];
-            renderTeamTags();
             document.getElementById('modalTitle').textContent = 'Neuer Steckbrief';
             document.getElementById('detailUrl').innerHTML = '';
             switchTab('edit');
@@ -3123,7 +2845,7 @@
                         ${renderField('Prozessmanager/-in', s.prozessmanager)}
                         ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
                         ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
-                        ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam))}
+                        ${renderField('Prozess-/Projektteam', s.projektteam)}
                         ${renderField('Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span>', s.prozesscluster)}
                         ${renderField('Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span>', getAufwandLabel(s.umsetzungsaufwand))}
                         ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
@@ -3259,8 +2981,7 @@
             document.getElementById('anforderungsmanagerFID').value = s.anforderungsmanagerFID || '';
             document.getElementById('prozessverantwortlicher').value = s.prozessverantwortlicher || '';
             document.getElementById('prozessverantwortlicherFID').value = s.prozessverantwortlicherFID || '';
-            _currentTeamMembers = parseTeamMembers(s);
-            renderTeamTags();
+            document.getElementById('projektteam').value = s.projektteam || '';
             document.getElementById('prozesscluster').value = s.prozesscluster || '';
             document.getElementById('umsetzungsaufwand').value = s.umsetzungsaufwand || '';
             document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
@@ -3365,8 +3086,8 @@
             const changed = [];
             const skipFields = ['id', 'aenderungshistorie', 'created_at', 'updated_at',
                 'auftraggeberFID', 'prozessmanagerFID', 'anforderungsmanagerFID', 'prozessverantwortlicherFID',
-                'auftraggeber_vorname', 'auftraggeber_nachname', 'auftraggeber_titel', 'prozessmanager_vorname', 'prozessmanager_nachname', 'prozessmanager_titel',
-                'anforderungsmanager_vorname', 'anforderungsmanager_nachname', 'anforderungsmanager_titel', 'prozessverantwortlicher_vorname', 'prozessverantwortlicher_nachname', 'prozessverantwortlicher_titel'];
+                'auftraggeber_vorname', 'auftraggeber_nachname', 'prozessmanager_vorname', 'prozessmanager_nachname',
+                'anforderungsmanager_vorname', 'anforderungsmanager_nachname', 'prozessverantwortlicher_vorname', 'prozessverantwortlicher_nachname'];
             
             for (const key of Object.keys(newData)) {
                 if (skipFields.includes(key)) continue;
@@ -3409,7 +3130,7 @@
                 prozessmanagerFID: document.getElementById('prozessmanagerFID').value || null,
                 anforderungsmanagerFID: document.getElementById('anforderungsmanagerFID').value || null,
                 prozessverantwortlicherFID: document.getElementById('prozessverantwortlicherFID').value || null,
-                projektteam: JSON.stringify(_currentTeamMembers),
+                projektteam: document.getElementById('projektteam').value,
                 prozesscluster: document.getElementById('prozesscluster').value,
                 umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
@@ -3761,7 +3482,7 @@
                     ['Auftraggeber/-in*', s.auftraggeber || ''],
                     ['Prozessmanager/-in', s.prozessmanager || ''],
                     ['Prozessverantwortliche/r', s.prozessverantwortlicher || ''],
-                    ['Prozessteam (Name & OE)', formatTeamDisplay(s.projektteam) || ''],
+                    ['Prozessteam (Name & OE)', s.projektteam || ''],
                     ['Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''],
                     ['Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''],
                     ['Betroffener Life-Cycle', s.betroffener_lifecycle || ''],
@@ -4002,7 +3723,7 @@
                         createTableRow2Col('Auftraggeber/-in*', s.auftraggeber || ''),
                         createTableRow2Col('Prozessmanager/-in', s.prozessmanager || ''),
                         createTableRow2Col('Prozessverantwortliche/r', s.prozessverantwortlicher || ''),
-                        createTableRow2Col('Prozessteam (Name & OE)', formatTeamDisplay(s.projektteam) || ''),
+                        createTableRow2Col('Prozessteam (Name & OE)', s.projektteam || ''),
                         createTableRow2Col('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''),
                         createTableRow2Col('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''),
                         createTableRow2Col('Betroffener Life-Cycle', s.betroffener_lifecycle || ''),
