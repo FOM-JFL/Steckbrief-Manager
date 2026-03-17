@@ -2457,7 +2457,11 @@
         // ====== HAUPT-ANWENDUNG ======
         
         // API-Anbindung an MariaDB
-        const API_URL = 'http://localhost:5000/api';
+        // Lokal: localhost, Remote: fester API-Server
+        const API_HOST = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+            ? 'localhost'
+            : 'vdi-w11-01-0557';
+        const API_URL = window.location.protocol + '//' + API_HOST + ':5000/api';
         const STORAGE_KEY = 'steckbriefe';
         let _steckbriefeCache = [];
         let currentSteckbriefId = null;
