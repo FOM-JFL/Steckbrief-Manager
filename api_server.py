@@ -6,15 +6,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 DB_CONFIG = {
-    'host': 'mariadb.bcw-intern.local',
-    'user': os.environ.get('DB_USER', 'ralf.schmitz'),
-    'password': os.environ.get('DB_PASS', 'd-kvsl1715'),
-    'database': 'bcw_allgemein',
+    'host': os.environ.get('DB_HOST', 'mariadb.bcw-intern.local'),
+    'user': os.environ['DB_USER'],
+    'password': os.environ['DB_PASS'],
+    'database': os.environ.get('DB_NAME', 'bcw_allgemein'),
     'ssl_disabled': False
 }
 
