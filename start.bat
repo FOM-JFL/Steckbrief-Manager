@@ -4,7 +4,7 @@ title Steckbrief Manager (Prozesse ^& Projekte) - FOM (V15.2)
 echo.
 echo  ================================================
 echo   Steckbrief Manager (Prozesse ^& Projekte) - FOM
-echo   Version 15.3.0
+echo   Version 15.4.0
 echo  ================================================
 echo.
 echo  Pruefe Python...
