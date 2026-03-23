@@ -14,5 +14,11 @@ __pycache__/
 # Environment
 .env
 
+# Logs
+logs/
+
+# Virtual Environment
+.venv/
+
 # Ignorierte Ordner
 Volle Steckbriefe_2026_03_02/
