@@ -516,6 +516,7 @@
             padding: 10px;
             text-align: left;
             border-bottom: 1px solid #eee;
+            white-space: pre-line;
         }
 
         .bewertung-table th {
@@ -582,6 +583,7 @@
             background: #f8f9fa;
             border-radius: 6px;
             border: 1px solid #eee;
+            white-space: pre-line;
         }
 
         .detail-actions {
@@ -4246,9 +4248,13 @@
             ];
             for (const pf of personFields) {
                 const name = steckbrief[pf.text];
+                console.log(`  FID-Check ${pf.text}: name="${name}" fid=${steckbrief[pf.fid]} skip=${!name || !!steckbrief[pf.fid]}`);
                 if (!name || steckbrief[pf.fid]) continue;
+                // Bei mehreren Namen (Komma, "und", "&", "/", Newline): ersten nehmen
+                const firstName = name.split(/[,&\/\n]|\bund\b/i)[0].trim();
                 // Titel und Anrede entfernen für die Suche
-                const cleanName = name.replace(/^(Prof\.\s*)?(Dr\.\s*)?(Hr\.|Herr|Fr\.|Frau)\s*/i, '').trim();
+                const cleanName = firstName.replace(/^(Prof\.\s*)?(Dr\.\s*)?(Hr\.|Herr|Fr\.|Frau)?\s*/i, '').trim();
+                console.log(`  FID-Resolve ${pf.text}: name="${name}" → firstName="${firstName}" → cleanName="${cleanName}"`);
                 if (cleanName.length < 2) continue;
                 // Nachname als Suchbegriff (letztes Wort)
                 const parts = cleanName.split(/\s+/);
@@ -4257,17 +4263,30 @@
                     const resp = await fetch(API_URL + '/personen/suche?q=' + encodeURIComponent(searchTerm));
                     if (!resp.ok) continue;
                     const results = await resp.json();
-                    // Exakten Match finden: Nachname muss übereinstimmen
-                    const match = results.find(p => {
+                    // Exakten Match: Vorname + Nachname prüfen (nicht nur Nachname!)
+                    let match = results.find(p => {
                         const fullName = [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase();
-                        return fullName === name.toLowerCase() || 
-                               p.Nachname.toLowerCase() === searchTerm.toLowerCase();
+                        return fullName === cleanName.toLowerCase();
                     });
+                    if (!match) {
+                        match = results.find(p => {
+                            const simpleName = [p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase();
+                            return simpleName === cleanName.toLowerCase();
+                        });
+                    }
+                    // Mehrteiliger Nachname (z.B. "von der Ahé"): cleanName könnte komplett der Nachname sein
+                    if (!match) {
+                        match = results.find(p => p.Nachname.toLowerCase() === cleanName.toLowerCase());
+                    }
+                    // Nur-Nachname-Fallback nur wenn kein Vorname im Word stand
+                    if (!match && parts.length === 1) {
+                        match = results.find(p => p.Nachname.toLowerCase() === searchTerm.toLowerCase());
+                    }
                     if (match) {
                         steckbrief[pf.fid] = match.PersonenID;
                         console.log(`Import: "${name}" → PersonenID ${match.PersonenID}`);
                     }
-                } catch (e) { /* Suche fehlgeschlagen - FID bleibt leer */ }
+                } catch (e) { console.error(`  FID-Fehler ${pf.text}:`, e); }
             }
         }
 
@@ -4405,6 +4424,9 @@
             const zip = await JSZip.loadAsync(arrayBuffer);
             const documentXml = await zip.file('word/document.xml').async('string');
             
+            // Nummerierungsdefinitionen laden (für nummerierte Listen)
+            const numberingMap = await parseNumberingXml(zip);
+            
             // XML parsen
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(documentXml, 'text/xml');
@@ -4415,9 +4437,9 @@
             for (let row of rows) {
                 const cells = row.getElementsByTagName('w:tc');
                 if (cells.length >= 2) {
-                    const key = getCellText(cells[0]).toLowerCase().trim();
-                    const value = getCellText(cells[1]).trim();
-                    const value2 = cells.length > 2 ? getCellText(cells[2]).trim() : '';
+                    const key = getCellText(cells[0], numberingMap).toLowerCase().trim();
+                    const value = getCellText(cells[1], numberingMap).trim();
+                    const value2 = cells.length > 2 ? getCellText(cells[2], numberingMap).trim() : '';
                     
                     // DEBUG: Alle Zeilen loggen
                     console.log(`  ROW [${cells.length} Sp]: key="${key.substring(0,50)}" | val="${value.substring(0,50)}" | val2="${value2.substring(0,30)}"`);
@@ -4427,6 +4449,7 @@
                         steckbrief.titel = value;
                     } else if (key.includes('auftraggeber')) {
                         steckbrief.auftraggeber = value;
+                        console.log(`  >>> AUFTRAGGEBER erkannt: key="${key}" value="${value}"`);
                     } else if (key.includes('prozessmanager')) {
                         steckbrief.prozessmanager = value;
                     } else if (key.includes('anforderungsmanager')) {
@@ -4447,18 +4470,27 @@
                         steckbrief.gesamtstatus = value;
                     } else if (key.includes('hochschulentwicklungsplan') || key.includes('teil des')) {
                         steckbrief.teil_hochschulentwicklungsplan = value.toLowerCase().includes('ja') ? 'ja' : (value.toLowerCase().includes('nein') ? 'nein' : value);
-                    } else if (key.includes('umsetzungsaufwand')) {
-                        const aufwandText = (value + ' ' + value2).toLowerCase();
-                        if (aufwandText.includes('groß') || aufwandText.includes('gross')) {
-                            if (aufwandText.includes('mittel')) {
-                                steckbrief.umsetzungsaufwand = 'mittel-gross';
-                            } else {
-                                steckbrief.umsetzungsaufwand = 'gross';
+                    } else if (key.includes('umsetzungsaufwand') || key.includes('geschätzt')) {
+                        console.log(`  >>> AUFWAND erkannt: key="${key}" value="${value}" value2="${value2}"`);
+                        // Aufwand nur aus value/value2 bestimmen (nicht aus dem Key, da dort die Optionsliste steht)
+                        const aufwandSource = (value + ' ' + value2).toLowerCase().replace(/[☐☒✓✗□■●○]/g, '').trim();
+                        // Wenn key Checkbox-Markierungen enthält (☒), diese auswerten
+                        const keyCheckboxes = key.match(/[☒✓■●]\s*(klein|mittel|gro[sß]+|hoch|niedrig|gering)/gi);
+                        const aufwandText = keyCheckboxes ? keyCheckboxes.map(m => m.toLowerCase()).join(' ') : aufwandSource;
+                        // Explizit leer setzen damit beim Update der alte DB-Wert überschrieben wird
+                        steckbrief.umsetzungsaufwand = '';
+                        if (aufwandText) {
+                            if (aufwandText.includes('groß') || aufwandText.includes('gross') || aufwandText.includes('hoch')) {
+                                if (aufwandText.includes('mittel')) {
+                                    steckbrief.umsetzungsaufwand = 'mittel-gross';
+                                } else {
+                                    steckbrief.umsetzungsaufwand = 'gross';
+                                }
+                            } else if (aufwandText.includes('mittel')) {
+                                steckbrief.umsetzungsaufwand = 'mittel';
+                            } else if (aufwandText.includes('klein') || aufwandText.includes('niedrig') || aufwandText.includes('gering')) {
+                                steckbrief.umsetzungsaufwand = 'klein';
                             }
-                        } else if (aufwandText.includes('mittel')) {
-                            steckbrief.umsetzungsaufwand = 'mittel';
-                        } else if (aufwandText.includes('klein')) {
-                            steckbrief.umsetzungsaufwand = 'klein';
                         }
                     }
                     // W-Fragen (startsWith, da z.B. "Wann...und welche..." sonst falsch matcht)
@@ -4582,17 +4614,79 @@
             return steckbrief;
         }
 
-        // Hilfsfunktion: Text aus Word-Zelle extrahieren (mit Absatztrennung)
-        function getCellText(cell) {
+        // Hilfsfunktion: Nummerierungsdefinitionen aus numbering.xml laden
+        async function parseNumberingXml(zip) {
+            const numMap = {}; // { numId -> { ilvl -> { fmt, abstractNumId } } }
+            try {
+                const numbXmlStr = await zip.file('word/numbering.xml')?.async('string');
+                if (!numbXmlStr) return numMap;
+                const parser = new DOMParser();
+                const numbDoc = parser.parseFromString(numbXmlStr, 'text/xml');
+                // abstractNum definiert die Formate
+                const abstractNums = {};
+                for (let an of numbDoc.getElementsByTagName('w:abstractNum')) {
+                    const anId = an.getAttribute('w:abstractNumId');
+                    abstractNums[anId] = {};
+                    for (let lvl of an.getElementsByTagName('w:lvl')) {
+                        const ilvl = lvl.getAttribute('w:ilvl');
+                        const fmtEl = lvl.getElementsByTagName('w:numFmt')[0];
+                        const fmt = fmtEl ? fmtEl.getAttribute('w:val') : 'bullet';
+                        abstractNums[anId][ilvl] = fmt;
+                    }
+                }
+                // num verknüpft numId mit abstractNumId
+                for (let num of numbDoc.getElementsByTagName('w:num')) {
+                    const numId = num.getAttribute('w:numId');
+                    const ref = num.getElementsByTagName('w:abstractNumId')[0];
+                    if (ref) {
+                        const anId = ref.getAttribute('w:val');
+                        numMap[numId] = abstractNums[anId] || {};
+                    }
+                }
+            } catch (e) {
+                console.warn('numbering.xml konnte nicht geparst werden:', e);
+            }
+            return numMap;
+        }
+
+        // Hilfsfunktion: Text aus Word-Zelle extrahieren (mit Absatztrennung und Nummerierung)
+        function getCellText(cell, numberingMap) {
             const paras = cell.getElementsByTagName('w:p');
             const paraTexts = [];
+            const counters = {}; // { numId -> { ilvl -> count } }
             for (let p of paras) {
                 const texts = p.getElementsByTagName('w:t');
                 let paraText = '';
                 for (let t of texts) {
                     paraText += t.textContent || '';
                 }
-                if (paraText.trim()) paraTexts.push(paraText);
+                if (!paraText.trim()) continue;
+                // Nummerierung prüfen
+                const numPr = p.getElementsByTagName('w:numPr')[0];
+                if (numPr && numberingMap) {
+                    const numIdEl = numPr.getElementsByTagName('w:numId')[0];
+                    const ilvlEl = numPr.getElementsByTagName('w:ilvl')[0];
+                    const numId = numIdEl ? numIdEl.getAttribute('w:val') : null;
+                    const ilvl = ilvlEl ? ilvlEl.getAttribute('w:val') : '0';
+                    if (numId && numberingMap[numId]) {
+                        const fmt = numberingMap[numId][ilvl] || 'bullet';
+                        if (fmt === 'decimal' || fmt === 'lowerLetter' || fmt === 'upperLetter' || fmt === 'lowerRoman' || fmt === 'upperRoman') {
+                            // Zähler erhöhen
+                            if (!counters[numId]) counters[numId] = {};
+                            counters[numId][ilvl] = (counters[numId][ilvl] || 0) + 1;
+                            const n = counters[numId][ilvl];
+                            let prefix;
+                            if (fmt === 'lowerLetter') prefix = String.fromCharCode(96 + n) + ') ';
+                            else if (fmt === 'upperLetter') prefix = String.fromCharCode(64 + n) + ') ';
+                            else prefix = n + '. ';
+                            paraText = prefix + paraText;
+                        } else {
+                            // Bullet oder anderes Format
+                            paraText = '• ' + paraText;
+                        }
+                    }
+                }
+                paraTexts.push(paraText);
             }
             return paraTexts.join('\n');
         }
