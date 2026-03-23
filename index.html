@@ -2571,41 +2571,13 @@
                     });
                     isReadOnlyMode = false;
                     console.log(`${_steckbriefeCache.length} Steckbriefe von API geladen.`);
+                } else {
+                    console.error('API Fehler: Status ' + response.status);
+                    _steckbriefeCache = [];
                 }
             } catch (e) {
-                console.warn('API nicht erreichbar, versuche steckbriefe.json:', e);
-                try {
-                    const jsonResponse = await fetch('steckbriefe.json');
-                    if (jsonResponse.ok) {
-                        _steckbriefeCache = await jsonResponse.json();
-                        _steckbriefeCache.forEach(s => {
-                            s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
-                            s.prozessmanager = [s.prozessmanager_titel, s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
-                            s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
-                            s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
-                            s.start_datum = s.start || '';
-                        });
-                        isReadOnlyMode = true;
-                        console.log(`${_steckbriefeCache.length} Steckbriefe aus steckbriefe.json geladen (Nur-Lese-Modus).`);
-                        showReadOnlyBanner();
-                    }
-                } catch (e2) {
-                    console.error('Auch steckbriefe.json nicht erreichbar:', e2);
-                    const data = localStorage.getItem(STORAGE_KEY);
-                    _steckbriefeCache = data ? JSON.parse(data) : [];
-                }
-            }
-        }
-
-        // Nur-Lese-Modus Banner anzeigen
-        function showReadOnlyBanner() {
-            let banner = document.getElementById('readOnlyBanner');
-            if (!banner) {
-                banner = document.createElement('div');
-                banner.id = 'readOnlyBanner';
-                banner.style.cssText = 'background:#fff3cd;color:#856404;border:1px solid #ffc107;padding:10px 20px;text-align:center;font-size:14px;position:fixed;top:0;left:0;right:0;z-index:9999;box-shadow:0 2px 4px rgba(0,0,0,0.1);';
-                banner.innerHTML = '⚠️ <strong>Nur-Lese-Modus</strong> – Die Daten werden aus einer lokalen Kopie geladen. Bearbeitung ist nicht möglich. <span style="cursor:pointer;float:right;font-weight:bold;" onclick="this.parentElement.remove()">✕</span>';
-                document.body.prepend(banner);
+                console.error('API nicht erreichbar:', e);
+                _steckbriefeCache = [];
             }
         }
 
