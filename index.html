@@ -2458,10 +2458,8 @@
         // ====== HAUPT-ANWENDUNG ======
         
         // API-Anbindung an MariaDB
-        // Lokal: localhost, Remote: IP-Adresse des API-Servers (fuer iPad/Mobile)
-        const API_HOST = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-            ? 'localhost'
-            : '10.17.81.205';
+        // API läuft auf dem gleichen Host wie die Webseite, nur auf Port 5000
+        const API_HOST = window.location.hostname;
         const API_URL = 'http://' + API_HOST + ':5000/api';
         const STORAGE_KEY = 'steckbriefe';
         let _steckbriefeCache = [];

@@ -1,10 +1,10 @@
 @echo off
 chcp 65001 >nul
-title Steckbrief Manager (Prozesse ^& Projekte) - FOM (V15)
+title Steckbrief Manager (Prozesse ^& Projekte) - FOM (V15.1)
 echo.
 echo  ================================================
 echo   Steckbrief Manager (Prozesse ^& Projekte) - FOM
-echo   Version 15.0.0
+echo   Version 15.1.0
 echo  ================================================
 echo.
 echo  Pruefe Python...
