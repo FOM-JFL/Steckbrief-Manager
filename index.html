@@ -2576,8 +2576,11 @@
             if (!t) return [];
             if (typeof t === 'string') {
                 try { t = JSON.parse(t); } catch(e) { 
-                    // Rückwärtskompatibilität: Freitext als einzelner Eintrag
-                    return t.trim() ? [{ fid: null, name: t.trim() }] : [];
+                    // Rückwärtskompatibilität: Freitext in einzelne Personen aufteilen
+                    return t.split(/[\n,;]+/)
+                        .map(n => n.trim())
+                        .filter(n => n.length > 0)
+                        .map(n => ({ fid: null, name: n }));
                 }
             }
             return Array.isArray(t) ? t : [];
@@ -3360,9 +3363,12 @@
             if (!projektteam) return '';
             let data = projektteam;
             if (typeof data === 'string') {
-                try { data = JSON.parse(data); } catch(e) { return projektteam; }
+                try { data = JSON.parse(data); } catch(e) {
+                    // Freitext: an Zeilenumbrüchen/Komma/Semikolon trennen
+                    return data.split(/[\n,;]+/).map(n => n.trim()).filter(Boolean).join(', ');
+                }
             }
-            if (!Array.isArray(data)) return projektteam;
+            if (!Array.isArray(data) || data.length === 0) return '';
             return data.map(m => m.name).join(', ');
         }
 
@@ -3913,7 +3919,7 @@
                 prozessmanagerFID: document.getElementById('prozessmanagerFID').value || null,
                 anforderungsmanagerFID: document.getElementById('anforderungsmanagerFID').value || null,
                 prozessverantwortlicherFID: document.getElementById('prozessverantwortlicherFID').value || null,
-                projektteam: JSON.stringify(_currentTeamMembers),
+                projektteam: _currentTeamMembers.length > 0 ? JSON.stringify(_currentTeamMembers) : null,
                 prozesscluster: document.getElementById('prozesscluster').value,
                 umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
@@ -4024,15 +4030,9 @@
                 const result = await response.json();
                 const savedId = result.id;
                 
-                // Cache aktualisieren
-                await loadSteckbriefeFromAPI();
-                updateFilterDropdowns();
-                
-                // Nach dem Speichern zur Detail-Ansicht des Steckbriefs navigieren
-                window.history.pushState({}, '', '?id=' + encodeURIComponent(savedId));
-                showSteckbriefDetail(savedId, false);
-                
-                console.log('Steckbrief erfolgreich in DB gespeichert (ID: ' + savedId + ')');
+                // Nach dem Speichern Seite neu laden, damit Änderungen sofort sichtbar sind
+                window.location.href = '?id=' + encodeURIComponent(savedId);
+                return;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
                 alert('Fehler beim Speichern in der Datenbank: ' + error.message);
