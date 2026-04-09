@@ -405,6 +405,80 @@
             color: #e53e3e;
         }
 
+        .user-mgmt-actions button.steckbriefe:hover {
+            background: #e0f2f1;
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .user-mgmt-steckbriefe-row td {
+            padding: 0 !important;
+            border-top: none !important;
+            background: #f8fafb;
+        }
+
+        .user-mgmt-steckbriefe-detail {
+            padding: 12px 20px 16px;
+            border-top: 1px dashed #e0e0e0;
+        }
+
+        .user-mgmt-steckbriefe-detail h4 {
+            font-size: 0.82em;
+            font-weight: 600;
+            color: #009688;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 10px;
+        }
+
+        .user-mgmt-steckbriefe-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .user-mgmt-steckbrief-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .user-mgmt-steckbrief-item:hover {
+            border-color: #009688;
+            background: #e0f2f1;
+        }
+
+        .user-mgmt-steckbrief-item .sb-id {
+            color: #999;
+            font-size: 0.85em;
+            min-width: 40px;
+        }
+
+        .user-mgmt-steckbrief-item .sb-title {
+            flex: 1;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .user-mgmt-steckbrief-item .sb-status {
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        .user-mgmt-steckbriefe-empty {
+            color: #999;
+            font-size: 0.85em;
+            font-style: italic;
+            padding: 8px 0;
+        }
+
         .user-mgmt-back {
             background: none;
             border: none;
@@ -1597,8 +1671,8 @@
         }
 
         .overview-sidebar {
-            width: 240px;
-            min-width: 240px;
+            width: 270px;
+            min-width: 270px;
             background: #fff;
             border-right: 1px solid #e0e0e0;
             border-radius: 8px 0 0 8px;
@@ -1853,8 +1927,8 @@
             }
             .overview-sidebar:not(.collapsed) {
                 position: absolute;
-                width: 240px;
-                min-width: 240px;
+                width: 270px;
+                min-width: 270px;
                 z-index: 10;
                 box-shadow: 2px 0 8px rgba(0,0,0,0.1);
             }
@@ -2145,45 +2219,34 @@
             color: #fff;
         }
 
-        /* Filter – Genesis-Style */
-        .filter-bar {
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            margin: 0;
-            padding: 0;
-            border-radius: 0;
-            display: none;
+        /* Sidebar-Filter */
+        .sidebar-filter-section {
+            margin-bottom: 18px;
         }
 
-        .filter-bar.visible {
-            display: block;
-        }
-
-        .filter-bar-header {
+        .sidebar-filter-header {
             display: flex;
             align-items: center;
-            padding: 10px 30px;
             cursor: pointer;
             user-select: none;
-            border-bottom: 1px solid #e8e8e8;
-            background: #fafafa;
+            padding: 8px 0;
+            margin-bottom: 8px;
         }
 
-        .filter-bar-header:hover {
-            background: #f2f2f2;
-        }
-
-        .filter-header-icon {
+        .sidebar-filter-header .filter-header-icon {
             color: #009688;
-            font-size: 1.05em;
-            margin-right: 8px;
+            font-size: 0.9em;
+            margin-right: 6px;
+            transition: transform 0.2s;
         }
 
-        .filter-bar-header h3 {
+        .sidebar-filter-header h3 {
             color: #333;
-            font-size: 0.9em;
+            font-size: 0.72em;
             font-weight: 600;
             margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .filter-badge {
@@ -2191,22 +2254,22 @@
             align-items: center;
             background: #009688;
             color: #fff;
-            font-size: 0.72em;
+            font-size: 0.68em;
             font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 12px;
-            margin-left: 10px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
         }
 
         .filter-badge.hidden {
             display: none;
         }
 
-        .filter-header-actions {
+        .sidebar-filter-actions {
             margin-left: auto;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 6px;
         }
 
         .filter-reset-btn {
@@ -2214,9 +2277,9 @@
             border: none;
             color: #009688;
             cursor: pointer;
-            font-size: 0.82em;
+            font-size: 0.75em;
             font-weight: 500;
-            padding: 4px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
             transition: background 0.15s;
         }
@@ -2226,31 +2289,26 @@
         }
 
         .filter-chevron {
-            font-size: 1.1em;
+            font-size: 0.85em;
             color: #888;
             transition: transform 0.25s;
         }
 
-        .filter-bar.collapsed .filter-chevron {
+        .sidebar-filter-section.collapsed .filter-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .sidebar-filter-section:not(.collapsed) .filter-chevron {
             transform: rotate(0deg);
         }
 
-        .filter-bar:not(.collapsed) .filter-chevron {
-            transform: rotate(180deg);
-        }
-
-        .filter-grid {
+        .sidebar-filter-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0;
-            padding: 14px 30px 16px;
-            align-items: flex-end;
-            justify-content: center;
-            border-bottom: 1px solid #e8e8e8;
-            background: #fff;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .filter-bar.collapsed .filter-grid {
+        .sidebar-filter-section.collapsed .sidebar-filter-grid {
             display: none;
         }
 
@@ -2258,29 +2316,23 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
-            flex: 1 1 140px;
-            max-width: 220px;
-            padding: 0 10px 0 0;
-        }
-
-        .filter-group:last-child {
-            padding-right: 0;
+            width: 100%;
         }
 
         .filter-group label {
             font-size: 0.7em;
             font-weight: 600;
             color: #777;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .filter-group select {
-            padding: 7px 28px 7px 10px;
-            border: 1px solid #ccc;
+            padding: 6px 26px 6px 8px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 0.85em;
+            font-size: 0.82em;
             background: white;
             cursor: pointer;
             transition: border-color 0.2s;
@@ -2290,7 +2342,7 @@
             -webkit-appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 10px center;
+            background-position: right 8px center;
             color: #333;
         }
 
@@ -2310,14 +2362,14 @@
         }
 
         .filter-search-toggle {
-            padding: 7px 9px;
-            border: 1px solid #ccc;
+            padding: 6px 7px;
+            border: 1px solid #ddd;
             border-left: none;
             border-radius: 0 4px 4px 0;
             background: #f5f5f5;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.85em;
+            font-size: 0.8em;
             flex-shrink: 0;
         }
 
@@ -2332,13 +2384,13 @@
         }
 
         .filter-group input[type="text"] {
-            padding: 7px 10px;
-            border: 1px solid #ccc;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 0.85em;
+            font-size: 0.82em;
             background: white;
             transition: all 0.2s;
-            margin-top: 5px;
+            margin-top: 4px;
             display: none;
             width: 100%;
             min-width: 0;
@@ -2356,6 +2408,7 @@
         .filter-group input[type="text"]::placeholder {
             color: #aaa;
             font-style: italic;
+            font-size: 0.95em;
         }
 
         .filter-group-id input[type="text"] {
@@ -2366,9 +2419,8 @@
         .active-filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            padding: 8px 30px 10px;
-            background: #fff;
+            gap: 5px;
+            padding: 6px 0 0;
         }
 
         .active-filters:empty {
@@ -2378,12 +2430,12 @@
         .filter-tag {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             background: #e0f2f1;
             color: #009688;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.78em;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.72em;
         }
 
         .filter-tag button {
@@ -2398,33 +2450,6 @@
 
         .filter-tag button:hover {
             color: #00695c;
-        }
-
-        @media (max-width: 1100px) {
-            .filter-group {
-                flex: 1 1 130px;
-                max-width: 200px;
-            }
-            .filter-grid {
-                padding: 12px 20px 14px;
-            }
-            .filter-bar-header {
-                padding: 10px 20px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .filter-group {
-                flex: 1 1 100%;
-                max-width: 100%;
-            }
-            .filter-grid {
-                padding: 10px 15px 12px;
-                gap: 8px;
-            }
-            .filter-bar-header {
-                padding: 10px 15px;
-            }
         }
 
         /* Export Modal */
@@ -3237,98 +3262,8 @@
         </div>
 
         <div class="landing-footer">
-            Steckbrief Manager v16.1.0 · FOM Hochschule für Oekonomie & Management
+            Steckbrief Manager v17.1.0 · FOM Hochschule für Oekonomie & Management
         </div>
-    </div>
-
-    <!-- Filter-Bar direkt unter Header (Genesis-Style) -->
-    <div class="filter-bar" id="filterBar">
-        <div class="filter-bar-header" onclick="toggleFilterBar()">
-            <span class="filter-header-icon">▼</span>
-            <h3>Filter &amp; Suche</h3>
-            <span class="filter-badge hidden" id="filterBadge">0 aktiv</span>
-            <div class="filter-header-actions">
-                <button class="filter-reset-btn" onclick="event.stopPropagation(); resetFilters()">↻ Zurücksetzen</button>
-                <span class="filter-chevron">▾</span>
-            </div>
-        </div>
-        <div class="filter-grid">
-            <div class="filter-group filter-group-id">
-                <label for="filterId">ID</label>
-                <input type="text" id="filterId" placeholder="ID eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterTitel">Titel</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterTitel" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterTitelText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterCluster">Prozesscluster</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterCluster" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterClusterText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterAuftraggeber">Auftraggeber</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterAuftraggeber" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterStatusOptimierung">Status</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterStatusOptimierung" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterProzessmanager">Prozessmanager</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterProzessmanager" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterAnforderungsmanager">Anforderungsmanager</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterAnforderungsmanager" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                    </select>
-                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                </div>
-                <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-            </div>
-            <div class="filter-group">
-                <label for="filterHEP">Teil des HEP</label>
-                <div class="filter-select-wrapper">
-                    <select id="filterHEP" onchange="applyFilters()">
-                        <option value="">Alle</option>
-                        <option value="ja">Ja</option>
-                        <option value="nein">Nein</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="active-filters" id="activeFilters"></div>
     </div>
 
     <div class="container" id="overviewContainer" style="display: none;">
@@ -3354,6 +3289,95 @@
                     <div class="sidebar-search">
                         <span class="sidebar-search-icon">🔍</span>
                         <input type="text" id="sidebarSearchInput" placeholder="Steckbrief suchen..." oninput="onSidebarSearch()">
+                    </div>
+
+                    <div class="sidebar-filter-section" id="sidebarFilterSection">
+                        <div class="sidebar-filter-header" onclick="toggleSidebarFilter()">
+                            <span class="filter-header-icon">▾</span>
+                            <h3>Filter</h3>
+                            <span class="filter-badge hidden" id="filterBadge">0 aktiv</span>
+                            <div class="sidebar-filter-actions">
+                                <button class="filter-reset-btn" onclick="event.stopPropagation(); resetFilters()" title="Filter zurücksetzen">↻</button>
+                                <span class="filter-chevron">▾</span>
+                            </div>
+                        </div>
+                        <div class="sidebar-filter-grid">
+                            <div class="filter-group filter-group-id">
+                                <label for="filterId">ID</label>
+                                <input type="text" id="filterId" placeholder="ID..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterTitel">Titel</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterTitel" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterTitelText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterCluster">Prozesscluster</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterCluster" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterClusterText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterAuftraggeber">Auftraggeber</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterAuftraggeber" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterStatusOptimierung">Status</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterStatusOptimierung" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterProzessmanager">Prozessmanager</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterProzessmanager" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterAnforderungsmanager">Anforderungsmgr.</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterAnforderungsmanager" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                    </select>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
+                                </div>
+                                <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort..." oninput="applyFilters()">
+                            </div>
+                            <div class="filter-group">
+                                <label for="filterHEP">Teil des HEP</label>
+                                <div class="filter-select-wrapper">
+                                    <select id="filterHEP" onchange="applyFilters()">
+                                        <option value="">Alle</option>
+                                        <option value="ja">Ja</option>
+                                        <option value="nein">Nein</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="active-filters" id="activeFilters"></div>
                     </div>
 
                     <div class="sidebar-section">
@@ -3452,9 +3476,9 @@
                                 <input type="text" id="titel" required>
                             </div>
                             <div class="form-group">
-                                <label for="auftraggeber">Auftraggeber/-in *</label>
+                                <label for="auftraggeber">Auftraggeber/-in</label>
                                 <div class="personen-autocomplete">
-                                    <input type="text" id="auftraggeber" required autocomplete="off" placeholder="Name eingeben...">
+                                    <input type="text" id="auftraggeber" autocomplete="off" placeholder="Name eingeben...">
                                     <input type="hidden" id="auftraggeberFID">
                                     <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
                                 </div>
@@ -4351,6 +4375,7 @@
                     <td>${created}</td>
                     <td>
                         <div class="user-mgmt-actions">
+                            ${u.role === 'editor' ? `<button class="steckbriefe" onclick="toggleEditorSteckbriefe('${escapeHtml(u.username)}', '${escapeHtml(name)}', this)" title="Zugewiesene Steckbriefe">📋</button>` : ''}
                             <button onclick="editUserRole(${u.id}, '${u.role}', '${escapeHtml(u.username)}')" title="Rolle ändern" ${u.username === currentUser.username ? 'disabled' : ''}>✏️</button>
                             <button class="delete" onclick="deleteUser(${u.id}, '${escapeHtml(u.username)}')" title="Benutzer entfernen" ${u.username === currentUser.username ? 'disabled' : ''}>🗑️</button>
                         </div>
@@ -4375,23 +4400,26 @@
 
         async function editUserRole(userId, currentRole, username) {
             if (username === currentUser.username) return;
-            const roles = ['admin', 'editor', 'viewer'];
             const roleLabels = { admin: 'Administrator', editor: 'Editor', viewer: 'Leser' };
-            const nextRole = roles[(roles.indexOf(currentRole) + 1) % roles.length];
-            const confirmed = await showConfirmDialog(
-                'Rolle ändern',
-                `Rolle von "${username}" von ${roleLabels[currentRole]} auf ${roleLabels[nextRole]} ändern?`
-            );
-            if (!confirmed) return;
-            await changeUserRole(userId, nextRole);
+            const otherRoles = ['admin', 'editor', 'viewer'].filter(r => r !== currentRole);
+            const buttons = otherRoles.map(r => ({ text: roleLabels[r], class: 'primary', value: r }));
+            buttons.push({ text: 'Abbrechen', class: 'secondary', value: null });
+            const chosen = await showCustomDialog({
+                icon: '✏️',
+                title: 'Rolle ändern',
+                message: `Neue Rolle für "${username}" wählen (aktuell: ${roleLabels[currentRole]}):`,
+                buttons
+            });
+            if (!chosen) return;
+            await changeUserRole(userId, chosen);
             await loadUserManagement();
         }
 
         async function deleteUser(userId, username) {
             if (username === currentUser.username) return;
-            const confirmed = await showConfirmDialog(
-                'Benutzer entfernen',
-                `Soll der Benutzer "${username}" wirklich entfernt werden? Diese Aktion kann nicht rückgängig gemacht werden.`
+            const confirmed = await showConfirm(
+                `Soll der Benutzer "${username}" wirklich entfernt werden? Diese Aktion kann nicht rückgängig gemacht werden.`,
+                'Benutzer entfernen'
             );
             if (!confirmed) return;
             try {
@@ -4427,6 +4455,43 @@
         function closeUserManagement() {
             document.getElementById('userMgmtPage').style.display = 'none';
             navigateToLanding();
+        }
+
+        function toggleEditorSteckbriefe(username, displayName, btn) {
+            // Bereits offene Detail-Zeile für diesen Editor?
+            const existingRow = document.querySelector(`tr.user-mgmt-steckbriefe-row[data-editor="${username}"]`);
+            if (existingRow) {
+                existingRow.remove();
+                return;
+            }
+            // Andere offene Detail-Zeilen schließen
+            document.querySelectorAll('tr.user-mgmt-steckbriefe-row').forEach(r => r.remove());
+
+            const steckbriefe = getSteckbriefe();
+            const assigned = steckbriefe.filter(s => {
+                const editors = parseBearbeiter(s);
+                return editors.some(ed => ed.name && ed.name.toLowerCase() === displayName.toLowerCase());
+            });
+
+            const parentRow = btn.closest('tr');
+            const detailRow = document.createElement('tr');
+            detailRow.className = 'user-mgmt-steckbriefe-row';
+            detailRow.dataset.editor = username;
+            detailRow.innerHTML = `<td colspan="5">
+                <div class="user-mgmt-steckbriefe-detail">
+                    <h4>📋 Zugewiesene Steckbriefe – ${escapeHtml(displayName)} (${assigned.length})</h4>
+                    ${assigned.length === 0 
+                        ? '<div class="user-mgmt-steckbriefe-empty">Keine Steckbriefe zugewiesen</div>'
+                        : `<div class="user-mgmt-steckbriefe-list">${assigned.map(s => `
+                            <div class="user-mgmt-steckbrief-item" onclick="window.location.href='?id=${s.id}'">
+                                <span class="sb-id">#${s.id}</span>
+                                <span class="sb-title">${escapeHtml(s.titel)}</span>
+                                <span class="sb-status">${escapeHtml(s.status_optimierung || s.prozesscluster || '')}</span>
+                            </div>`).join('')}</div>`
+                    }
+                </div>
+            </td>`;
+            parentRow.after(detailRow);
         }
 
         function showUserMgmtPage(show) {
@@ -5009,17 +5074,11 @@
         // Übersicht anzeigen/ausblenden
         function showOverview(show) {
             document.getElementById('overviewContainer').style.display = show ? 'block' : 'none';
-            const fb = document.getElementById('filterBar');
-            if (show) {
-                fb.classList.add('visible');
-            } else {
-                fb.classList.remove('visible');
-            }
         }
 
-        // Filter-Bar auf-/zuklappen
-        function toggleFilterBar() {
-            document.getElementById('filterBar').classList.toggle('collapsed');
+        // Sidebar-Filter auf-/zuklappen
+        function toggleSidebarFilter() {
+            document.getElementById('sidebarFilterSection').classList.toggle('collapsed');
         }
 
         // Badge mit Anzahl aktiver Filter aktualisieren
@@ -6039,6 +6098,13 @@
             const steckbriefe = getSteckbriefe();
             const id = document.getElementById('steckbriefId').value || null;
             const isNew = !document.getElementById('steckbriefId').value;
+            
+            // Titel-Pflichtfeld prüfen
+            if (!document.getElementById('titel').value.trim()) {
+                await showAlert('Bitte gib einen Titel für den Steckbrief ein.', 'Titel erforderlich');
+                document.getElementById('titel').focus();
+                return;
+            }
             
             // Berechtigungsprüfung
             if (isNew && getEffectiveRole() !== 'admin') {
