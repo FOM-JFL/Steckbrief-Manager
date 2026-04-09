@@ -206,6 +206,74 @@ def update_user_role(uid):
     return jsonify({'success': True})
 
 
+@app.route('/api/users/<int:uid>', methods=['DELETE'])
+@require_auth
+@require_role('admin')
+def delete_user(uid):
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT username FROM t_steckbrief_users WHERE id = %s', (uid,))
+    target = cursor.fetchone()
+    if not target:
+        conn.close()
+        return jsonify({'error': 'Benutzer nicht gefunden'}), 404
+    if target['username'] == g.user['username']:
+        conn.close()
+        return jsonify({'error': 'Eigener Account kann nicht gelöscht werden'}), 400
+    cursor.execute('DELETE FROM t_steckbrief_users WHERE id = %s', (uid,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+
+@app.route('/api/users/ensure-editor', methods=['POST'])
+@require_auth
+@require_role('admin')
+def ensure_editor():
+    """Legt einen Benutzer als Editor an, falls er noch nicht existiert."""
+    data = request.json or {}
+    fid = data.get('fid')
+    display_name = data.get('display_name', '').strip()
+    if not fid or not display_name:
+        return jsonify({'error': 'fid und display_name erforderlich'}), 400
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    # Person in datapool nachschlagen um Username abzuleiten
+    cursor.execute(
+        'SELECT Vorname, Nachname FROM datapool.t_personen WHERE PersonenID = %s',
+        (fid,)
+    )
+    person = cursor.fetchone()
+    if not person:
+        conn.close()
+        return jsonify({'error': 'Person nicht gefunden'}), 404
+
+    username = f"{person['Vorname'].strip().lower()}.{person['Nachname'].strip().lower()}"
+
+    # Prüfen ob User bereits existiert
+    cursor.execute('SELECT id, role FROM t_steckbrief_users WHERE username = %s', (username,))
+    existing = cursor.fetchone()
+
+    if existing:
+        # User existiert schon – falls nur Viewer, auf Editor hochstufen
+        if existing['role'] == 'viewer':
+            cursor.execute('UPDATE t_steckbrief_users SET role = %s WHERE id = %s', ('editor', existing['id']))
+            conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'action': 'updated' if existing['role'] == 'viewer' else 'exists'})
+
+    # Neuen User als Editor anlegen
+    cursor.execute(
+        'INSERT INTO t_steckbrief_users (username, display_name, email, role) VALUES (%s, %s, %s, %s)',
+        (username, display_name, '', 'editor')
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'action': 'created'})
+
+
 # --- Personen-Suche ---
 @app.route('/api/personen/suche', methods=['GET'])
 @require_auth

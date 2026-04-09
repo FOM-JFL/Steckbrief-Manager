@@ -26,22 +26,661 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 20px 24px;
+        }
+
+        /* ===== Landing Page ===== */
+        .landing-page {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             padding: 40px 20px;
+        }
+
+        .landing-title {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .landing-title h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .landing-subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.05em;
+            margin-bottom: 50px;
+        }
+
+        .landing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .landing-card {
+            background: white;
+            border-radius: 14px;
+            padding: 36px 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 2px solid #edf2f7;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .landing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: #009688;
+        }
+
+        .landing-card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            font-size: 1.8em;
+        }
+
+        .landing-card h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .landing-card p {
+            font-size: 0.88em;
+            color: #718096;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .landing-card.admin-only-card {
+            border-color: #edf2f7;
+        }
+
+        .landing-card.admin-only-card .landing-card-icon {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+        }
+
+        .landing-footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.85em;
+        }
+
+        @media (max-width: 768px) {
+            .landing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .landing-title h1 {
+                font-size: 1.6em;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .landing-card {
+                padding: 24px 18px;
+            }
+        }
+
+        /* ===== Benutzerverwaltung Seite ===== */
+        .user-mgmt-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .user-mgmt-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 8px;
+        }
+
+        .user-mgmt-header-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6em;
+            flex-shrink: 0;
+        }
+
+        .user-mgmt-header-text h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .user-mgmt-header-text p {
+            color: #718096;
+            font-size: 0.9em;
+            margin: 4px 0 0;
+        }
+
+        .user-mgmt-stats {
+            display: flex;
+            gap: 14px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .user-mgmt-stat {
+            flex: 1;
+            min-width: 130px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .user-mgmt-stat-icon {
+            font-size: 1.3em;
+        }
+
+        .user-mgmt-stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1;
+        }
+
+        .user-mgmt-stat-label {
+            font-size: 0.78em;
+            color: #718096;
+        }
+
+        .user-mgmt-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .user-mgmt-search {
+            padding: 10px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            width: 260px;
+            background: white;
+        }
+
+        .user-mgmt-search:focus {
+            outline: none;
+            border-color: #009688;
+            box-shadow: 0 0 0 3px rgba(0,150,136,0.1);
+        }
+
+        .user-mgmt-toolbar .btn-add-user {
+            margin-left: auto;
+            background: linear-gradient(135deg, #009688 0%, #00796b 100%);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .user-mgmt-toolbar .btn-add-user:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,150,136,0.3);
+        }
+
+        .user-mgmt-table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .user-mgmt-table-header h3 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #4a5568;
+            margin: 0;
+        }
+
+        .user-mgmt-table-header span {
+            font-size: 0.85em;
+            color: #a0aec0;
+        }
+
+        .user-mgmt-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid #edf2f7;
+        }
+
+        .user-mgmt-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 0.72em;
+            font-weight: 600;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .user-mgmt-table td {
+            padding: 14px 16px;
+            font-size: 0.88em;
+            color: #4a5568;
+            border-bottom: 1px solid #f7fafc;
+            vertical-align: middle;
+        }
+
+        .user-mgmt-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-mgmt-table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .user-mgmt-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72em;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .user-mgmt-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.82em;
+            font-weight: 500;
+        }
+
+        .user-mgmt-role-badge.admin {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .user-mgmt-role-badge.editor {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .user-mgmt-role-badge.viewer {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .user-mgmt-status {
+            width: 4px;
+            height: 28px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .user-mgmt-status.active {
+            background: #4caf50;
+        }
+
+        .user-mgmt-status.inactive {
+            background: #e0e0e0;
+        }
+
+        .user-mgmt-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .user-mgmt-actions button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            transition: all 0.15s;
+            color: #718096;
+        }
+
+        .user-mgmt-actions button:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .user-mgmt-actions button.delete:hover {
+            background: #fff5f5;
+            border-color: #fc8181;
+            color: #e53e3e;
+        }
+
+        .user-mgmt-back {
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            font-size: 0.92em;
+            padding: 8px 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .user-mgmt-back:hover {
+            color: #009688;
+        }
+
+        @media (max-width: 768px) {
+            .user-mgmt-stats {
+                flex-direction: column;
+            }
+
+            .user-mgmt-table th:nth-child(4),
+            .user-mgmt-table td:nth-child(4) {
+                display: none;
+            }
+
+            .user-mgmt-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-mgmt-search {
+                width: 100%;
+            }
+
+            .user-mgmt-toolbar .btn-add-user {
+                margin-left: 0;
+            }
+        }
+
+        /* ===== Auswertungsseite ===== */
+        .analytics-page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .analytics-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 8px;
+        }
+
+        .analytics-header-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6em;
+            flex-shrink: 0;
+        }
+
+        .analytics-header-text h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .analytics-header-text p {
+            color: #718096;
+            font-size: 0.9em;
+            margin: 4px 0 0;
+        }
+
+        .analytics-back {
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            font-size: 0.92em;
+            padding: 8px 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .analytics-back:hover {
+            color: #009688;
+        }
+
+        .analytics-actions {
+            display: flex;
+            gap: 16px;
+            margin: 28px 0;
+            flex-wrap: wrap;
+        }
+
+        .analytics-action-card {
+            flex: 1;
+            min-width: 220px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid #edf2f7;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .analytics-action-card:hover {
+            border-color: #009688;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .analytics-action-icon {
+            font-size: 2em;
+            flex-shrink: 0;
+        }
+
+        .analytics-action-card h4 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0 0 4px;
+        }
+
+        .analytics-action-card p {
+            font-size: 0.82em;
+            color: #718096;
+            margin: 0;
+        }
+
+        .analytics-section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #4a5568;
+            margin: 32px 0 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .analytics-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .analytics-chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .analytics-chart-card h4 {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0 0 16px;
+            text-align: center;
+        }
+
+        .chart-canvas-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chart-canvas-wrapper canvas {
+            max-width: 100%;
+        }
+
+        .chart-legend {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            justify-content: center;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8em;
+            color: #4a5568;
+        }
+
+        .chart-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chart-legend-count {
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+
+        .analytics-stats-row {
+            display: flex;
+            gap: 14px;
+            margin: 20px 0 28px;
+            flex-wrap: wrap;
+        }
+
+        .analytics-stat {
+            flex: 1;
+            min-width: 130px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .analytics-stat-icon {
+            font-size: 1.3em;
+        }
+
+        .analytics-stat-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1;
+        }
+
+        .analytics-stat-label {
+            font-size: 0.78em;
+            color: #718096;
+        }
+
+        @media (max-width: 768px) {
+            .analytics-charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-actions {
+                flex-direction: column;
+            }
+
+            .analytics-stats-row {
+                flex-direction: column;
+            }
         }
 
         /* Header im Genesis-Stil */
         header {
             background: linear-gradient(135deg, #009688 0%, #00796b 100%);
-            padding: 12px 30px;
+            padding: 16px 30px;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            gap: 30px;
+            gap: 12px 30px;
         }
 
         .header-logo {
@@ -49,12 +688,16 @@
             align-items: center;
             gap: 15px;
             margin-right: auto;
+            min-width: 0;
         }
 
         .header-logo h1 {
             color: white;
-            font-size: 1.4em;
+            font-size: 1.5em;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-nav {
@@ -65,7 +708,8 @@
         .header-buttons {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .nav-item {
@@ -105,78 +749,80 @@
         .btn {
             padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.88em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .btn-primary {
-            background: #f39200;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #e87722;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        .btn-logout {
-            background: #666;
-            color: white;
-            border: none;
-            width: 100%;
-        }
-
-        .btn-logout:hover {
-            background: #555;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .btn-export {
             background: #009688;
             color: white;
         }
 
-        .btn-export:hover {
+        .btn-primary:hover {
             background: #00796b;
         }
 
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #eee;
+            border-color: #ccc;
+        }
+
+        .btn-logout {
+            display: none;
+        }
+
+        .btn-danger {
+            background: white;
+            color: #c62828;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-danger:hover {
+            background: #fbe9e7;
+            border-color: #ef9a9a;
+        }
+
+        .btn-export {
+            background: white;
+            color: #009688;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-export:hover {
+            background: #e0f2f1;
+            border-color: #80cbc4;
+        }
+
         .btn-editors {
-            background: #5c6bc0;
-            color: white;
+            background: white;
+            color: #555;
+            border: 1px solid #e0e0e0;
         }
 
         .btn-editors:hover {
-            background: #3f51b5;
+            background: #f5f5f5;
+            border-color: #bbb;
         }
 
         .btn-success {
-            background: #f39200;
+            background: #009688;
             color: white;
         }
 
         .btn-success:hover {
-            background: #e87722;
+            background: #00796b;
         }
 
         /* Page Title */
@@ -197,11 +843,51 @@
             font-size: 1em;
         }
 
+        /* Steckbrief-Seite Titel-Leiste */
+        .overview-title-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .overview-title-bar h2 {
+            color: #333;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .btn-new-steckbrief {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #009688;
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-size: 0.92em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-new-steckbrief:hover {
+            background: #00796b;
+        }
+
+        .overview-title-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         /* Übersicht - Karten im Genesis-Stil */
         #overview {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
+            gap: 18px;
         }
 
         @media (max-width: 1000px) {
@@ -218,8 +904,8 @@
 
         .steckbrief-card {
             background: white;
-            border-radius: 12px;
-            padding: 30px 25px;
+            border-radius: 10px;
+            padding: 22px 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             border: 1px solid #e8e8e8;
             transition: all 0.3s ease;
@@ -260,14 +946,14 @@
         }
 
         .steckbrief-card .card-icon {
-            width: 60px;
-            height: 60px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.8em;
             color: #009688;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
 
         .steckbrief-card h3 {
@@ -318,67 +1004,204 @@
             color: #c62828;
         }
 
-        /* Detail-Seite */
+        /* Detail-Seite – Genesis-Stil */
         .detail-page {
-            padding-top: 20px;
+            padding-top: 0;
         }
 
-        .detail-page .page-title {
-            text-align: left;
+        /* Breadcrumb */
+        .detail-breadcrumb {
+            padding: 12px 0;
+            font-size: 0.88em;
+            color: #888;
+        }
+
+        .detail-breadcrumb a {
+            color: #009688;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .detail-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .detail-breadcrumb .breadcrumb-sep {
+            margin: 0 8px;
+            color: #bbb;
+        }
+
+        .detail-breadcrumb .breadcrumb-current {
+            color: #555;
+        }
+
+        /* Hero-Banner */
+        .detail-hero {
+            background: linear-gradient(135deg, #009688 0%, #00796b 100%);
+            border-radius: 12px;
+            padding: 28px 32px;
+            color: white;
             margin-bottom: 20px;
         }
 
-        .detail-page .page-title h2 {
-            margin-top: 15px;
-            font-size: 1.8em;
+        .detail-hero-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
-        .detail-page .page-title .detail-url {
-            font-size: 0.85em;
-            color: #888;
-            margin-top: 5px;
+        .detail-hero-title .hero-icon {
+            font-size: 1.1em;
         }
 
-        .detail-page .page-title .detail-url a {
+        .detail-hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .detail-hero-badges .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.18);
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.78em;
+            font-weight: 500;
+        }
+
+        .detail-hero-badges .hero-badge.status-badge-hero {
+            background: rgba(255,255,255,0.92);
             color: #009688;
+            font-weight: 600;
         }
 
-        .btn-back {
-            background: transparent;
-            color: #009688;
-            border: 1px solid #009688;
-            padding: 8px 16px;
+        /* Section-Toggle Buttons */
+        .detail-section-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .detail-section-controls button {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 6px 14px;
             border-radius: 6px;
+            font-size: 0.82em;
             cursor: pointer;
-            font-size: 0.95em;
+            color: #555;
             transition: all 0.2s;
         }
 
-        .btn-back:hover {
-            background: #009688;
-            color: white;
+        .detail-section-controls button:hover {
+            background: #f5f5f5;
+            border-color: #bbb;
         }
 
-        .detail-card {
+        /* Collapsible Sections */
+        .genesis-section {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
         }
 
-        .detail-header {
+        .genesis-section-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
+            gap: 14px;
+            padding: 18px 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
         }
 
-        .detail-header h2 {
+        .genesis-section-header:hover {
+            background: #f9fafa;
+        }
+
+        .genesis-section-chevron {
+            font-size: 0.9em;
+            color: #999;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+
+        .genesis-section.collapsed .genesis-section-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .genesis-section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .genesis-section-title-group {
+            flex: 1;
+        }
+
+        .genesis-section-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .genesis-section-desc {
+            color: #999;
+            font-size: 0.8em;
+            margin-top: 2px;
+        }
+
+        .genesis-section-body {
+            padding: 0 24px 24px;
+            transition: max-height 0.3s ease;
+        }
+
+        .genesis-section.collapsed .genesis-section-body {
+            display: none;
+        }
+
+        /* Sub-Section Headers (teal uppercase) */
+        .genesis-sub-header {
             color: #009688;
-            font-size: 1.5em;
-            margin: 0;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .genesis-sub-header:first-child {
+            margin-top: 0;
+        }
+
+        /* Detail-Aktionen unterhalb Hero */
+        .detail-actions-bar {
+            display: flex;
+            gap: 10px;
+            padding: 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .detail-actions-bar .btn {
+            font-size: 0.88em;
         }
 
         .btn-copy {
@@ -393,6 +1216,12 @@
 
         .btn-copy:hover {
             background: #e0e0e0;
+        }
+
+        .detail-card {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
         }
 
         /* Modal (nur noch für Export-Dialog) */
@@ -546,48 +1375,27 @@
             width: 100%;
         }
 
-        /* Suche */
-        .search-box {
-            padding: 10px 18px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 25px;
-            font-size: 0.9em;
-            width: 250px;
-            transition: all 0.3s;
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .search-box::placeholder {
-            color: rgba(255,255,255,0.7);
-        }
-
-        .search-box:focus {
-            outline: none;
-            background: rgba(255,255,255,0.2);
-            width: 300px;
-        }
-
         /* Detailansicht (Nur-Lesen) */
         .detail-view .field-group {
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
         .detail-view .field-label {
             font-weight: 500;
-            color: #009688;
-            font-size: 0.85em;
+            color: #555;
+            font-size: 0.8em;
             margin-bottom: 4px;
         }
 
         .detail-view .field-value {
             color: #333;
             line-height: 1.5;
-            padding: 10px;
-            background: #f8f9fa;
+            padding: 10px 14px;
+            background: #f5f7f8;
             border-radius: 6px;
-            border: 1px solid #eee;
+            border: 1px solid #e8e8e8;
             white-space: pre-line;
+            font-size: 0.92em;
         }
 
         .detail-actions {
@@ -598,24 +1406,129 @@
             border-top: 1px solid #eee;
         }
 
+        .detail-actions .btn {
+            border-radius: 6px;
+            font-size: 0.88em;
+        }
+
         /* Responsiv */
-        @media (max-width: 768px) {
+        @media (max-width: 1400px) {
             header {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+                padding: 10px 20px;
+                gap: 10px 20px;
+            }
+
+            .header-logo h1 {
+                font-size: 1.15em;
+            }
+
+            .nav-item {
+                padding: 8px 12px;
+                font-size: 0.82em;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.82em;
+            }
+
+            .header-buttons {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .header-logo h1 {
+                font-size: 1em;
+            }
+
+            .nav-item .icon {
+                display: none;
+            }
+
+            .nav-item {
+                padding: 6px 10px;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.8em;
+            }
+
+            .role-preview span {
+                display: none;
+            }
+
+            .user-info .user-name {
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .header-logout-btn {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            header {
+                padding: 10px 12px;
+                gap: 8px 12px;
+            }
+
+            .header-logo h1 {
+                font-size: 0.9em;
             }
 
             .header-nav {
                 display: none;
             }
 
-            .search-box {
-                width: 100%;
+            .fom-logo {
+                height: 30px;
             }
 
-            .search-box:focus {
-                width: 100%;
+            .user-info {
+                font-size: 0.78em;
+            }
+
+            .user-trigger {
+                padding: 5px 10px;
+            }
+
+            .header-logout-btn {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 12px 15px;
+            }
+
+            .header-logo {
+                justify-content: center;
+                margin-right: 0;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .header-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .header-logo-right {
+                display: none;
             }
 
             .form-grid {
@@ -646,28 +1559,309 @@
         /* Tabs */
         .tabs {
             display: flex;
-            gap: 5px;
+            gap: 0;
             margin-bottom: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 3px;
         }
 
         .tab {
-            padding: 10px 20px;
-            background: #f0f0f0;
+            padding: 9px 22px;
+            background: transparent;
             border: none;
-            border-radius: 8px 8px 0 0;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 500;
             color: #666;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-size: 0.88em;
         }
 
         .tab.active {
             background: white;
             color: #009688;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
 
         .tab:hover:not(.active) {
-            background: #e5e5e5;
+            color: #444;
+        }
+
+        /* Sidebar + Content Layout */
+        .overview-layout {
+            display: flex;
+            gap: 0;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .overview-sidebar {
+            width: 240px;
+            min-width: 240px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            border-radius: 8px 0 0 8px;
+            padding: 0;
+            transition: width 0.25s, min-width 0.25s, padding 0.25s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .overview-sidebar.collapsed {
+            width: 0;
+            min-width: 0;
+            padding: 0;
+            border-right: none;
+        }
+
+        .overview-sidebar.collapsed .sidebar-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar-content {
+            padding: 20px 18px;
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #009688;
+            font-size: 1.05em;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-title-icon {
+            font-size: 1.1em;
+        }
+
+        .sidebar-count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #009688;
+            color: #fff;
+            font-size: 0.78em;
+            font-weight: 600;
+            min-width: 28px;
+            height: 22px;
+            padding: 0 8px;
+            border-radius: 12px;
+            margin-left: auto;
+        }
+
+        .sidebar-search {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .sidebar-search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.85em;
+            pointer-events: none;
+        }
+
+        .sidebar-search input {
+            width: 100%;
+            padding: 8px 12px 8px 32px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85em;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .sidebar-search input:focus {
+            outline: none;
+            border-color: #009688;
+        }
+
+        .sidebar-search input::placeholder {
+            color: #aaa;
+        }
+
+        .sidebar-section {
+            margin-bottom: 22px;
+        }
+
+        .sidebar-section-label {
+            font-size: 0.72em;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-view-options {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-view-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 9px 12px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.92em;
+            color: #555;
+            transition: all 0.15s;
+            text-align: left;
+        }
+
+        .sidebar-view-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .sidebar-view-btn.active {
+            background: #e0f2f1;
+            color: #009688;
+            font-weight: 500;
+        }
+
+        .sidebar-view-icon {
+            font-size: 1.05em;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.92em;
+            color: #555;
+            transition: all 0.15s;
+            text-align: left;
+        }
+
+        .sidebar-action-btn:hover {
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .sidebar-action-btn.active {
+            background: #009688;
+            color: #fff;
+            border-color: #009688;
+        }
+
+        .sidebar-export-btn {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #f39200;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.92em;
+            color: #f39200;
+            transition: all 0.15s;
+            text-align: left;
+            margin-top: 4px;
+        }
+
+        .sidebar-export-btn:hover {
+            background: #f39200;
+            color: #fff;
+        }
+
+        .sidebar-export-btn.visible {
+            display: flex;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 50%;
+            right: -16px;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 48px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.85em;
+            transition: background 0.15s;
+            z-index: 5;
+        }
+
+        .sidebar-toggle:hover {
+            background: #f0f0f0;
+            color: #009688;
+        }
+
+        .overview-sidebar.collapsed .sidebar-toggle {
+            right: -16px;
+        }
+
+        .overview-main {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 16px;
+        }
+
+        .overview-status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .overview-status-bar .result-count {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .overview-sidebar {
+                width: 0;
+                min-width: 0;
+                border-right: none;
+            }
+            .overview-sidebar .sidebar-content {
+                opacity: 0;
+                pointer-events: none;
+            }
+            .overview-sidebar:not(.collapsed) {
+                position: absolute;
+                width: 240px;
+                min-width: 240px;
+                z-index: 10;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            }
+            .overview-sidebar:not(.collapsed) .sidebar-content {
+                opacity: 1;
+                pointer-events: auto;
+            }
         }
 
         /* Ansichts-Toggle */
@@ -791,7 +1985,7 @@
         /* Tabellenansicht */
         .table-view {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             border: 1px solid #e8e8e8;
         }
@@ -802,47 +1996,52 @@
         }
 
         .overview-table th {
-            background: #009688;
-            color: white;
-            padding: 14px 12px;
+            background: #f8f8f8;
+            color: #888;
+            padding: 12px 14px;
             text-align: left;
-            font-weight: 500;
-            font-size: 0.85em;
+            font-weight: 600;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .overview-table th.sortable {
             cursor: pointer;
             user-select: none;
-            transition: background 0.2s;
+            transition: color 0.2s;
         }
 
         .overview-table th.sortable:hover {
-            background: #00796b;
+            color: #009688;
         }
 
         .overview-table th .sort-icon {
-            margin-left: 5px;
-            opacity: 0.5;
+            margin-left: 4px;
+            opacity: 0.4;
         }
 
         .overview-table th.sort-asc .sort-icon,
         .overview-table th.sort-desc .sort-icon {
             opacity: 1;
+            color: #009688;
         }
 
         .overview-table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+            padding: 11px 14px;
+            border-bottom: 1px solid #f0f0f0;
             font-size: 0.9em;
+            color: #444;
         }
 
         .overview-table tr {
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.15s;
         }
 
         .overview-table tbody tr:hover {
-            background: #f9f9f9;
+            background: #fafafa;
         }
 
         .overview-table tbody tr.selected {
@@ -858,74 +2057,241 @@
             color: #009688;
         }
 
-        /* Filter */
-        .filter-bar {
-            background: white;
-            padding: 20px;
+        .overview-table .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
             border-radius: 12px;
-            border: 1px solid #e8e8e8;
-            margin-bottom: 25px;
+            font-size: 0.82em;
+            font-weight: 500;
+        }
+
+        .overview-table .status-badge.status-green {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .overview-table .status-badge.status-orange {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .overview-table .status-badge.status-red {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .overview-table .status-badge.status-grey {
+            background: #f5f5f5;
+            color: #757575;
+        }
+
+        .overview-table .type-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f0f0f0;
+            font-size: 1.1em;
+        }
+
+        .overview-table .actions-cell {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .overview-table .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95em;
+            transition: all 0.15s;
+        }
+
+        .overview-table .action-btn.btn-view {
+            background: #e0f2f1;
+            color: #009688;
+        }
+
+        .overview-table .action-btn.btn-view:hover {
+            background: #009688;
+            color: #fff;
+        }
+
+        .overview-table .action-btn.btn-edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .overview-table .action-btn.btn-edit:hover {
+            background: #1976d2;
+            color: #fff;
+        }
+
+        .overview-table .action-btn.btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .overview-table .action-btn.btn-delete:hover {
+            background: #c62828;
+            color: #fff;
+        }
+
+        /* Filter – Genesis-Style */
+        .filter-bar {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            margin: 0;
+            padding: 0;
+            border-radius: 0;
+            display: none;
+        }
+
+        .filter-bar.visible {
+            display: block;
         }
 
         .filter-bar-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: 10px 30px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fafafa;
+        }
+
+        .filter-bar-header:hover {
+            background: #f2f2f2;
+        }
+
+        .filter-header-icon {
+            color: #009688;
+            font-size: 1.05em;
+            margin-right: 8px;
         }
 
         .filter-bar-header h3 {
-            color: #009688;
-            font-size: 0.95em;
+            color: #333;
+            font-size: 0.9em;
             font-weight: 600;
             margin: 0;
         }
 
-        .filter-toggle-btn {
+        .filter-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #009688;
+            color: #fff;
+            font-size: 0.72em;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: 10px;
+        }
+
+        .filter-badge.hidden {
+            display: none;
+        }
+
+        .filter-header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-reset-btn {
             background: none;
             border: none;
             color: #009688;
             cursor: pointer;
-            font-size: 0.85em;
-            padding: 5px 10px;
+            font-size: 0.82em;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.15s;
         }
 
-        .filter-toggle-btn:hover {
-            text-decoration: underline;
+        .filter-reset-btn:hover {
+            background: #e0f2f1;
+        }
+
+        .filter-chevron {
+            font-size: 1.1em;
+            color: #888;
+            transition: transform 0.25s;
+        }
+
+        .filter-bar.collapsed .filter-chevron {
+            transform: rotate(0deg);
+        }
+
+        .filter-bar:not(.collapsed) .filter-chevron {
+            transform: rotate(180deg);
         }
 
         .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            align-items: start;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            padding: 14px 30px 16px;
+            align-items: flex-end;
+            justify-content: center;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fff;
+        }
+
+        .filter-bar.collapsed .filter-grid {
+            display: none;
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
             min-width: 0;
-            width: 100%;
+            flex: 1 1 140px;
+            max-width: 220px;
+            padding: 0 10px 0 0;
+        }
+
+        .filter-group:last-child {
+            padding-right: 0;
         }
 
         .filter-group label {
-            font-size: 0.8em;
-            font-weight: 500;
-            color: #666;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: #777;
             margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .filter-group select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px 0 0 8px;
-            font-size: 0.9em;
+            padding: 7px 28px 7px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.85em;
             background: white;
             cursor: pointer;
-            transition: border-color 0.3s;
-            flex: 1;
+            transition: border-color 0.2s;
             width: 100%;
             min-width: 0;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            color: #333;
         }
 
         .filter-group select:focus {
@@ -939,15 +2305,19 @@
             width: 100%;
         }
 
+        .filter-select-wrapper select {
+            border-radius: 4px 0 0 4px;
+        }
+
         .filter-search-toggle {
-            padding: 8px 10px;
-            border: 1px solid #ddd;
+            padding: 7px 9px;
+            border: 1px solid #ccc;
             border-left: none;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 4px 4px 0;
             background: #f5f5f5;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.9em;
+            font-size: 0.85em;
             flex-shrink: 0;
         }
 
@@ -962,13 +2332,13 @@
         }
 
         .filter-group input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9em;
+            padding: 7px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.85em;
             background: white;
-            transition: all 0.3s;
-            margin-top: 6px;
+            transition: all 0.2s;
+            margin-top: 5px;
             display: none;
             width: 100%;
             min-width: 0;
@@ -988,11 +2358,21 @@
             font-style: italic;
         }
 
+        .filter-group-id input[type="text"] {
+            display: block;
+            margin-top: 0;
+        }
+
         .active-filters {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
+            padding: 8px 30px 10px;
+            background: #fff;
+        }
+
+        .active-filters:empty {
+            display: none;
         }
 
         .filter-tag {
@@ -1001,9 +2381,9 @@
             gap: 5px;
             background: #e0f2f1;
             color: #009688;
-            padding: 5px 12px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8em;
+            font-size: 0.78em;
         }
 
         .filter-tag button {
@@ -1018,6 +2398,33 @@
 
         .filter-tag button:hover {
             color: #00695c;
+        }
+
+        @media (max-width: 1100px) {
+            .filter-group {
+                flex: 1 1 130px;
+                max-width: 200px;
+            }
+            .filter-grid {
+                padding: 12px 20px 14px;
+            }
+            .filter-bar-header {
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filter-group {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            .filter-grid {
+                padding: 10px 15px 12px;
+                gap: 8px;
+            }
+            .filter-bar-header {
+                padding: 10px 15px;
+            }
         }
 
         /* Export Modal */
@@ -1077,39 +2484,188 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: white;
             font-size: 0.85em;
+            position: relative;
+        }
+
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #009688;
+            transition: background 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .user-trigger:hover {
+            background: #00796b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        }
+
+        .user-trigger .online-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+            flex-shrink: 0;
         }
 
         .user-info .user-name {
-            opacity: 0.9;
+            font-weight: 500;
+            white-space: nowrap;
+            color: white;
         }
 
-        .user-info .user-role {
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 10px;
+        .header-logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .header-logout-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .header-logout-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        /* User Dropdown */
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+            min-width: 240px;
+            z-index: 200;
+            overflow: hidden;
+            animation: dropdownFadeIn 0.2s ease;
+        }
+
+        .user-dropdown.open {
+            display: block;
+        }
+
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-dropdown-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #009688 0%, #00796b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .user-avatar svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .user-avatar-badge {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .user-dropdown-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .user-dropdown-username {
+            color: #999;
             font-size: 0.8em;
+            margin-top: 2px;
         }
 
-        .user-info .user-role.admin { background: #f39200; }
-        .user-info .user-role.editor { background: #4caf50; }
-        .user-info .user-role.viewer { background: #78909c; }
+        .user-dropdown-body {
+            padding: 8px 0;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            color: #555;
+            font-size: 0.88em;
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .user-dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .user-dropdown-item .dropdown-icon {
+            font-size: 1.1em;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .user-dropdown-item .dropdown-label {
+            flex: 1;
+        }
+
+        .user-dropdown-item .dropdown-label strong {
+            color: #333;
+        }
+
+        .user-dropdown-divider {
+            height: 1px;
+            background: #eee;
+            margin: 4px 0;
+        }
 
         .logout-btn {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8em;
-            transition: all 0.2s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
+            display: none;
         }
 
         /* Rollenvorschau (nur Admin) */
@@ -1320,7 +2876,7 @@
         }
 
         .fom-logo {
-            height: 40px;
+            height: 45px;
             width: auto;
         }
 
@@ -1595,24 +3151,11 @@
 <body>
     <header>
         <div class="header-logo">
-            <span style="font-size: 1.8em;">📋</span>
-            <h1 style="cursor:pointer" data-goback>Steckbrief Manager (Prozesse & Projekte)</h1>
+            <span style="font-size: 2em;">📋</span>
+            <h1 style="cursor:pointer" onclick="navigateToLanding()">Steckbrief Manager (Prozesse & Projekte)</h1>
         </div>
         
-        <nav class="header-nav">
-            <div class="nav-item active" data-goback style="cursor: pointer;">
-                <span class="icon">📄</span>
-                <span>Steckbriefe</span>
-            </div>
-        </nav>
-
         <div class="header-buttons">
-            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Suchen...">
-            <button class="btn btn-primary hidden" id="btnNew" onclick="openNewSteckbrief()">+ Neu</button>
-            <button class="btn btn-secondary admin-only hidden" id="btnImport" onclick="document.getElementById('importFile').click()">Import</button>
-            <input type="file" id="importFile" accept=".json,.docx" style="display:none" multiple>
-            <button class="btn btn-secondary admin-only hidden" onclick="openUserManagement()" title="Benutzerverwaltung">👥 Benutzer</button>
-            <button class="btn btn-secondary admin-only hidden" onclick="exportEmptyFieldsExcel()" title="Leere Felder als Excel exportieren">📊 Lückenanalyse</button>
             <div class="role-preview admin-only hidden" id="rolePreview">
                 <span>👁 Ansicht:</span>
                 <select id="rolePreviewSelect" onchange="setRolePreview(this.value)">
@@ -1622,9 +3165,43 @@
                 </select>
             </div>
             <div class="user-info" id="userInfo">
-                <span class="user-name" id="userDisplayName"></span>
-                <span class="user-role" id="userRoleBadge"></span>
-                <button class="logout-btn" onclick="logout()">Abmelden</button>
+                <div class="user-trigger" onclick="toggleUserDropdown(event)">
+                    <span class="online-dot"></span>
+                    <span class="user-name" id="userDisplayName"></span>
+                </div>
+                <button class="header-logout-btn" onclick="logout()" title="Abmelden">
+                    <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-avatar">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                            <span class="user-avatar-badge"></span>
+                        </div>
+                        <div class="user-dropdown-name" id="dropdownDisplayName"></div>
+                        <div class="user-dropdown-username" id="dropdownUsername"></div>
+                    </div>
+                    <div class="user-dropdown-body">
+                        <div class="user-dropdown-item">
+                            <span class="dropdown-icon">🕐</span>
+                            <span class="dropdown-label" id="dropdownLoginTime">Angemeldet seit –</span>
+                        </div>
+                        <div class="user-dropdown-item">
+                            <span class="dropdown-icon">🛡️</span>
+                            <span class="dropdown-label">Rolle: <strong id="dropdownRole"></strong></span>
+                        </div>
+                        <div class="user-dropdown-divider admin-only hidden"></div>
+                        <button class="user-dropdown-item admin-only hidden" onclick="openUserManagement(); closeUserDropdown();">
+                            <span class="dropdown-icon">👥</span>
+                            <span class="dropdown-label">Benutzerverwaltung</span>
+                        </button>
+                        <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item" onclick="logout(); closeUserDropdown();">
+                            <span class="dropdown-icon">🚪</span>
+                            <span class="dropdown-label">Abmelden</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="header-logo-right">
@@ -1632,139 +3209,229 @@
         </div>
     </header>
 
-    <div class="container">
-        <div class="page-title">
-            <h2>Steckbriefe</h2>
-            <p>Wählen Sie einen Steckbrief aus, um Details einzusehen oder zu bearbeiten</p>
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page" style="display: none;">
+        <div class="landing-title">
+            <h1>Willkommen beim Steckbrief Manager</h1>
+        </div>
+        <p class="landing-subtitle">Wähle eine Ansicht, um mit der Arbeit zu beginnen</p>
+
+        <div class="landing-grid">
+            <div class="landing-card" onclick="navigateFromLanding('steckbriefe')">
+                <div class="landing-card-icon">📋</div>
+                <h3>Steckbriefe einsehen</h3>
+                <p>Prozess- und Projektsteckbriefe anzeigen, erstellen und bearbeiten</p>
+            </div>
+
+            <div class="landing-card admin-only-card" id="landingCardAuswertung" onclick="navigateFromLanding('auswertung')" style="display: none;">
+                <div class="landing-card-icon">📊</div>
+                <h3>Steckbriefe auswerten</h3>
+                <p>Lückenanalyse durchführen und Auswertungen als Excel exportieren</p>
+            </div>
+
+            <div class="landing-card admin-only-card" id="landingCardBenutzer" onclick="navigateFromLanding('benutzer')" style="display: none;">
+                <div class="landing-card-icon">👥</div>
+                <h3>Benutzerverwaltung</h3>
+                <p>Benutzer anlegen, Rollen vergeben und Zugriffsrechte verwalten</p>
+            </div>
         </div>
 
-        <div class="view-controls">
-            <div class="result-count">
-                <span id="resultCount">0 Steckbriefe</span>
-                <button class="btn-select-all" id="btnSelectAll" onclick="toggleSelectAll()">☐ Alle auswählen</button>
-                <button class="btn btn-export-selected" id="btnExportSelected" onclick="exportSelected()" style="display:none;">📥 Auswahl exportieren</button>
-            </div>
-            <div class="view-toggle">
-                <button class="active" onclick="setView('cards')" id="btnCards">🔲 Kacheln</button>
-                <button onclick="setView('table')" id="btnTable">📋 Tabelle</button>
-            </div>
-        </div>
-
-        <div class="filter-bar" id="filterBar">
-            <div class="filter-bar-header">
-                <h3>Filter</h3>
-                <button class="filter-toggle-btn" onclick="resetFilters()">↻ Zurücksetzen</button>
-            </div>
-            <div class="filter-grid">
-                <div class="filter-group">
-                    <label for="filterId">ID</label>
-                    <input type="text" id="filterId" placeholder="ID eingeben..." oninput="applyFilters()" class="visible">
-                </div>
-                <div class="filter-group">
-                    <label for="filterTitel">Titel</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterTitel" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterTitelText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterCluster">Prozesscluster</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterCluster" onchange="applyFilters()">
-                            <option value="">Alle Cluster</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterClusterText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterAuftraggeber">Auftraggeber/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterAuftraggeber" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterStatusOptimierung">Status Optimierung</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterStatusOptimierung" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterProzessmanager">Prozessmanager/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterProzessmanager" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterAnforderungsmanager">Anforderungsmanager/-in</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterAnforderungsmanager" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                        </select>
-                        <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
-                    </div>
-                    <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
-                </div>
-                <div class="filter-group">
-                    <label for="filterHEP">Teil des HEP</label>
-                    <div class="filter-select-wrapper">
-                        <select id="filterHEP" onchange="applyFilters()">
-                            <option value="">Alle</option>
-                            <option value="ja">Ja</option>
-                            <option value="nein">Nein</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="active-filters" id="activeFilters"></div>
-        </div>
-
-        <div id="overview">
-            <!-- Steckbrief-Karten werden hier eingefügt -->
+        <div class="landing-footer">
+            Steckbrief Manager v16.1.0 · FOM Hochschule für Oekonomie & Management
         </div>
     </div>
 
-    <!-- Detail-Seite (ersetzt Modal) -->
-    <div class="container detail-page" id="detailPage" style="display: none;">
-        <div class="page-title">
-            <button class="btn btn-back" data-goback>← Zurück zur Übersicht</button>
-            <h2>Prozess-/Projektsteckbrief</h2>
-        </div>
-        
-        <div class="detail-card">
-            <div class="detail-header">
-                <h2 id="modalTitle">Steckbrief</h2>
+    <!-- Filter-Bar direkt unter Header (Genesis-Style) -->
+    <div class="filter-bar" id="filterBar">
+        <div class="filter-bar-header" onclick="toggleFilterBar()">
+            <span class="filter-header-icon">▼</span>
+            <h3>Filter &amp; Suche</h3>
+            <span class="filter-badge hidden" id="filterBadge">0 aktiv</span>
+            <div class="filter-header-actions">
+                <button class="filter-reset-btn" onclick="event.stopPropagation(); resetFilters()">↻ Zurücksetzen</button>
+                <span class="filter-chevron">▾</span>
             </div>
-            
+        </div>
+        <div class="filter-grid">
+            <div class="filter-group filter-group-id">
+                <label for="filterId">ID</label>
+                <input type="text" id="filterId" placeholder="ID eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterTitel">Titel</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterTitel" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterTitelText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterCluster">Prozesscluster</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterCluster" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterClusterText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterAuftraggeber">Auftraggeber</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterAuftraggeber" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterStatusOptimierung">Status</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterStatusOptimierung" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterProzessmanager">Prozessmanager</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterProzessmanager" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterAnforderungsmanager">Anforderungsmanager</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterAnforderungsmanager" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                    </select>
+                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
+                </div>
+                <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort eingeben..." oninput="applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label for="filterHEP">Teil des HEP</label>
+                <div class="filter-select-wrapper">
+                    <select id="filterHEP" onchange="applyFilters()">
+                        <option value="">Alle</option>
+                        <option value="ja">Ja</option>
+                        <option value="nein">Nein</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="active-filters" id="activeFilters"></div>
+    </div>
+
+    <div class="container" id="overviewContainer" style="display: none;">
+        <div class="overview-title-bar">
+            <h2>Steckbriefe</h2>
+            <div class="overview-title-actions">
+                <button class="btn-new-steckbrief hidden" id="btnNewSteckbrief" onclick="openNewSteckbrief()">+ Neuer Steckbrief</button>
+                <button class="btn-new-steckbrief hidden" id="btnImport" onclick="document.getElementById('importFile').click()">Importieren</button>
+                <input type="file" id="importFile" accept=".json,.docx" style="display:none" multiple>
+            </div>
+        </div>
+
+        <div class="overview-layout">
+            <!-- Sidebar -->
+            <div class="overview-sidebar" id="overviewSidebar">
+                <div class="sidebar-content">
+                    <div class="sidebar-title">
+                        <span class="sidebar-title-icon">☰</span>
+                        Steckbriefe
+                        <span class="sidebar-count-badge" id="sidebarCount">0</span>
+                    </div>
+
+                    <div class="sidebar-search">
+                        <span class="sidebar-search-icon">🔍</span>
+                        <input type="text" id="sidebarSearchInput" placeholder="Steckbrief suchen..." oninput="onSidebarSearch()">
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-label">Ansicht</div>
+                        <div class="sidebar-view-options">
+                            <button class="sidebar-view-btn" id="sidebarBtnCards" onclick="setSidebarView('cards')">
+                                <span class="sidebar-view-icon">🔲</span> Kachelansicht
+                            </button>
+                            <button class="sidebar-view-btn active" id="sidebarBtnTable" onclick="setSidebarView('table')">
+                                <span class="sidebar-view-icon">📋</span> Tabellenansicht
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-label">Auswahl</div>
+                        <button class="sidebar-action-btn" id="btnSelectAll" onclick="toggleSelectAll()">
+                            <span>☐</span> Alle auswählen
+                        </button>
+                        <button class="sidebar-export-btn" id="btnExportSelected" onclick="exportSelected()">
+                            <span>📥</span> Auswahl exportieren
+                        </button>
+                    </div>
+                </div>
+                <button class="sidebar-toggle" onclick="toggleOverviewSidebar()" title="Seitenleiste ein-/ausklappen">‹</button>
+            </div>
+
+            <!-- Hauptbereich -->
+            <div class="overview-main">
+                <div id="overview">
+                    <!-- Steckbrief-Karten werden hier eingefügt -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail-Seite (Genesis-Style) -->
+    <div class="container detail-page" id="detailPage" style="display: none;">
+        <!-- Breadcrumb -->
+        <div class="detail-breadcrumb">
+            <a onclick="goBack()">← Übersicht Steckbriefe</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current" id="breadcrumbTitle">Steckbrief</span>
+        </div>
+
+        <!-- Hero Banner -->
+        <div class="detail-hero">
+            <div class="detail-hero-title">
+                <span class="hero-icon">📋</span>
+                <span id="modalTitle">Steckbrief</span>
+            </div>
+            <div class="detail-hero-badges" id="heroBadges"></div>
+        </div>
+
+        <!-- Tabs + Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
             <div class="tabs" id="editTabs" style="display: none;">
                 <button class="tab active" onclick="switchTab('view')" id="tabViewBtn">Ansicht</button>
                 <button class="tab" id="tabEditBtn" onclick="switchTab('edit')">Bearbeiten</button>
             </div>
+            <div class="detail-actions-bar" id="detailActionsBar">
+                <button class="btn btn-primary" id="btnDetailEdit" onclick="switchTab('edit')">✏️ Bearbeiten</button>
+                <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
+                <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+                <button class="btn btn-danger admin-only hidden" id="btnDetailDelete" onclick="deleteSteckbrief()">🗑️ Löschen</button>
+            </div>
+        </div>
 
+        <!-- Section Controls -->
+        <div class="detail-section-controls" id="sectionControls">
+            <button onclick="toggleAllSections(true)">⊞ Alle aufklappen</button>
+            <button onclick="toggleAllSections(false)">⊟ Alle zuklappen</button>
+        </div>
+
+        <div class="detail-card">
             <!-- Ansicht -->
             <div id="viewTab" class="detail-view">
                 <div id="viewContent"></div>
-                <div class="detail-actions">
-                    <button class="btn btn-primary" onclick="switchTab('edit')">✏️ Bearbeiten</button>
-                    <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
-                    <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
-                    <button class="btn btn-danger admin-only hidden" onclick="deleteSteckbrief()">🗑️ Löschen</button>
-                </div>
             </div>
 
             <!-- Bearbeiten -->
@@ -2138,18 +3805,88 @@
         </div>
     </div>
 
-    <!-- Benutzerverwaltung Modal (Admin) -->
-    <div class="modal" id="userManagementModal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2>👥 Benutzerverwaltung</h2>
-                <button class="close-btn" onclick="closeUserManagement()">&times;</button>
+    <!-- Benutzerverwaltung Seite -->
+    <div id="userMgmtPage" style="display: none;">
+        <div class="user-mgmt-page">
+            <button class="user-mgmt-back" onclick="navigateToLanding()">← Zurück zur Startseite</button>
+
+            <div class="user-mgmt-header">
+                <div class="user-mgmt-header-icon">👥</div>
+                <div class="user-mgmt-header-text">
+                    <h2>Benutzerverwaltung</h2>
+                    <p>Benutzer verwalten und Berechtigungen vergeben</p>
+                </div>
             </div>
-            <p style="color: #666; margin-bottom: 15px;">Rollen der angemeldeten Benutzer verwalten:</p>
-            <div id="userList">
+
+            <div class="user-mgmt-stats" id="userMgmtStats">
                 <!-- Wird dynamisch befüllt -->
             </div>
-            <button class="btn btn-secondary" onclick="closeUserManagement()" style="width: 100%; margin-top: 20px;">Schließen</button>
+
+            <div class="user-mgmt-toolbar">
+                <input type="text" class="user-mgmt-search" id="userMgmtSearch" placeholder="🔍 Benutzer suchen..." oninput="filterUserTable()">
+            </div>
+
+            <div class="user-mgmt-table-header">
+                <h3>☰ Benutzerübersicht</h3>
+                <span id="userMgmtCount">0 Benutzer</span>
+            </div>
+
+            <table class="user-mgmt-table">
+                <thead>
+                    <tr>
+                        <th>Benutzer</th>
+                        <th>Rolle</th>
+                        <th>Status</th>
+                        <th>Erstellt</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody id="userMgmtBody">
+                    <!-- Wird dynamisch befüllt -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Auswertungsseite -->
+    <div id="analyticsPage" style="display: none;">
+        <div class="analytics-page">
+            <button class="analytics-back" onclick="navigateToLanding()">← Zurück zur Startseite</button>
+
+            <div class="analytics-header">
+                <div class="analytics-header-icon">📊</div>
+                <div class="analytics-header-text">
+                    <h2>Steckbriefe auswerten</h2>
+                    <p>Übersichtliche Analysen und Exporte der Steckbrief-Daten</p>
+                </div>
+            </div>
+
+            <div class="analytics-stats-row" id="analyticsStats">
+                <!-- Wird dynamisch befüllt -->
+            </div>
+
+            <div class="analytics-actions">
+                <div class="analytics-action-card" onclick="exportEmptyFieldsExcel()">
+                    <span class="analytics-action-icon">📋</span>
+                    <div>
+                        <h4>Lückenanalyse</h4>
+                        <p>Leere Felder als Excel-Datei exportieren</p>
+                    </div>
+                </div>
+                <div class="analytics-action-card" onclick="exportAllAsExcel()">
+                    <span class="analytics-action-icon">📥</span>
+                    <div>
+                        <h4>Komplett-Export</h4>
+                        <p>Alle Steckbrief-Daten als Excel herunterladen</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="analytics-section-title">📈 Visuelle Auswertung</h3>
+
+            <div class="analytics-charts-grid" id="analyticsChartsGrid">
+                <!-- Wird dynamisch befüllt -->
+            </div>
         </div>
     </div>
 
@@ -2295,6 +4032,7 @@
                     username: data.username,
                     email: data.email
                 };
+                currentUser._loginTime = new Date();
                 hideLoginOverlay();
                 updateUIForRole();
                 await loadSteckbriefeFromAPI();
@@ -2335,6 +4073,7 @@
                     username: data.username,
                     email: data.email
                 };
+                currentUser._loginTime = new Date();
                 hideLoginOverlay();
                 updateUIForRole();
                 return true;
@@ -2367,8 +4106,29 @@
         function logout() {
             localStorage.removeItem(TOKEN_KEY);
             currentUser = { role: 'viewer', name: '', username: '' };
+            closeUserDropdown();
             showLoginOverlay();
         }
+
+        // User-Dropdown Toggle
+        function toggleUserDropdown(e) {
+            e.stopPropagation();
+            const dd = document.getElementById('userDropdown');
+            dd.classList.toggle('open');
+        }
+
+        function closeUserDropdown() {
+            const dd = document.getElementById('userDropdown');
+            if (dd) dd.classList.remove('open');
+        }
+
+        // Dropdown schließen bei Klick außerhalb
+        document.addEventListener('click', function(e) {
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo && !userInfo.contains(e.target)) {
+                closeUserDropdown();
+            }
+        });
 
         // Rollenvorschau: null = keine Vorschau, sonst 'editor' oder 'viewer'
         let _rolePreview = null;
@@ -2413,21 +4173,34 @@
                 }
             });
 
-            // Neu-Button: nur Admin
-            const btnNew = document.getElementById('btnNew');
+            // Neu-Button: nur Admin/Editor
+            const btnNew = document.getElementById('btnNewSteckbrief');
             if (btnNew) btnNew.classList.toggle('hidden', !isAdmin);
+
+            // Import-Button: nur Admin
+            const btnImport = document.getElementById('btnImport');
+            if (btnImport) btnImport.classList.toggle('hidden', !isAdmin);
 
             // User-Info im Header aktualisieren
             const userInfo = document.getElementById('userInfo');
             const displayName = document.getElementById('userDisplayName');
-            const roleBadge = document.getElementById('userRoleBadge');
             if (userInfo) userInfo.style.display = 'flex';
             if (displayName) displayName.textContent = currentUser.name;
-            if (roleBadge) {
-                const roleLabels = { admin: 'Admin', editor: 'Editor', viewer: 'Viewer' };
-                const label = roleLabels[effectiveRole] || effectiveRole;
-                roleBadge.textContent = _rolePreview ? '👁 ' + label : label;
-                roleBadge.className = 'role-badge ' + effectiveRole;
+
+            // Dropdown aktualisieren
+            const ddName = document.getElementById('dropdownDisplayName');
+            const ddUser = document.getElementById('dropdownUsername');
+            const ddRole = document.getElementById('dropdownRole');
+            const ddTime = document.getElementById('dropdownLoginTime');
+            if (ddName) ddName.textContent = currentUser.name;
+            if (ddUser) ddUser.textContent = currentUser.username;
+            if (ddRole) {
+                const roleLabelsDD = { admin: 'Administrator', editor: 'Editor', viewer: 'Nur Lesen' };
+                ddRole.textContent = roleLabelsDD[effectiveRole] || effectiveRole;
+            }
+            if (ddTime && currentUser._loginTime) {
+                const t = currentUser._loginTime;
+                ddTime.textContent = 'Angemeldet seit ' + t.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
             }
 
             // Detail-Seite Buttons aktualisieren (falls sichtbar)
@@ -2451,11 +4224,12 @@
 
         // Detail-Buttons basierend auf Berechtigung aktualisieren
         function updateDetailButtons() {
-            const editBtn = document.querySelector('#viewTab .btn-primary');
-            const deleteBtn = document.querySelector('#viewTab .btn-danger');
+            const editBtn = document.getElementById('btnDetailEdit');
+            const deleteBtn = document.getElementById('btnDetailDelete');
             const manageEditorsBtn = document.getElementById('btnManageEditors');
             const tabEditBtn = document.getElementById('tabEditBtn');
             const editTabs = document.getElementById('editTabs');
+            const sectionControls = document.getElementById('sectionControls');
             
             if (!currentSteckbriefId) return;
             
@@ -2471,62 +4245,166 @@
             if (tabEditBtn) tabEditBtn.classList.toggle('hidden', !canEdit);
             if (deleteBtn) deleteBtn.classList.toggle('hidden', !isAdmin);
             if (manageEditorsBtn) manageEditorsBtn.classList.toggle('hidden', !isAdmin);
+            // Section controls only visible in view mode
+            if (sectionControls) sectionControls.style.display = '';
         }
 
         // ====== BENUTZERVERWALTUNG (Admin) ======
+        let _userMgmtCache = [];
+
         async function openUserManagement() {
             if (currentUser.role !== 'admin') return;
+            // Zur Benutzerverwaltung-Seite navigieren
+            showLanding(false);
+            showOverview(false);
+            showDetailPage(false);
+            document.getElementById('userMgmtPage').style.display = 'block';
+            window.history.pushState({}, '', '?page=benutzer');
+            await loadUserManagement();
+        }
+
+        async function loadUserManagement() {
             try {
                 const response = await authFetch(API_URL + '/users');
                 if (!response.ok) throw new Error('Fehler beim Laden');
-                const users = await response.json();
-                renderUserManagement(users);
-                document.getElementById('userManagementModal').classList.add('active');
+                _userMgmtCache = await response.json();
+                renderUserManagement(_userMgmtCache);
             } catch (err) {
                 alert('Benutzerliste konnte nicht geladen werden: ' + err.message);
             }
         }
 
+        function getAvatarColor(name) {
+            const colors = ['#009688', '#e65100', '#1565c0', '#6a1b9a', '#c62828', '#2e7d32', '#ef6c00', '#0277bd', '#ad1457', '#4527a0'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function getInitials(name) {
+            const parts = name.replace(/[._]/g, ' ').split(/\s+/).filter(Boolean);
+            if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+            return name.substring(0, 2).toUpperCase();
+        }
+
         function renderUserManagement(users) {
-            const container = document.getElementById('userList');
-            const allSteckbriefe = getSteckbriefe();
+            // Stats
+            const total = users.length;
+            const admins = users.filter(u => u.role === 'admin').length;
+            const editors = users.filter(u => u.role === 'editor').length;
+            const viewers = users.filter(u => u.role === 'viewer').length;
 
-            container.innerHTML = users.map(u => {
-                // Zugewiesene Steckbriefe ermitteln (für Editoren)
-                let assignedHtml = '';
-                if (u.role === 'editor') {
-                    const assigned = allSteckbriefe.filter(s => {
-                        const editors = parseBearbeiter(s);
-                        return editors.some(ed => ed.name && ed.name.toLowerCase() === (u.display_name || '').toLowerCase());
-                    });
-                    if (assigned.length > 0) {
-                        assignedHtml = `
-                            <div style="margin-top:6px; padding:6px 0 0; border-top:1px dashed #e0e0e0;">
-                                <div style="font-size:11px; color:#009688; font-weight:600; margin-bottom:4px;">📋 Zugewiesene Steckbriefe (${assigned.length}):</div>
-                                <div style="display:flex; flex-wrap:wrap; gap:4px;">
-                                    ${assigned.map(s => `<span style="font-size:11px; background:#e0f2f1; color:#00695c; padding:2px 8px; border-radius:10px; cursor:pointer;" onclick="closeUserManagement(); openSteckbrief('${s.id}')" title="Steckbrief öffnen">${escapeHtml(s.titel)}</span>`).join('')}
-                                </div>
-                            </div>`;
-                    } else {
-                        assignedHtml = `<div style="margin-top:6px; font-size:11px; color:#e65100;">⚠ Keine Steckbriefe zugewiesen</div>`;
-                    }
-                }
-
-                return `
-                <div class="user-row" style="display:flex; flex-wrap:wrap; gap:12px; padding:12px 0; border-bottom:1px solid #eee;">
-                    <div style="flex:1; min-width:200px;">
-                        <strong>${escapeHtml(u.display_name || u.username)}</strong>
-                        <div style="font-size:12px; color:#666;">${escapeHtml(u.username)} ${u.email ? '· ' + escapeHtml(u.email) : ''}</div>
-                        <div style="font-size:11px; color:#999;">Letzter Login: ${u.last_login ? new Date(u.last_login).toLocaleString('de-DE') : 'Nie'}</div>
-                        ${assignedHtml}
+            document.getElementById('userMgmtStats').innerHTML = `
+                <div class="user-mgmt-stat">
+                    <span class="user-mgmt-stat-icon">👥</span>
+                    <div>
+                        <div class="user-mgmt-stat-value">${total}</div>
+                        <div class="user-mgmt-stat-label">Gesamt</div>
                     </div>
-                    <select onchange="changeUserRole(${u.id}, this.value)" ${u.username === currentUser.username ? 'disabled title="Eigene Rolle kann nicht geändert werden"' : ''} style="align-self:flex-start;">
-                        <option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>Viewer</option>
-                        <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Editor</option>
-                        <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-                    </select>
-                </div>`;
+                </div>
+                <div class="user-mgmt-stat">
+                    <span class="user-mgmt-stat-icon">🔴</span>
+                    <div>
+                        <div class="user-mgmt-stat-value">${admins}</div>
+                        <div class="user-mgmt-stat-label">Administratoren</div>
+                    </div>
+                </div>
+                <div class="user-mgmt-stat">
+                    <span class="user-mgmt-stat-icon">🟢</span>
+                    <div>
+                        <div class="user-mgmt-stat-value">${editors}</div>
+                        <div class="user-mgmt-stat-label">Editoren</div>
+                    </div>
+                </div>
+                <div class="user-mgmt-stat">
+                    <span class="user-mgmt-stat-icon">🔵</span>
+                    <div>
+                        <div class="user-mgmt-stat-value">${viewers}</div>
+                        <div class="user-mgmt-stat-label">Leser</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('userMgmtCount').textContent = total + ' Benutzer';
+
+            const roleLabels = { admin: 'Administrator', editor: 'Editor', viewer: 'Leser' };
+            const roleIcons = { admin: '🔴', editor: '🟢', viewer: '🔵' };
+
+            document.getElementById('userMgmtBody').innerHTML = users.map(u => {
+                const name = u.display_name || u.username;
+                const initials = getInitials(name);
+                const color = getAvatarColor(u.username);
+                const created = u.created_at ? new Date(u.created_at).toLocaleDateString('de-DE') : '–';
+                const hasRecentLogin = u.last_login && (Date.now() - new Date(u.last_login).getTime()) < 30 * 24 * 60 * 60 * 1000;
+
+                return `<tr data-username="${escapeHtml(u.username)}" data-name="${escapeHtml(name.toLowerCase())}">
+                    <td>
+                        <span class="user-mgmt-avatar" style="background: ${color};">${initials}</span>
+                        <strong>${escapeHtml(u.username)}</strong>
+                    </td>
+                    <td>
+                        <span class="user-mgmt-role-badge ${u.role}">
+                            ${roleIcons[u.role] || ''} ${roleLabels[u.role] || u.role}
+                        </span>
+                    </td>
+                    <td><span class="user-mgmt-status ${hasRecentLogin ? 'active' : 'inactive'}"></span></td>
+                    <td>${created}</td>
+                    <td>
+                        <div class="user-mgmt-actions">
+                            <button onclick="editUserRole(${u.id}, '${u.role}', '${escapeHtml(u.username)}')" title="Rolle ändern" ${u.username === currentUser.username ? 'disabled' : ''}>✏️</button>
+                            <button class="delete" onclick="deleteUser(${u.id}, '${escapeHtml(u.username)}')" title="Benutzer entfernen" ${u.username === currentUser.username ? 'disabled' : ''}>🗑️</button>
+                        </div>
+                    </td>
+                </tr>`;
             }).join('');
+        }
+
+        function filterUserTable() {
+            const query = document.getElementById('userMgmtSearch').value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#userMgmtBody tr');
+            let visible = 0;
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                const username = row.dataset.username || '';
+                const show = !query || name.includes(query) || username.toLowerCase().includes(query);
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            document.getElementById('userMgmtCount').textContent = visible + ' Benutzer';
+        }
+
+        async function editUserRole(userId, currentRole, username) {
+            if (username === currentUser.username) return;
+            const roles = ['admin', 'editor', 'viewer'];
+            const roleLabels = { admin: 'Administrator', editor: 'Editor', viewer: 'Leser' };
+            const nextRole = roles[(roles.indexOf(currentRole) + 1) % roles.length];
+            const confirmed = await showConfirmDialog(
+                'Rolle ändern',
+                `Rolle von "${username}" von ${roleLabels[currentRole]} auf ${roleLabels[nextRole]} ändern?`
+            );
+            if (!confirmed) return;
+            await changeUserRole(userId, nextRole);
+            await loadUserManagement();
+        }
+
+        async function deleteUser(userId, username) {
+            if (username === currentUser.username) return;
+            const confirmed = await showConfirmDialog(
+                'Benutzer entfernen',
+                `Soll der Benutzer "${username}" wirklich entfernt werden? Diese Aktion kann nicht rückgängig gemacht werden.`
+            );
+            if (!confirmed) return;
+            try {
+                const response = await authFetch(API_URL + '/users/' + userId, { method: 'DELETE' });
+                if (!response.ok) {
+                    const data = await response.json();
+                    alert(data.error || 'Fehler beim Löschen.');
+                    return;
+                }
+                await loadUserManagement();
+            } catch (err) {
+                alert('Fehler: ' + err.message);
+            }
         }
 
         async function changeUserRole(userId, newRole) {
@@ -2539,7 +4417,7 @@
                 if (!response.ok) {
                     const data = await response.json();
                     alert(data.error || 'Fehler beim Ändern der Rolle.');
-                    openUserManagement(); // Neu laden
+                    await loadUserManagement();
                 }
             } catch (err) {
                 alert('Fehler: ' + err.message);
@@ -2547,7 +4425,190 @@
         }
 
         function closeUserManagement() {
-            document.getElementById('userManagementModal').classList.remove('active');
+            document.getElementById('userMgmtPage').style.display = 'none';
+            navigateToLanding();
+        }
+
+        function showUserMgmtPage(show) {
+            document.getElementById('userMgmtPage').style.display = show ? 'block' : 'none';
+        }
+
+        // ====== AUSWERTUNGSSEITE ======
+        function showAnalyticsPage(show) {
+            document.getElementById('analyticsPage').style.display = show ? 'block' : 'none';
+        }
+
+        function openAnalytics() {
+            showLanding(false);
+            showOverview(false);
+            showDetailPage(false);
+            showUserMgmtPage(false);
+            showAnalyticsPage(true);
+            window.history.pushState({}, '', '?page=auswertung');
+            renderAnalytics();
+        }
+
+        function renderAnalytics() {
+            const steckbriefe = getSteckbriefe();
+            const total = steckbriefe.length;
+
+            // Stats
+            const filled = steckbriefe.filter(s => s.status_optimierung).length;
+            const hep = steckbriefe.filter(s => s.teil_hochschulentwicklungsplan && s.teil_hochschulentwicklungsplan.toLowerCase() === 'ja').length;
+
+            document.getElementById('analyticsStats').innerHTML = `
+                <div class="analytics-stat">
+                    <span class="analytics-stat-icon">📋</span>
+                    <div><div class="analytics-stat-value">${total}</div><div class="analytics-stat-label">Steckbriefe gesamt</div></div>
+                </div>
+                <div class="analytics-stat">
+                    <span class="analytics-stat-icon">✅</span>
+                    <div><div class="analytics-stat-value">${filled}</div><div class="analytics-stat-label">Mit Status</div></div>
+                </div>
+                <div class="analytics-stat">
+                    <span class="analytics-stat-icon">🎓</span>
+                    <div><div class="analytics-stat-value">${hep}</div><div class="analytics-stat-label">Teil des HEP</div></div>
+                </div>
+                <div class="analytics-stat">
+                    <span class="analytics-stat-icon">⚠️</span>
+                    <div><div class="analytics-stat-value">${total - filled}</div><div class="analytics-stat-label">Ohne Status</div></div>
+                </div>
+            `;
+
+            // Chart-Definitionen
+            const chartDefs = [
+                { title: 'Status Optimierung', field: 'status_optimierung' },
+                { title: 'Prozesscluster', field: 'prozesscluster' },
+                { title: 'Umsetzungsaufwand', field: 'umsetzungsaufwand' },
+                { title: 'Gesamtstatus', field: 'gesamtstatus' },
+                { title: 'Status Steckbrief', field: 'status_steckbrief' },
+                { title: 'Teil des HEP', field: 'teil_hochschulentwicklungsplan' },
+                { title: 'Betroffener Life-Cycle', field: 'betroffener_lifecycle' },
+                { title: 'Auftraggeber/-in', field: 'auftraggeber' }
+            ];
+
+            const grid = document.getElementById('analyticsChartsGrid');
+            grid.innerHTML = '';
+
+            chartDefs.forEach((def, idx) => {
+                // Daten aggregieren
+                const counts = {};
+                steckbriefe.forEach(s => {
+                    let val = s[def.field];
+                    if (!val || (typeof val === 'string' && !val.trim())) val = '(leer)';
+                    counts[val] = (counts[val] || 0) + 1;
+                });
+
+                const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+                if (entries.length === 0 || (entries.length === 1 && entries[0][0] === '(leer)')) return;
+
+                const card = document.createElement('div');
+                card.className = 'analytics-chart-card';
+                card.innerHTML = `
+                    <h4>${def.title}</h4>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="chart_${idx}" width="240" height="240"></canvas>
+                    </div>
+                    <div class="chart-legend" id="legend_${idx}"></div>
+                `;
+                grid.appendChild(card);
+
+                // Donut-Chart zeichnen
+                setTimeout(() => drawDonutChart(`chart_${idx}`, `legend_${idx}`, entries), 50);
+            });
+        }
+
+        const CHART_COLORS = [
+            '#009688', '#f39200', '#e53e3e', '#3182ce', '#38a169',
+            '#805ad5', '#d69e2e', '#e53e3e', '#00b5d8', '#ed64a6',
+            '#718096', '#2b6cb0', '#c05621', '#2f855a', '#6b46c1',
+            '#b7791f', '#c53030', '#0987a0', '#b83280', '#4a5568'
+        ];
+
+        function drawDonutChart(canvasId, legendId, entries) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const size = 240;
+            canvas.width = size * dpr;
+            canvas.height = size * dpr;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+            ctx.scale(dpr, dpr);
+
+            const cx = size / 2;
+            const cy = size / 2;
+            const outerR = 105;
+            const innerR = 60;
+            const total = entries.reduce((sum, e) => sum + e[1], 0);
+
+            let startAngle = -Math.PI / 2;
+            entries.forEach(([label, count], i) => {
+                const sliceAngle = (count / total) * 2 * Math.PI;
+                const color = CHART_COLORS[i % CHART_COLORS.length];
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, outerR, startAngle, startAngle + sliceAngle);
+                ctx.arc(cx, cy, innerR, startAngle + sliceAngle, startAngle, true);
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                startAngle += sliceAngle;
+            });
+
+            // Gesamtzahl in der Mitte
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 28px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(total, cx, cy - 8);
+            ctx.fillStyle = '#a0aec0';
+            ctx.font = '12px system-ui, sans-serif';
+            ctx.fillText('Gesamt', cx, cy + 12);
+
+            // Legende
+            const legendEl = document.getElementById(legendId);
+            if (legendEl) {
+                legendEl.innerHTML = entries.map(([label, count], i) => {
+                    const color = CHART_COLORS[i % CHART_COLORS.length];
+                    const pct = Math.round(count / total * 100);
+                    const displayLabel = label.length > 28 ? label.substring(0, 26) + '…' : label;
+                    return `<div class="chart-legend-item">
+                        <span class="chart-legend-dot" style="background: ${color};"></span>
+                        <span>${escapeHtml(displayLabel)}</span>
+                        <span class="chart-legend-count">(${count} · ${pct}%)</span>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        function exportAllAsExcel() {
+            const steckbriefe = getSteckbriefe();
+            if (!steckbriefe || steckbriefe.length === 0) {
+                alert('Keine Steckbriefe vorhanden.');
+                return;
+            }
+            if (typeof XLSX === 'undefined') {
+                alert('XLSX-Bibliothek nicht geladen.');
+                return;
+            }
+            const headers = ['ID', 'Titel', 'Prozesscluster', 'Auftraggeber', 'Prozessmanager', 'Anforderungsmanager', 'Prozessverantwortlicher', 'Umsetzungsaufwand', 'Status Optimierung', 'Gesamtstatus', 'Status Steckbrief', 'Teil des HEP', 'Betroffener Life-Cycle'];
+            const data = [headers];
+            steckbriefe.forEach(s => {
+                data.push([
+                    s.id, s.titel, s.prozesscluster || '', s.auftraggeber || '',
+                    s.prozessmanager || '', s.anforderungsmanager || '', s.prozessverantwortlicher || '',
+                    s.umsetzungsaufwand || '', s.status_optimierung || '', s.gesamtstatus || '',
+                    s.status_steckbrief || '', s.teil_hochschulentwicklungsplan || '', s.betroffener_lifecycle || ''
+                ]);
+            });
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Steckbriefe');
+            const datum = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `Steckbriefe_Export_${datum}.xlsx`);
         }
 
         // Editor Management
@@ -2770,6 +4831,16 @@
                     body: JSON.stringify({ id: currentSteckbriefId, bearbeiter: JSON.stringify(editors) })
                 });
                 if (!response.ok) throw new Error('Serverfehler');
+
+                // Benutzer automatisch als Editor in der Benutzerverwaltung anlegen
+                try {
+                    await authFetch(API_URL + '/users/ensure-editor', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fid: parseInt(fid), display_name: name })
+                    });
+                } catch (e) { /* nicht kritisch */ }
+
                 await loadSteckbriefeFromAPI();
                 const updated = getSteckbriefe().find(s => String(s.id) === String(currentSteckbriefId));
                 renderEditorList(updated);
@@ -2811,7 +4882,7 @@
         const STORAGE_KEY = 'steckbriefe';
         let _steckbriefeCache = [];
         let currentSteckbriefId = null;
-        let currentView = 'cards'; // 'cards' oder 'table'
+        let currentView = 'table'; // 'cards' oder 'table'
         let selectedSteckbriefe = new Set();
         let exportSteckbriefe = []; // Für den Export vorgemerkte Steckbriefe
         let isReadOnlyMode = false; // true wenn API nicht erreichbar (Nur-Lese-Modus)
@@ -2855,7 +4926,7 @@
             // Browser-Navigation (Zurück/Vor) behandeln
             window.addEventListener('popstate', handleRouting);
             
-            document.getElementById('searchInput').addEventListener('input', renderOverview);
+
             
             // Import-Handler für Word und JSON Dateien
             document.getElementById('importFile').addEventListener('change', async (event) => {
@@ -2869,25 +4940,100 @@
             const steckbriefId = urlParams.get('id');
             const editMode = urlParams.get('edit') === 'true';
             const newMode = urlParams.get('neu') === 'true';
+            const page = urlParams.get('page');
             
-            if (newMode) {
-                showOverview(false);
-                showDetailPage(true);
-                openNewSteckbriefPage();
-            } else if (steckbriefId) {
-                showOverview(false);
-                showDetailPage(true);
-                showSteckbriefDetail(steckbriefId, editMode);
+            // Alle Seiten erst ausblenden
+            showLanding(false);
+            showOverview(false);
+            showDetailPage(false);
+            showUserMgmtPage(false);
+            showAnalyticsPage(false);
+
+            if (page === 'steckbriefe' || steckbriefId || newMode) {
+                if (newMode) {
+                    showDetailPage(true);
+                    openNewSteckbriefPage();
+                } else if (steckbriefId) {
+                    showDetailPage(true);
+                    showSteckbriefDetail(steckbriefId, editMode);
+                } else {
+                    showOverview(true);
+                    renderOverview();
+                }
+            } else if (page === 'auswertung') {
+                showAnalyticsPage(true);
+                renderAnalytics();
+            } else if (page === 'benutzer') {
+                if (currentUser.role === 'admin') {
+                    showUserMgmtPage(true);
+                    loadUserManagement();
+                } else {
+                    showLanding(true);
+                }
             } else {
-                showOverview(true);
-                showDetailPage(false);
-                renderOverview();
+                // Landing Page anzeigen
+                showLanding(true);
             }
+        }
+
+        // Landing-Page anzeigen/ausblenden
+        function showLanding(show) {
+            document.getElementById('landingPage').style.display = show ? 'flex' : 'none';
+            // Admin-only Kacheln
+            const isAdmin = currentUser.role === 'admin';
+            const cardAuswertung = document.getElementById('landingCardAuswertung');
+            const cardBenutzer = document.getElementById('landingCardBenutzer');
+            if (cardAuswertung) cardAuswertung.style.display = isAdmin ? 'flex' : 'none';
+            if (cardBenutzer) cardBenutzer.style.display = isAdmin ? 'flex' : 'none';
+        }
+
+        // Navigation von Landing-Page
+        function navigateFromLanding(target) {
+            if (target === 'steckbriefe') {
+                window.history.pushState({}, '', '?page=steckbriefe');
+                handleRouting();
+            } else if (target === 'auswertung') {
+                window.history.pushState({}, '', '?page=auswertung');
+                handleRouting();
+            } else if (target === 'benutzer') {
+                window.history.pushState({}, '', '?page=benutzer');
+                handleRouting();
+            }
+        }
+
+        function navigateToLanding() {
+            window.history.replaceState({}, '', window.location.pathname);
+            handleRouting();
         }
 
         // Übersicht anzeigen/ausblenden
         function showOverview(show) {
-            document.querySelector('.container:not(.detail-page)').style.display = show ? 'block' : 'none';
+            document.getElementById('overviewContainer').style.display = show ? 'block' : 'none';
+            const fb = document.getElementById('filterBar');
+            if (show) {
+                fb.classList.add('visible');
+            } else {
+                fb.classList.remove('visible');
+            }
+        }
+
+        // Filter-Bar auf-/zuklappen
+        function toggleFilterBar() {
+            document.getElementById('filterBar').classList.toggle('collapsed');
+        }
+
+        // Badge mit Anzahl aktiver Filter aktualisieren
+        function updateFilterBadge() {
+            let count = 0;
+            const vals = Object.values(activeFilters);
+            for (const v of vals) { if (v) count++; }
+            const badge = document.getElementById('filterBadge');
+            if (count > 0) {
+                badge.textContent = count + ' aktiv';
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
         }
 
         // Detail-Seite anzeigen/ausblenden
@@ -2897,8 +5043,11 @@
 
         // Zur Übersicht zurück
         function goBack() {
-            window.history.replaceState({}, '', window.location.pathname);
+            window.history.replaceState({}, '', '?page=steckbriefe');
             // Zeige explizit die Übersicht und blende die Detailansicht aus
+            showLanding(false);
+            showUserMgmtPage(false);
+            showAnalyticsPage(false);
             showOverview(true);
             showDetailPage(false);
             renderOverview();
@@ -2943,7 +5092,9 @@
         // Übersicht rendern
         function renderOverview() {
             const container = document.getElementById('overview');
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            // Suche aus Sidebar oder Header verwenden
+            const sidebarSearch = document.getElementById('sidebarSearchInput');
+            const searchTerm = (sidebarSearch ? sidebarSearch.value : '').toLowerCase();
             let steckbriefe = getSteckbriefe();
 
             // Textsuche
@@ -3009,7 +5160,8 @@
             renderActiveFilterTags();
 
             // Ergebnis-Anzahl aktualisieren
-            document.getElementById('resultCount').textContent = `${steckbriefe.length} Steckbrief${steckbriefe.length !== 1 ? 'e' : ''}`;
+            const countBadge = document.getElementById('sidebarCount');
+            if (countBadge) countBadge.textContent = steckbriefe.length;
 
             if (steckbriefe.length === 0) {
                 container.innerHTML = `
@@ -3075,12 +5227,10 @@
             }
 
             const columns = [
-                { key: 'id', label: 'ID' },
-                { key: 'prozesscluster', label: 'Prozesscluster' },
                 { key: 'titel', label: 'Titel' },
-                { key: 'auftraggeber', label: 'Auftraggeber/-in' },
-                { key: 'ziel_vision', label: 'Vision' },
-                { key: 'status_optimierung', label: 'Status Optimierung' }
+                { key: 'prozesscluster', label: 'Prozesscluster' },
+                { key: 'auftraggeber', label: 'Auftraggeber' },
+                { key: 'status_optimierung', label: 'Status' },
             ];
 
             const getSortIcon = (key) => {
@@ -3093,32 +5243,52 @@
                 return `sortable sort-${tableSortDirection}`;
             };
 
+            function getStatusClass(status) {
+                if (!status) return 'status-grey';
+                const s = status.toLowerCase();
+                if (s.includes('aktiv') || s.includes('abgeschlossen') || s.includes('läuft')) return 'status-green';
+                if (s.includes('geplant') || s.includes('offen') || s.includes('in ')) return 'status-orange';
+                if (s.includes('gestoppt') || s.includes('abgebrochen')) return 'status-red';
+                return 'status-grey';
+            }
+
+            const isAdmin = getEffectiveRole() === 'admin';
+
             container.innerHTML = `
                 <table class="overview-table">
                     <thead>
                         <tr>
-                            <th style="width: 40px;"></th>
+                            <th style="width: 44px;">AUSWAHL</th>
                             ${columns.map(col => `
                                 <th class="${getSortClass(col.key)}" onclick="sortTable('${col.key}')">
                                     ${col.label}<span class="sort-icon">${getSortIcon(col.key)}</span>
                                 </th>
                             `).join('')}
+                            <th style="width: 120px; text-align: right;">AKTIONEN</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${steckbriefe.map(s => {
-                            const editClass = getEffectiveRole() === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
+                            const canEdit = canEditSteckbrief(s);
+                            const editClass = getEffectiveRole() === 'editor' ? (canEdit ? 'can-edit' : 'no-edit') : '';
                             return `
-                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
-                                <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="text-align: center; cursor: pointer;">
-                                    <span style="color: ${selectedSteckbriefe.has(s.id) ? '#009688' : '#ccc'}; font-size: 1.2em;">${selectedSteckbriefe.has(s.id) ? '☑' : '☐'}</span>
+                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}">
+                                <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="cursor: pointer;">
+                                    <div class="type-icon" title="ID: ${s.id}">📄</div>
                                 </td>
-                                <td>${s.id}</td>
-                                <td>${escapeHtml(s.prozesscluster || '-')}</td>
-                                <td class="title-cell">${escapeHtml(s.titel)}</td>
-                                <td>${escapeHtml(s.auftraggeber || '-')}</td>
-                                <td>${escapeHtml(s.ziel_vision || '-')}</td>
-                                <td>${escapeHtml(s.status_optimierung || '-')}</td>
+                                <td class="title-cell" onclick="openSteckbrief('${s.id}')">${escapeHtml(s.titel)}</td>
+                                <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.prozesscluster || '–')}</td>
+                                <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.auftraggeber || '–')}</td>
+                                <td onclick="openSteckbrief('${s.id}')">
+                                    <span class="status-badge ${getStatusClass(s.status_optimierung)}">${escapeHtml(s.status_optimierung || '–')}</span>
+                                </td>
+                                <td>
+                                    <div class="actions-cell">
+                                        <button class="action-btn btn-view" onclick="event.stopPropagation(); openSteckbrief('${s.id}')" title="Ansehen">👁</button>
+                                        ${canEdit ? `<button class="action-btn btn-edit" onclick="event.stopPropagation(); openSteckbrief('${s.id}', true)" title="Bearbeiten">✎</button>` : ''}
+                                        ${isAdmin ? `<button class="action-btn btn-delete" onclick="event.stopPropagation(); deleteSteckbrief('${s.id}')" title="Löschen">🗑</button>` : ''}
+                                    </div>
+                                </td>
                             </tr>`;
                         }).join('')}
                     </tbody>
@@ -3142,9 +5312,27 @@
         // Ansicht wechseln
         function setView(view) {
             currentView = view;
-            document.getElementById('btnCards').classList.toggle('active', view === 'cards');
-            document.getElementById('btnTable').classList.toggle('active', view === 'table');
+            // Sidebar-Buttons aktualisieren
+            const sc = document.getElementById('sidebarBtnCards');
+            const st = document.getElementById('sidebarBtnTable');
+            if (sc) sc.classList.toggle('active', view === 'cards');
+            if (st) st.classList.toggle('active', view === 'table');
             renderOverview();
+        }
+
+        function setSidebarView(view) {
+            setView(view);
+        }
+
+        function onSidebarSearch() {
+            renderOverview();
+        }
+
+        function toggleOverviewSidebar() {
+            const sidebar = document.getElementById('overviewSidebar');
+            const toggle = sidebar.querySelector('.sidebar-toggle');
+            sidebar.classList.toggle('collapsed');
+            toggle.textContent = sidebar.classList.contains('collapsed') ? '\u203A' : '\u2039';
         }
 
         // Filter-Dropdowns mit Werten befüllen
@@ -3207,6 +5395,7 @@
             activeFilters.anforderungsmanagerText = document.getElementById('filterAnforderungsmanagerText').value.toLowerCase().trim();
             activeFilters.statusOptimierungText = document.getElementById('filterStatusOptimierungText').value.toLowerCase().trim();
             activeFilters.titelText = document.getElementById('filterTitelText').value.toLowerCase().trim();
+            updateFilterBadge();
             renderOverview();
         }
 
@@ -3251,6 +5440,7 @@
             });
             // Toggle-Buttons zurücksetzen
             document.querySelectorAll('.filter-search-toggle').forEach(btn => btn.classList.remove('active'));
+            updateFilterBadge();
             renderOverview();
         }
 
@@ -3496,8 +5686,9 @@
         }
 
         // Steckbrief öffnen (URL ändern)
-        function openSteckbrief(id) {
-            window.history.pushState({}, '', '?id=' + encodeURIComponent(id));
+        function openSteckbrief(id, editMode) {
+            const url = editMode ? '?id=' + encodeURIComponent(id) + '&edit=true' : '?id=' + encodeURIComponent(id);
+            window.history.pushState({}, '', url);
             handleRouting();
         }
 
@@ -3512,6 +5703,18 @@
 
             currentSteckbriefId = id;
             document.getElementById('modalTitle').textContent = steckbrief.titel;
+            document.getElementById('breadcrumbTitle').textContent = steckbrief.titel;
+
+            // Hero-Badges
+            const badges = document.getElementById('heroBadges');
+            const statusText = steckbrief.status_optimierung || '';
+            badges.innerHTML = `
+                <span class="hero-badge"># ${escapeHtml(String(steckbrief.id))}</span>
+                ${steckbrief.prozesscluster ? `<span class="hero-badge">📁 ${escapeHtml(steckbrief.prozesscluster)}</span>` : ''}
+                ${steckbrief.auftraggeber ? `<span class="hero-badge">👤 ${escapeHtml(steckbrief.auftraggeber)}</span>` : ''}
+                ${statusText ? `<span class="hero-badge status-badge-hero">${escapeHtml(statusText)}</span>` : ''}
+                ${steckbrief.teil_hochschulentwicklungsplan === 'ja' ? '<span class="hero-badge">📋 HEP</span>' : ''}
+            `;
             
             // Ansicht füllen
             renderViewContent(steckbrief);
@@ -3533,81 +5736,74 @@
             });
         }
 
-        // Ansicht rendern
+        // Ansicht rendern (Genesis-Stil mit klappbaren Sektionen)
         function renderViewContent(s) {
             const container = document.getElementById('viewContent');
             container.innerHTML = `
-                <div class="form-section">
-                    <h3>1. Rahmendaten</h3>
+                ${renderGenesisSection('📊', 'Rahmendaten', 'Grundlegende Informationen zum Prozess-/Projektsteckbrief', `
+                    <div class="genesis-sub-header">Identifikation</div>
                     <div class="form-grid">
                         ${renderField('ID', s.id)}
                         ${renderField('Titel', s.titel)}
+                        ${renderField('Prozesscluster', s.prozesscluster)}
+                        ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                    </div>
+                    <div class="genesis-sub-header">Verantwortliche</div>
+                    <div class="form-grid">
                         ${renderField('Auftraggeber/-in', s.auftraggeber)}
                         ${renderField('Prozessmanager/-in', s.prozessmanager)}
                         ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
                         ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
-                        ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam))}
-                        ${renderField('Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span>', s.prozesscluster)}
-                        ${renderField('Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span>', getAufwandLabel(s.umsetzungsaufwand))}
-                        ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                        ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam), true)}
                     </div>
-                </div>
+                    <div class="genesis-sub-header">Aufwand</div>
+                    <div class="form-grid">
+                        ${renderField('Geschätzter Umsetzungsaufwand', getAufwandLabel(s.umsetzungsaufwand))}
+                    </div>
+                `)}
 
-                <div class="form-section">
-                    <h3>2. Beschreibung</h3>
+                ${renderGenesisSection('📝', 'Beschreibung', 'Vision, Ziele und Lösungsansätze der Prozessoptimierung', `
+                    <div class="genesis-sub-header">Vision & Motivation</div>
                     ${renderField('Vision', s.ziel_vision, true)}
-                    ${renderField('Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-style: italic;">(Ist-Situation & Ausformulierung von 4.)</span>', s.warum, true)}
-                    ${renderField('Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em;">(Aufzählung der Organisationseinheiten)</span>', s.wer, true)}
-                    ${renderField('Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em;">(ggfs. Verweis auf 3.)</span>', s.welche, true)}
-                    ${renderField('Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)? <span style="color: #888; font-size: 0.85em;">(Kurzbeschreibung)</span>', s.was, true)}
-                    ${renderField('Wie sollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em;">(Beschreibung erster Lösungsansätze)</span>', s.wie, true)}
-                    ${renderField('Wo sind IT-Systeme von der Prozessoptimierung betroffen?', s.wo, true)}
-                    ${renderField('Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?', s.wann, true)}
-                </div>
+                    ${renderField('Warum soll der Prozess optimiert werden?', s.warum, true)}
+                    <div class="genesis-sub-header">Beteiligte & Betroffene</div>
+                    ${renderField('Wer ist beteiligt bzw. betroffen?', s.wer, true)}
+                    ${renderField('Welche Teilprozesse/Projekte sind betroffen?', s.welche, true)}
+                    <div class="genesis-sub-header">Ziele & Umsetzung</div>
+                    ${renderField('Konkrete Ziele (inkl. Nicht-Ziele)', s.was, true)}
+                    ${renderField('Wie sollen die Ziele erreicht werden?', s.wie, true)}
+                    ${renderField('Betroffene IT-Systeme', s.wo, true)}
+                    ${renderField('Zeitplanung & Einschränkungen', s.wann, true)}
+                `)}
 
-                <div class="form-section">
-                    <h3>3. Einordnung in den Gesamtprozess</h3>
-                    ${renderField('Welcher strategische Prozess ist hauptsächlich betroffen?', s.einordnung_gesamtprozess, true)}
-                </div>
+                ${renderGenesisSection('🔗', 'Einordnung in den Gesamtprozess', 'Strategische Zuordnung im Gesamtprozess', `
+                    ${renderField('Hauptsächlich betroffener strategischer Prozess', s.einordnung_gesamtprozess, true)}
+                `)}
 
-                <div class="form-section">
-                    <h3>4. Zwänge & Anforderungen</h3>
-                    <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                        <strong>Gewichtung</strong><br>
-                        0 = irrelevant<br>
-                        1 = förderlich<br>
-                        2 = wichtig<br>
-                        3 = zwingend notwendig
+                ${renderGenesisSection('⚖️', 'Zwänge & Anforderungen', 'Bewertung der externen und internen Anforderungen', `
+                    <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
+                        <strong>Gewichtung:</strong> 0 = irrelevant · 1 = förderlich · 2 = wichtig · 3 = zwingend notwendig
                     </div>
                     <table class="bewertung-table">
-                        <thead>
-                            <tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr>
-                        </thead>
+                        <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
                         <tbody>
-                            ${renderBewertungRow('Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span>', s.bewertung_strategie, s.bewertung_strategie_text)}
-                            ${renderBewertungRow('Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span>', s.bewertung_recht, s.bewertung_recht_text)}
-                            ${renderBewertungRow('Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span>', s.bewertung_technik, s.bewertung_technik_text)}
-                            ${renderBewertungRow('Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span>', s.bewertung_kunden, s.bewertung_kunden_text)}
-                            ${renderBewertungRow('Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span>', s.bewertung_lehrende, s.bewertung_lehrende_text)}
-                            ${renderBewertungRow('Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span>', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
-                            ${renderBewertungRow('Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span>', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
+                            ${renderBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie, s.bewertung_strategie_text)}
+                            ${renderBewertungRow('Rechtliche Vorschriften', s.bewertung_recht, s.bewertung_recht_text)}
+                            ${renderBewertungRow('Technische Zwänge', s.bewertung_technik, s.bewertung_technik_text)}
+                            ${renderBewertungRow('Anforderungen Kunden', s.bewertung_kunden, s.bewertung_kunden_text)}
+                            ${renderBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende, s.bewertung_lehrende_text)}
+                            ${renderBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
+                            ${renderBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
                         </tbody>
                     </table>
-                </div>
+                `)}
 
-                <div class="form-section">
-                    <h3>5. Zu erwartende Optimierungen</h3>
-                    <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                        <strong>Gewichtung</strong><br>
-                        0 = irrelevant<br>
-                        1 = geringerer Nutzen<br>
-                        2 = mittlerer Nutzen<br>
-                        3 = hoher Nutzen
+                ${renderGenesisSection('📈', 'Zu erwartende Optimierungen', 'Nutzen-Bewertung der geplanten Maßnahmen', `
+                    <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
+                        <strong>Gewichtung:</strong> 0 = irrelevant · 1 = geringerer Nutzen · 2 = mittlerer Nutzen · 3 = hoher Nutzen
                     </div>
                     <table class="bewertung-table">
-                        <thead>
-                            <tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr>
-                        </thead>
+                        <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
                         <tbody>
                             ${renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)}
                             ${renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)}
@@ -3617,23 +5813,51 @@
                             ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
                         </tbody>
                     </table>
-                </div>
+                `)}
 
-                <div class="form-section">
-                    <h3>6. Status</h3>
+                ${renderGenesisSection('📅', 'Status', 'Aktueller Stand und Planung', `
+                    <div class="genesis-sub-header">Status & Planung</div>
                     <div class="form-grid">
                         ${renderField('Start', s.start_datum)}
                         ${renderField('Gesamtstatus', s.gesamtstatus)}
+                        ${renderField('Status Optimierung', s.status_optimierung)}
                         ${renderField('Status Steckbrief', s.status_steckbrief)}
                         ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
                     </div>
-                </div>
+                `)}
 
-                <div class="form-section">
-                    <h3>7. Änderungshistorie</h3>
+                ${renderGenesisSection('🕐', 'Änderungshistorie', 'Protokoll aller Änderungen', `
                     ${renderAenderungshistorieTable(s.aenderungshistorie)}
+                `)}
+            `;
+        }
+
+        function renderGenesisSection(icon, title, desc, content) {
+            return `
+                <div class="genesis-section">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">${icon}</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">${title}</div>
+                            <div class="genesis-section-desc">${desc}</div>
+                        </div>
+                    </div>
+                    <div class="genesis-section-body">
+                        ${content}
+                    </div>
                 </div>
             `;
+        }
+
+        function toggleAllSections(expand) {
+            document.querySelectorAll('#viewContent .genesis-section').forEach(s => {
+                if (expand) {
+                    s.classList.remove('collapsed');
+                } else {
+                    s.classList.add('collapsed');
+                }
+            });
         }
 
         function renderAenderungshistorieTable(historie) {
@@ -4082,6 +6306,12 @@
             
             document.getElementById('viewTab').style.display = tab === 'view' ? 'block' : 'none';
             document.getElementById('editTab').style.display = tab === 'edit' ? 'block' : 'none';
+            
+            // Section controls + actions bar nur in Ansicht zeigen
+            const sectionControls = document.getElementById('sectionControls');
+            const actionsBar = document.getElementById('detailActionsBar');
+            if (sectionControls) sectionControls.style.display = tab === 'view' ? '' : 'none';
+            if (actionsBar) actionsBar.style.display = tab === 'view' ? '' : 'none';
         }
 
         // Modal schließen (Kompatibilität - verwendet goBack)
@@ -4117,17 +6347,21 @@
             const btnExportSelected = document.getElementById('btnExportSelected');
             
             if (selectedSteckbriefe.size === steckbriefe.length && steckbriefe.length > 0) {
-                btnSelectAll.innerHTML = '☑ Alle abwählen';
+                btnSelectAll.innerHTML = '<span>☑</span> Alle abwählen';
                 btnSelectAll.classList.add('active');
             } else if (selectedSteckbriefe.size > 0) {
-                btnSelectAll.innerHTML = `☐ ${selectedSteckbriefe.size} ausgewählt`;
+                btnSelectAll.innerHTML = `<span>☐</span> ${selectedSteckbriefe.size} ausgewählt`;
                 btnSelectAll.classList.remove('active');
             } else {
-                btnSelectAll.innerHTML = '☐ Alle auswählen';
+                btnSelectAll.innerHTML = '<span>☐</span> Alle auswählen';
                 btnSelectAll.classList.remove('active');
             }
             
-            btnExportSelected.style.display = selectedSteckbriefe.size > 0 ? 'inline-block' : 'none';
+            if (selectedSteckbriefe.size > 0) {
+                btnExportSelected.classList.add('visible');
+            } else {
+                btnExportSelected.classList.remove('visible');
+            }
         }
 
         // Ausgewählte exportieren
@@ -5432,13 +7666,6 @@
         document.getElementById('exportModal').addEventListener('click', (e) => {
             if (e.target.id === 'exportModal') {
                 closeExportModal();
-            }
-        });
-
-        // Benutzerverwaltung-Modal schließen bei Klick außerhalb
-        document.getElementById('userManagementModal').addEventListener('click', (e) => {
-            if (e.target.id === 'userManagementModal') {
-                closeUserManagement();
             }
         });
 
