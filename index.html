@@ -121,6 +121,38 @@
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
         }
 
+        .landing-card.locked {
+            pointer-events: none;
+            opacity: 0.5;
+            filter: grayscale(30%);
+            position: relative;
+            cursor: default;
+        }
+
+        .landing-card.locked:hover {
+            transform: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-color: #edf2f7;
+        }
+
+        .landing-card.locked .landing-card-lock {
+            display: flex;
+        }
+
+        .landing-card-lock {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.08);
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+        }
+
         .landing-footer {
             margin-top: 60px;
             text-align: center;
@@ -1678,8 +1710,11 @@
             border-radius: 8px 0 0 8px;
             padding: 0;
             transition: width 0.25s, min-width 0.25s, padding 0.25s;
-            overflow: hidden;
-            position: relative;
+            overflow-y: auto;
+            position: sticky;
+            top: 70px;
+            align-self: flex-start;
+            max-height: calc(100vh - 70px);
         }
 
         .overview-sidebar.collapsed {
@@ -2060,8 +2095,9 @@
         .table-view {
             background: white;
             border-radius: 8px;
-            overflow: hidden;
+            overflow: auto;
             border: 1px solid #e8e8e8;
+            max-height: calc(100vh - 160px);
         }
 
         .overview-table {
@@ -2079,6 +2115,9 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
 
         .overview-table th.sortable {
@@ -3248,13 +3287,15 @@
                 <p>Prozess- und Projektsteckbriefe anzeigen, erstellen und bearbeiten</p>
             </div>
 
-            <div class="landing-card admin-only-card" id="landingCardAuswertung" onclick="navigateFromLanding('auswertung')" style="display: none;">
+            <div class="landing-card admin-only-card locked" id="landingCardAuswertung" onclick="navigateFromLanding('auswertung')">
+                <span class="landing-card-lock">🔒</span>
                 <div class="landing-card-icon">📊</div>
                 <h3>Steckbriefe auswerten</h3>
                 <p>Lückenanalyse durchführen und Auswertungen als Excel exportieren</p>
             </div>
 
-            <div class="landing-card admin-only-card" id="landingCardBenutzer" onclick="navigateFromLanding('benutzer')" style="display: none;">
+            <div class="landing-card admin-only-card locked" id="landingCardBenutzer" onclick="navigateFromLanding('benutzer')">
+                <span class="landing-card-lock">🔒</span>
                 <div class="landing-card-icon">👥</div>
                 <h3>Benutzerverwaltung</h3>
                 <p>Benutzer anlegen, Rollen vergeben und Zugriffsrechte verwalten</p>
@@ -3262,7 +3303,7 @@
         </div>
 
         <div class="landing-footer">
-            Steckbrief Manager v17.1.0 · FOM Hochschule für Oekonomie & Management
+            Steckbrief Manager v17.2.0 · FOM Hochschule für Oekonomie & Management
         </div>
     </div>
 
@@ -4173,6 +4214,7 @@
             }
             updateUIForRole();
             renderOverview();
+            updateLandingCards();
             // Detail-Seite neu rendern falls offen
             if (currentSteckbriefId) {
                 handleRouting();
@@ -4239,9 +4281,32 @@
             if (role === 'editor') {
                 // Editor darf nur zugewiesene Steckbriefe bearbeiten
                 const editors = parseBearbeiter(steckbrief);
-                return editors.some(ed =>
-                    ed.name && ed.name.toLowerCase() === currentUser.name.toLowerCase()
-                );
+                const myName = (currentUser.name || '').toLowerCase().trim();
+                const myUsername = (currentUser.username || '').toLowerCase().trim();
+                return editors.some(ed => {
+                    if (!ed.name) return false;
+                    const edName = ed.name.toLowerCase().trim();
+                    // 1. Direkter Namensvergleich
+                    if (edName === myName) return true;
+                    // 2. Username-Vergleich: aus Bearbeiter-Name (ggf. mit Titel) Username ableiten
+                    const titleWords = ['prof.', 'prof', 'dr.', 'dr', 'dipl.', 'dipl', 'ing.', 'ing',
+                        'med.', 'med', 'rer.', 'nat.', 'phil.', 'jur.', 'habil.', 'em.', 'h.c.', 'mult.'];
+                    const parts = edName.split(/\s+/).filter(p => !titleWords.includes(p));
+                    if (parts.length >= 2) {
+                        const derived = parts[0] + '.' + parts[parts.length - 1];
+                        if (derived === myUsername) return true;
+                    }
+                    // 3. Umgekehrtes Format "Nachname, Vorname" im displayName
+                    if (myName.includes(',')) {
+                        const [last, first] = myName.split(',').map(s => s.trim());
+                        if (first && last) {
+                            const reversed = first + ' ' + last;
+                            const nameParts = edName.split(/\s+/).filter(p => !titleWords.includes(p));
+                            if (nameParts.join(' ') === reversed) return true;
+                        }
+                    }
+                    return false;
+                });
             }
             return false;
         }
@@ -5044,12 +5109,16 @@
         // Landing-Page anzeigen/ausblenden
         function showLanding(show) {
             document.getElementById('landingPage').style.display = show ? 'flex' : 'none';
-            // Admin-only Kacheln
-            const isAdmin = currentUser.role === 'admin';
+            updateLandingCards();
+        }
+
+        function updateLandingCards() {
+            // Admin-only Kacheln: für Nicht-Admins sichtbar aber gesperrt
+            const isAdmin = getEffectiveRole() === 'admin';
             const cardAuswertung = document.getElementById('landingCardAuswertung');
             const cardBenutzer = document.getElementById('landingCardBenutzer');
-            if (cardAuswertung) cardAuswertung.style.display = isAdmin ? 'flex' : 'none';
-            if (cardBenutzer) cardBenutzer.style.display = isAdmin ? 'flex' : 'none';
+            if (cardAuswertung) cardAuswertung.classList.toggle('locked', !isAdmin);
+            if (cardBenutzer) cardBenutzer.classList.toggle('locked', !isAdmin);
         }
 
         // Navigation von Landing-Page
