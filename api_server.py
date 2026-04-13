@@ -179,6 +179,38 @@ def get_users():
     return jsonify(users)
 
 
+@app.route('/api/users', methods=['POST'])
+@require_auth
+@require_role('admin')
+def create_user_manual():
+    """Legt einen Benutzer manuell an (Admin-Funktion)."""
+    data = request.json or {}
+    username = data.get('username', '').strip().lower()
+    display_name = data.get('display_name', '').strip()
+    role = data.get('role', 'viewer')
+
+    if not username or not display_name:
+        return jsonify({'error': 'Benutzername und Anzeigename sind erforderlich'}), 400
+    if role not in ('viewer', 'editor', 'admin'):
+        return jsonify({'error': 'Ungültige Rolle'}), 400
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT id FROM t_steckbrief_users WHERE username = %s', (username,))
+    if cursor.fetchone():
+        conn.close()
+        return jsonify({'error': f'Benutzer "{username}" existiert bereits'}), 409
+
+    cursor.execute(
+        'INSERT INTO t_steckbrief_users (username, display_name, email, role) VALUES (%s, %s, %s, %s)',
+        (username, display_name, '', role)
+    )
+    conn.commit()
+    new_id = cursor.lastrowid
+    conn.close()
+    return jsonify({'success': True, 'id': new_id}), 201
+
+
 @app.route('/api/users/<int:uid>/role', methods=['PUT'])
 @require_auth
 @require_role('admin')
