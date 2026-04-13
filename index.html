@@ -19,6 +19,10 @@
             padding: 0;
         }
 
+        input, textarea, select, button {
+            font-family: inherit;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f7fa;
@@ -3639,21 +3643,59 @@
                             </div>
                             <div class="form-group">
                                 <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
-                                <input type="text" id="prozesscluster">
+                                <select id="prozesscluster" autocomplete="off">
+                                    <option value="">-- Bitte wählen --</option>
+                                    <option value="/">/</option>
+                                    <option value="Leitbild &amp; Charta entwickeln">Leitbild &amp; Charta entwickeln</option>
+                                    <option value="(Hochschul-)Entwicklung planen">(Hochschul-)Entwicklung planen</option>
+                                    <option value="Organisation &amp; QM lenken">Organisation &amp; QM lenken</option>
+                                    <option value="Organisation &amp; QM weiterentwickeln">Organisation &amp; QM weiterentwickeln</option>
+                                    <option value="Studiengänge (weiter-)entwickeln">Studiengänge (weiter-)entwickeln</option>
+                                    <option value="Studieneinstieg durchführen">Studieneinstieg durchführen</option>
+                                    <option value="Semesterplanung durchführen">Semesterplanung durchführen</option>
+                                    <option value="Lehren &amp; Lernen inkl. Feedback gestalten">Lehren &amp; Lernen inkl. Feedback gestalten</option>
+                                    <option value="Studienbegleitende Prüfungen organisieren">Studienbegleitende Prüfungen organisieren</option>
+                                    <option value="Studierende &amp; Lehrende beraten">Studierende &amp; Lehrende beraten</option>
+                                    <option value="Studienabschluss umsetzen">Studienabschluss umsetzen</option>
+                                    <option value="Lehre &amp; Studium evaluieren">Lehre &amp; Studium evaluieren</option>
+                                    <option value="Forschungsfragen identifizieren">Forschungsfragen identifizieren</option>
+                                    <option value="Forschungsmittel akquirieren">Forschungsmittel akquirieren</option>
+                                    <option value="Forschungsprojekte organisieren">Forschungsprojekte organisieren</option>
+                                    <option value="Forschungsprojekte durchführen">Forschungsprojekte durchführen</option>
+                                    <option value="Forschungsergebnisse transferieren">Forschungsergebnisse transferieren</option>
+                                    <option value="Forschungsprojekte abschließen">Forschungsprojekte abschließen</option>
+                                    <option value="Forschung evaluieren">Forschung evaluieren</option>
+                                    <option value="Lehrgänge (weiter-)entwickeln">Lehrgänge (weiter-)entwickeln</option>
+                                    <option value="Lehrgangseinstieg durchführen">Lehrgangseinstieg durchführen</option>
+                                    <option value="Lehrgangsplanung durchführen">Lehrgangsplanung durchführen</option>
+                                    <option value="Lehrgangsbegleitende Prüfungen organisieren">Lehrgangsbegleitende Prüfungen organisieren</option>
+                                    <option value="Lehrgangsteilnehmende &amp; Lehrende beraten">Lehrgangsteilnehmende &amp; Lehrende beraten</option>
+                                    <option value="Lehrgangsabschluss umsetzen">Lehrgangsabschluss umsetzen</option>
+                                    <option value="Fort-/Weiterbildung evaluieren">Fort-/Weiterbildung evaluieren</option>
+                                    <option value="Lehrangebot vermarkten &amp; Informationen bereitstellen">Lehrangebot vermarkten &amp; Informationen bereitstellen</option>
+                                    <option value="Studierende &amp; Teilnehmende gewinnen">Studierende &amp; Teilnehmende gewinnen</option>
+                                    <option value="(Lehr-)Personal bereitstellen">(Lehr-)Personal bereitstellen</option>
+                                    <option value="Räumliche &amp; sächliche Infrastruktur bereitstellen">Räumliche &amp; sächliche Infrastruktur bereitstellen</option>
+                                    <option value="IT-Strukturen bereitstellen">IT-Strukturen bereitstellen</option>
+                                    <option value="Finanzen bewirtschaften">Finanzen bewirtschaften</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
-                                <select id="umsetzungsaufwand">
+                                <select id="umsetzungsaufwand" autocomplete="off">
                                     <option value="">-- Bitte wählen --</option>
                                     <option value="klein">Klein</option>
                                     <option value="mittel">Mittel</option>
                                     <option value="gross">Groß</option>
-                                    <option value="mittel-gross">Mittel/Groß</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
-                                <input type="text" id="betroffener_lifecycle">
+                                <select id="betroffener_lifecycle" autocomplete="off">
+                                    <option value="/">/</option>
+                                    <option value="Student-Life-Cycle">Student-Life-Cycle</option>
+                                    <option value="Product-Life-Cycle">Product-Life-Cycle</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -5269,6 +5311,7 @@
         const STORAGE_KEY = 'steckbriefe';
         let _steckbriefeCache = [];
         let currentSteckbriefId = null;
+        let _formDirty = false; // true wenn Formular ungespeicherte Änderungen hat
         let currentView = 'table'; // 'cards' oder 'table'
         let selectedSteckbriefe = new Set();
         let exportSteckbriefe = []; // Für den Export vorgemerkte Steckbriefe
@@ -5303,6 +5346,7 @@
                 // Personen-Autocomplete initialisieren
                 initPersonenAutocomplete();
                 initTeamAutocomplete();
+                initDirtyTracking();
                 
                 updateFilterDropdowns();
                 
@@ -5392,7 +5436,9 @@
             }
         }
 
-        function navigateToLanding() {
+        async function navigateToLanding() {
+            if (!(await checkUnsavedChanges())) return;
+            _formDirty = false;
             window.history.replaceState({}, '', window.location.pathname);
             handleRouting();
         }
@@ -5427,7 +5473,9 @@
         }
 
         // Zur Übersicht zurück
-        function goBack() {
+        async function goBack() {
+            if (!(await checkUnsavedChanges())) return;
+            _formDirty = false;
             window.history.replaceState({}, '', '?page=steckbriefe');
             // Zeige explizit die Übersicht und blende die Detailansicht aus
             showLanding(false);
@@ -5928,8 +5976,7 @@
             const labels = {
                 'klein': 'Klein',
                 'mittel': 'Mittel',
-                'gross': 'Groß',
-                'mittel-gross': 'Mittel/Groß'
+                'gross': 'Groß'
             };
             return labels[aufwand] || aufwand;
         }
@@ -6055,6 +6102,7 @@
                 goBack();
                 return;
             }
+            _formDirty = false;
             currentSteckbriefId = null;
             document.getElementById('steckbriefForm').reset();
             document.getElementById('steckbriefId').value = '';
@@ -6071,7 +6119,9 @@
         }
 
         // Steckbrief öffnen (URL ändern)
-        function openSteckbrief(id, editMode) {
+        async function openSteckbrief(id, editMode) {
+            if (!(await checkUnsavedChanges())) return;
+            _formDirty = false;
             const url = editMode ? '?id=' + encodeURIComponent(id) + '&edit=true' : '?id=' + encodeURIComponent(id);
             window.history.pushState({}, '', url);
             handleRouting();
@@ -6346,7 +6396,48 @@
             
             // Änderungshistorie laden (read-only)
             renderAenderungshistorie(s.aenderungshistorie);
+            // Nach dem Befüllen: Formular ist "sauber"
+            setTimeout(() => { _formDirty = false; }, 0);
         }
+
+        // Dirty-Tracking für Formularänderungen initialisieren
+        function initDirtyTracking() {
+            const form = document.getElementById('steckbriefForm');
+            if (!form) return;
+            form.addEventListener('input', () => { _formDirty = true; });
+            form.addEventListener('change', () => { _formDirty = true; });
+        }
+
+        // Prüft ob ungespeicherte Änderungen vorliegen
+        // Gibt zurück: true (navigieren erlaubt), false (abbrechen), 'save' (erst speichern)
+        async function checkUnsavedChanges() {
+            if (!_formDirty) return true;
+            const editTab = document.getElementById('editTab');
+            if (!editTab || editTab.style.display === 'none') return true;
+            const result = await showCustomDialog({
+                icon: '⚠️',
+                title: 'Ungespeicherte Änderungen',
+                message: 'Sie haben Änderungen am Steckbrief vorgenommen, die noch nicht gespeichert wurden.\n\nWas möchten Sie tun?',
+                buttons: [
+                    { text: 'Weiter bearbeiten', class: 'secondary', value: 'cancel' },
+                    { text: 'Änderungen verwerfen', class: 'secondary', value: 'discard' },
+                    { text: 'Speichern', class: 'primary', value: 'save' }
+                ]
+            });
+            if (result === 'save') {
+                document.getElementById('steckbriefForm').requestSubmit();
+                return false; // Navigation wird durch den Redirect nach dem Speichern übernommen
+            }
+            return result === 'discard';
+        }
+
+        // beforeunload: Browser-Warnung bei ungespeicherten Änderungen
+        window.addEventListener('beforeunload', function(e) {
+            if (!_formDirty) return;
+            const editTab = document.getElementById('editTab');
+            if (!editTab || editTab.style.display === 'none') return;
+            e.preventDefault();
+        });
 
         // Änderungshistorie als Text rendern (read-only)
         function renderAenderungshistorie(historie) {
@@ -6401,10 +6492,13 @@
                 'auftraggeber_vorname', 'auftraggeber_nachname', 'auftraggeber_titel', 'prozessmanager_vorname', 'prozessmanager_nachname', 'prozessmanager_titel',
                 'anforderungsmanager_vorname', 'anforderungsmanager_nachname', 'anforderungsmanager_titel', 'prozessverantwortlicher_vorname', 'prozessverantwortlicher_nachname', 'prozessverantwortlicher_titel'];
             
+            // Hilfsfunktion: null/undefined → '', sonst String (0 bleibt "0")
+            const norm = v => (v === null || v === undefined) ? '' : String(v).trim();
+            
             for (const key of Object.keys(newData)) {
                 if (skipFields.includes(key)) continue;
-                const oldVal = String(oldData[key] || '').trim();
-                const newVal = String(newData[key] || '').trim();
+                const oldVal = norm(oldData[key]);
+                const newVal = norm(newData[key]);
                 if (oldVal !== newVal) {
                     changed.push(FELD_LABELS[key] || key);
                 }
@@ -6646,6 +6740,8 @@
                 const result = await response.json();
                 const savedId = result.id;
                 
+                // Nach dem Speichern: Formular ist sauber
+                _formDirty = false;
                 // Nach dem Speichern Seite neu laden, damit Änderungen sofort sichtbar sind
                 window.location.href = '?id=' + encodeURIComponent(savedId);
                 return;
@@ -6682,7 +6778,12 @@
         }
 
         // Tab wechseln
-        function switchTab(tab) {
+        async function switchTab(tab) {
+            // Bei Wechsel von edit → view: ungespeicherte Änderungen prüfen
+            if (tab === 'view') {
+                if (!(await checkUnsavedChanges())) return;
+                _formDirty = false;
+            }
             // Berechtigungsprüfung beim Wechsel zu Bearbeiten
             if (tab === 'edit' && currentSteckbriefId) {
                 const steckbriefe = getSteckbriefe();
@@ -7873,11 +7974,7 @@
                         steckbrief.umsetzungsaufwand = '';
                         if (aufwandText) {
                             if (aufwandText.includes('groß') || aufwandText.includes('gross') || aufwandText.includes('hoch')) {
-                                if (aufwandText.includes('mittel')) {
-                                    steckbrief.umsetzungsaufwand = 'mittel-gross';
-                                } else {
-                                    steckbrief.umsetzungsaufwand = 'gross';
-                                }
+                                steckbrief.umsetzungsaufwand = 'gross';
                             } else if (aufwandText.includes('mittel')) {
                                 steckbrief.umsetzungsaufwand = 'mittel';
                             } else if (aufwandText.includes('klein') || aufwandText.includes('niedrig') || aufwandText.includes('gering')) {
