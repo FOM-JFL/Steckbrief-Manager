@@ -2278,6 +2278,11 @@
             color: #c62828;
         }
 
+        .overview-table .status-badge.status-blue {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
         .overview-table .status-badge.status-grey {
             background: #f5f5f5;
             color: #757575;
@@ -3463,14 +3468,14 @@
                                 <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterStatusOptimierung">Status</label>
+                                <label for="filterGesamtstatus">Gesamtstatus</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterStatusOptimierung" onchange="applyFilters()">
+                                    <select id="filterGesamtstatus" onchange="applyFilters()">
                                         <option value="">Alle</option>
                                     </select>
-                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterStatusOptimierungText', this)" title="Schlagwort-Suche">🔍</button>
+                                    <button class="filter-search-toggle" onclick="toggleFilterSearch('filterGesamtstatusText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
-                                <input type="text" id="filterStatusOptimierungText" placeholder="Schlagwort..." oninput="applyFilters()">
+                                <input type="text" id="filterGesamtstatusText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
                                 <label for="filterProzessmanager">Prozessmanager</label>
@@ -3867,15 +3872,26 @@
                             </div>
                             <div class="form-group">
                                 <label for="gesamtstatus">Gesamtstatus</label>
-                                <input type="text" id="gesamtstatus">
-                            </div>
-                            <div class="form-group">
-                                <label for="status_optimierung">Status Optimierung</label>
-                                <input type="text" id="status_optimierung">
+                                <select id="gesamtstatus" autocomplete="off">
+                                    <option value="/">/</option>
+                                    <option value="Idee / Konzeption">Idee / Konzeption</option>
+                                    <option value="Geplant">Geplant</option>
+                                    <option value="In Umsetzung">In Umsetzung</option>
+                                    <option value="Pilotierung">Pilotierung</option>
+                                    <option value="Im Betrieb">Im Betrieb</option>
+                                    <option value="Pausiert">Pausiert</option>
+                                    <option value="Abgeschlossen">Abgeschlossen</option>
+                                    <option value="Abgebrochen">Abgebrochen</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="status_steckbrief">Status Steckbrief</label>
-                                <input type="text" id="status_steckbrief">
+                                <select id="status_steckbrief" autocomplete="off">
+                                    <option value="/">/</option>
+                                    <option value="Noch nicht gefüllt">Noch nicht gefüllt</option>
+                                    <option value="Rahmendaten hinterlegt">Rahmendaten hinterlegt</option>
+                                    <option value="Gefüllt">Gefüllt</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="teil_hochschulentwicklungsplan">Teil des Hochschulentwicklungsplans</label>
@@ -4850,7 +4866,7 @@
                             <div class="user-mgmt-steckbrief-item" onclick="window.location.href='?id=${s.id}'">
                                 <span class="sb-id">#${s.id}</span>
                                 <span class="sb-title">${escapeHtml(s.titel)}</span>
-                                <span class="sb-status">${escapeHtml(s.status_optimierung || s.prozesscluster || '')}</span>
+                                <span class="sb-status">${escapeHtml(s.gesamtstatus && s.gesamtstatus !== '/' ? s.gesamtstatus : (s.prozesscluster || ''))}</span>
                             </div>`).join('')}</div>`
                     }
                 </div>
@@ -4882,7 +4898,7 @@
             const total = steckbriefe.length;
 
             // Stats
-            const filled = steckbriefe.filter(s => s.status_optimierung).length;
+            const filled = steckbriefe.filter(s => s.gesamtstatus && s.gesamtstatus !== '/').length;
             const hep = steckbriefe.filter(s => s.teil_hochschulentwicklungsplan && s.teil_hochschulentwicklungsplan.toLowerCase() === 'ja').length;
 
             document.getElementById('analyticsStats').innerHTML = `
@@ -4906,11 +4922,10 @@
 
             // Chart-Definitionen
             const chartDefs = [
-                { title: 'Status Optimierung', field: 'status_optimierung' },
-                { title: 'Prozesscluster', field: 'prozesscluster' },
-                { title: 'Umsetzungsaufwand', field: 'umsetzungsaufwand' },
                 { title: 'Gesamtstatus', field: 'gesamtstatus' },
                 { title: 'Status Steckbrief', field: 'status_steckbrief' },
+                { title: 'Prozesscluster', field: 'prozesscluster' },
+                { title: 'Umsetzungsaufwand', field: 'umsetzungsaufwand' },
                 { title: 'Teil des HEP', field: 'teil_hochschulentwicklungsplan' },
                 { title: 'Betroffener Life-Cycle', field: 'betroffener_lifecycle' },
                 { title: 'Auftraggeber/-in', field: 'auftraggeber' }
@@ -5023,13 +5038,13 @@
                 alert('XLSX-Bibliothek nicht geladen.');
                 return;
             }
-            const headers = ['ID', 'Titel', 'Prozesscluster', 'Auftraggeber', 'Prozessmanager', 'Anforderungsmanager', 'Prozessverantwortlicher', 'Umsetzungsaufwand', 'Status Optimierung', 'Gesamtstatus', 'Status Steckbrief', 'Teil des HEP', 'Betroffener Life-Cycle'];
+            const headers = ['ID', 'Titel', 'Prozesscluster', 'Auftraggeber', 'Prozessmanager', 'Anforderungsmanager', 'Prozessverantwortlicher', 'Umsetzungsaufwand', 'Gesamtstatus', 'Status Steckbrief', 'Teil des HEP', 'Betroffener Life-Cycle'];
             const data = [headers];
             steckbriefe.forEach(s => {
                 data.push([
                     s.id, s.titel, s.prozesscluster || '', s.auftraggeber || '',
                     s.prozessmanager || '', s.anforderungsmanager || '', s.prozessverantwortlicher || '',
-                    s.umsetzungsaufwand || '', s.status_optimierung || '', s.gesamtstatus || '',
+                    s.umsetzungsaufwand || '', s.gesamtstatus || '',
                     s.status_steckbrief || '', s.teil_hochschulentwicklungsplan || '', s.betroffener_lifecycle || ''
                 ]);
             });
@@ -5323,14 +5338,14 @@
             auftraggeber: '',
             prozessmanager: '',
             anforderungsmanager: '',
-            statusOptimierung: '',
+            gesamtstatus: '',
             titel: '',
             hep: '',
             clusterText: '',
             auftraggeberText: '',
             prozessmanagerText: '',
             anforderungsmanagerText: '',
-            statusOptimierungText: '',
+            gesamtstatusText: '',
             titelText: ''
         };
 
@@ -5559,8 +5574,8 @@
             if (activeFilters.anforderungsmanager) {
                 steckbriefe = steckbriefe.filter(s => s.anforderungsmanager === activeFilters.anforderungsmanager);
             }
-            if (activeFilters.statusOptimierung) {
-                steckbriefe = steckbriefe.filter(s => s.status_optimierung === activeFilters.statusOptimierung);
+            if (activeFilters.gesamtstatus) {
+                steckbriefe = steckbriefe.filter(s => s.gesamtstatus === activeFilters.gesamtstatus);
             }
             if (activeFilters.titel) {
                 steckbriefe = steckbriefe.filter(s => s.titel === activeFilters.titel);
@@ -5582,8 +5597,8 @@
             if (activeFilters.anforderungsmanagerText) {
                 steckbriefe = steckbriefe.filter(s => (s.anforderungsmanager || '').toLowerCase().includes(activeFilters.anforderungsmanagerText));
             }
-            if (activeFilters.statusOptimierungText) {
-                steckbriefe = steckbriefe.filter(s => (s.status_optimierung || '').toLowerCase().includes(activeFilters.statusOptimierungText));
+            if (activeFilters.gesamtstatusText) {
+                steckbriefe = steckbriefe.filter(s => (s.gesamtstatus || '').toLowerCase().includes(activeFilters.gesamtstatusText));
             }
             if (activeFilters.titelText) {
                 steckbriefe = steckbriefe.filter(s => (s.titel || '').toLowerCase().includes(activeFilters.titelText));
@@ -5624,8 +5639,8 @@
             container.innerHTML = steckbriefe.map(s => {
                 const editClass = getEffectiveRole() === 'editor' ? (canEditSteckbrief(s) ? 'can-edit' : 'no-edit') : '';
                 return `
-                <div class="steckbrief-card ${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
-                    <div class="card-checkbox" onclick="event.stopPropagation(); toggleSelection('${s.id}')">${selectedSteckbriefe.has(s.id) ? '✓' : ''}</div>
+                <div class="steckbrief-card ${selectedSteckbriefe.has(String(s.id)) ? 'selected' : ''} ${editClass}" onclick="openSteckbrief('${s.id}')">
+                    <div class="card-checkbox" onclick="event.stopPropagation(); toggleSelection('${s.id}')">${selectedSteckbriefe.has(String(s.id)) ? '✓' : ''}</div>
                     <h3>${escapeHtml(s.titel)}</h3>
                     <div class="meta">
                         <strong>Prozesscluster:</strong> ${escapeHtml(s.prozesscluster || 'Kein Prozesscluster')}
@@ -5633,7 +5648,7 @@
                     <div class="meta" style="margin-top: 8px;">
                         <strong>Vision:</strong> ${escapeHtml(s.ziel_vision || '')}
                     </div>
-                    ${s.status_optimierung ? `<div class="meta" style="margin-top: 8px;"><strong>Status:</strong> ${escapeHtml(s.status_optimierung)}</div>` : ''}
+                    ${s.gesamtstatus && s.gesamtstatus !== '/' ? `<div class="meta" style="margin-top: 8px;"><strong>Status:</strong> ${escapeHtml(s.gesamtstatus)}</div>` : ''}
                     ${editClass === 'can-edit' ? '<div style="margin-top: 10px; font-size: 0.75em; color: #5c6bc0; font-weight: 600;">✏️ Bearbeitung möglich</div>' : ''}
                 </div>`;
             }).join('');
@@ -5663,7 +5678,7 @@
                 { key: 'titel', label: 'Titel' },
                 { key: 'prozesscluster', label: 'Prozesscluster' },
                 { key: 'auftraggeber', label: 'Auftraggeber' },
-                { key: 'status_optimierung', label: 'Status' },
+                { key: 'gesamtstatus', label: 'Gesamtstatus' },
             ];
 
             const getSortIcon = (key) => {
@@ -5677,11 +5692,12 @@
             };
 
             function getStatusClass(status) {
-                if (!status) return 'status-grey';
+                if (!status || status === '/') return 'status-grey';
                 const s = status.toLowerCase();
-                if (s.includes('aktiv') || s.includes('abgeschlossen') || s.includes('läuft')) return 'status-green';
-                if (s.includes('geplant') || s.includes('offen') || s.includes('in ')) return 'status-orange';
-                if (s.includes('gestoppt') || s.includes('abgebrochen')) return 'status-red';
+                if (s.includes('im betrieb') || s.includes('abgeschlossen')) return 'status-green';
+                if (s.includes('idee') || s.includes('konzeption') || s.includes('geplant') || s.includes('pausiert')) return 'status-orange';
+                if (s.includes('in umsetzung') || s.includes('pilotierung')) return 'status-blue';
+                if (s.includes('abgebrochen')) return 'status-red';
                 return 'status-grey';
             }
 
@@ -5705,7 +5721,7 @@
                             const canEdit = canEditSteckbrief(s);
                             const editClass = getEffectiveRole() === 'editor' ? (canEdit ? 'can-edit' : 'no-edit') : '';
                             return `
-                            <tr class="${selectedSteckbriefe.has(s.id) ? 'selected' : ''} ${editClass}">
+                            <tr class="${selectedSteckbriefe.has(String(s.id)) ? 'selected' : ''} ${editClass}">
                                 <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="cursor: pointer;">
                                     <div class="type-icon" title="ID: ${s.id}">📄</div>
                                 </td>
@@ -5713,7 +5729,7 @@
                                 <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.prozesscluster || '–')}</td>
                                 <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.auftraggeber || '–')}</td>
                                 <td onclick="openSteckbrief('${s.id}')">
-                                    <span class="status-badge ${getStatusClass(s.status_optimierung)}">${escapeHtml(s.status_optimierung || '–')}</span>
+                                    <span class="status-badge ${getStatusClass(s.gesamtstatus)}">${escapeHtml(s.gesamtstatus || '–')}</span>
                                 </td>
                                 <td>
                                     <div class="actions-cell">
@@ -5777,7 +5793,7 @@
             const auftraggeber = [...new Set(steckbriefe.map(s => s.auftraggeber).filter(Boolean))].sort();
             const prozessmanager = [...new Set(steckbriefe.map(s => s.prozessmanager).filter(Boolean))].sort();
             const anforderungsmanager = [...new Set(steckbriefe.map(s => s.anforderungsmanager).filter(Boolean))].sort();
-            const statusOptimierung = [...new Set(steckbriefe.map(s => s.status_optimierung).filter(Boolean))].sort();
+            const gesamtstatusValues = [...new Set(steckbriefe.map(s => s.gesamtstatus).filter(Boolean))].sort();
             const titel = [...new Set(steckbriefe.map(s => s.titel).filter(Boolean))].sort();
             
             // Cluster-Dropdown
@@ -5800,10 +5816,10 @@
             amSelect.innerHTML = '<option value="">Alle Anforderungsmanager</option>' + 
                 anforderungsmanager.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
             
-            // Status Optimierung-Dropdown
-            const soSelect = document.getElementById('filterStatusOptimierung');
-            soSelect.innerHTML = '<option value="">Alle Status</option>' + 
-                statusOptimierung.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+            // Gesamtstatus-Dropdown
+            const gsSelect = document.getElementById('filterGesamtstatus');
+            gsSelect.innerHTML = '<option value="">Alle Gesamtstatus</option>' + 
+                gesamtstatusValues.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
             
             // Titel-Dropdown
             const titelSelect = document.getElementById('filterTitel');
@@ -5818,7 +5834,7 @@
             activeFilters.auftraggeber = document.getElementById('filterAuftraggeber').value;
             activeFilters.prozessmanager = document.getElementById('filterProzessmanager').value;
             activeFilters.anforderungsmanager = document.getElementById('filterAnforderungsmanager').value;
-            activeFilters.statusOptimierung = document.getElementById('filterStatusOptimierung').value;
+            activeFilters.gesamtstatus = document.getElementById('filterGesamtstatus').value;
             activeFilters.titel = document.getElementById('filterTitel').value;
             activeFilters.hep = document.getElementById('filterHEP').value;
             // Textfilter
@@ -5826,7 +5842,7 @@
             activeFilters.auftraggeberText = document.getElementById('filterAuftraggeberText').value.toLowerCase().trim();
             activeFilters.prozessmanagerText = document.getElementById('filterProzessmanagerText').value.toLowerCase().trim();
             activeFilters.anforderungsmanagerText = document.getElementById('filterAnforderungsmanagerText').value.toLowerCase().trim();
-            activeFilters.statusOptimierungText = document.getElementById('filterStatusOptimierungText').value.toLowerCase().trim();
+            activeFilters.gesamtstatusText = document.getElementById('filterGesamtstatusText').value.toLowerCase().trim();
             activeFilters.titelText = document.getElementById('filterTitelText').value.toLowerCase().trim();
             updateFilterBadge();
             renderOverview();
@@ -5852,20 +5868,20 @@
         // Filter zurücksetzen
         function resetFilters() {
             activeFilters = { 
-                id: '', cluster: '', auftraggeber: '', prozessmanager: '', anforderungsmanager: '', statusOptimierung: '', titel: '', hep: '',
-                clusterText: '', auftraggeberText: '', prozessmanagerText: '', anforderungsmanagerText: '', statusOptimierungText: '', titelText: ''
+                id: '', cluster: '', auftraggeber: '', prozessmanager: '', anforderungsmanager: '', gesamtstatus: '', titel: '', hep: '',
+                clusterText: '', auftraggeberText: '', prozessmanagerText: '', anforderungsmanagerText: '', gesamtstatusText: '', titelText: ''
             };
             document.getElementById('filterId').value = '';
             document.getElementById('filterCluster').value = '';
             document.getElementById('filterAuftraggeber').value = '';
             document.getElementById('filterProzessmanager').value = '';
             document.getElementById('filterAnforderungsmanager').value = '';
-            document.getElementById('filterStatusOptimierung').value = '';
+            document.getElementById('filterGesamtstatus').value = '';
             document.getElementById('filterTitel').value = '';
             document.getElementById('filterHEP').value = '';
             // Textfelder zurücksetzen und ausblenden
             const textFilters = ['filterClusterText', 'filterAuftraggeberText', 'filterProzessmanagerText', 
-                                 'filterAnforderungsmanagerText', 'filterStatusOptimierungText', 'filterTitelText'];
+                                 'filterAnforderungsmanagerText', 'filterGesamtstatusText', 'filterTitelText'];
             textFilters.forEach(id => {
                 const input = document.getElementById(id);
                 input.value = '';
@@ -5897,8 +5913,8 @@
             if (activeFilters.anforderungsmanager) {
                 tags.push({ label: 'AM', value: activeFilters.anforderungsmanager, key: 'anforderungsmanager' });
             }
-            if (activeFilters.statusOptimierung) {
-                tags.push({ label: 'Status', value: activeFilters.statusOptimierung, key: 'statusOptimierung' });
+            if (activeFilters.gesamtstatus) {
+                tags.push({ label: 'Gesamtstatus', value: activeFilters.gesamtstatus, key: 'gesamtstatus' });
             }
             if (activeFilters.titel) {
                 tags.push({ label: 'Titel', value: activeFilters.titel, key: 'titel' });
@@ -5919,8 +5935,8 @@
             if (activeFilters.anforderungsmanagerText) {
                 tags.push({ label: 'AM enthält', value: activeFilters.anforderungsmanagerText, key: 'anforderungsmanagerText' });
             }
-            if (activeFilters.statusOptimierungText) {
-                tags.push({ label: 'Status enthält', value: activeFilters.statusOptimierungText, key: 'statusOptimierungText' });
+            if (activeFilters.gesamtstatusText) {
+                tags.push({ label: 'Gesamtstatus enthält', value: activeFilters.gesamtstatusText, key: 'gesamtstatusText' });
             }
             if (activeFilters.titelText) {
                 tags.push({ label: 'Titel enthält', value: activeFilters.titelText, key: 'titelText' });
@@ -5943,7 +5959,7 @@
                 auftraggeber: 'filterAuftraggeber',
                 prozessmanager: 'filterProzessmanager',
                 anforderungsmanager: 'filterAnforderungsmanager',
-                statusOptimierung: 'filterStatusOptimierung',
+                gesamtstatus: 'filterGesamtstatus',
                 titel: 'filterTitel',
                 hep: 'filterHEP'
             }[key];
@@ -5952,7 +5968,7 @@
                 auftraggeberText: 'filterAuftraggeberText',
                 prozessmanagerText: 'filterProzessmanagerText',
                 anforderungsmanagerText: 'filterAnforderungsmanagerText',
-                statusOptimierungText: 'filterStatusOptimierungText',
+                gesamtstatusText: 'filterGesamtstatusText',
                 titelText: 'filterTitelText'
             }[key];
             if (selectId) {
@@ -6142,7 +6158,7 @@
 
             // Hero-Badges
             const badges = document.getElementById('heroBadges');
-            const statusText = steckbrief.status_optimierung || '';
+            const statusText = steckbrief.gesamtstatus || '';
             badges.innerHTML = `
                 <span class="hero-badge"># ${escapeHtml(String(steckbrief.id))}</span>
                 ${steckbrief.prozesscluster ? `<span class="hero-badge">📁 ${escapeHtml(steckbrief.prozesscluster)}</span>` : ''}
@@ -6255,7 +6271,6 @@
                     <div class="form-grid">
                         ${renderField('Start', s.start_datum)}
                         ${renderField('Gesamtstatus', s.gesamtstatus)}
-                        ${renderField('Status Optimierung', s.status_optimierung)}
                         ${renderField('Status Steckbrief', s.status_steckbrief)}
                         ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
                     </div>
@@ -6347,7 +6362,6 @@
             document.getElementById('prozesscluster').value = s.prozesscluster || '';
             document.getElementById('umsetzungsaufwand').value = s.umsetzungsaufwand || '';
             document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
-            document.getElementById('status_optimierung').value = s.status_optimierung || '';
             document.getElementById('status_steckbrief').value = s.status_steckbrief || '';
             document.getElementById('start_datum').value = s.start_datum || '';
             document.getElementById('gesamtstatus').value = s.gesamtstatus || '';
@@ -6634,7 +6648,6 @@
                 umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
                 status_steckbrief: document.getElementById('status_steckbrief').value,
-                status_optimierung: document.getElementById('status_optimierung').value,
                 start: document.getElementById('start_datum').value,
                 gesamtstatus: document.getElementById('gesamtstatus').value,
                 teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
@@ -6814,6 +6827,7 @@
 
         // Auswahl umschalten
         function toggleSelection(id) {
+            id = String(id);
             if (selectedSteckbriefe.has(id)) {
                 selectedSteckbriefe.delete(id);
             } else {
@@ -6828,7 +6842,7 @@
             if (selectedSteckbriefe.size === steckbriefe.length) {
                 selectedSteckbriefe.clear();
             } else {
-                steckbriefe.forEach(s => selectedSteckbriefe.add(s.id));
+                steckbriefe.forEach(s => selectedSteckbriefe.add(String(s.id)));
             }
             renderOverview();
         }
@@ -6865,7 +6879,7 @@
             }
             
             const steckbriefe = getSteckbriefe();
-            exportSteckbriefe = steckbriefe.filter(s => selectedSteckbriefe.has(s.id));
+            exportSteckbriefe = steckbriefe.filter(s => selectedSteckbriefe.has(String(s.id)));
             document.getElementById('exportCount').textContent = `${exportSteckbriefe.length} Steckbrief${exportSteckbriefe.length !== 1 ? 'e' : ''} werden exportiert`;
             document.getElementById('exportModal').classList.add('active');
         }
@@ -6920,7 +6934,6 @@
                     { key: 'umsetzungsaufwand', label: 'Umsetzungsaufwand' },
                     { key: 'betroffener_lifecycle', label: 'Betroffener Life-Cycle' },
                     { key: 'status_steckbrief', label: 'Status Steckbrief' },
-                    { key: 'status_optimierung', label: 'Status Optimierung' },
                     { key: 'gesamtstatus', label: 'Gesamtstatus' },
                     { key: 'teil_hochschulentwicklungsplan', label: 'Teil des HEP' }
                 ]},
@@ -7522,7 +7535,6 @@
                         createTableRow2Col('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''),
                         createTableRow2Col('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''),
                         createTableRow2Col('Betroffener Life-Cycle', s.betroffener_lifecycle || ''),
-                        createTableRow2Col('Status Optimierung', s.status_optimierung || ''),
                         createTableRow2Col('Status Steckbrief', s.status_steckbrief || '')
                     ]
                 }));
@@ -7953,8 +7965,6 @@
                         steckbrief.projektteam = value;
                     } else if (key.includes('prozesscluster')) {
                         steckbrief.prozesscluster = value;
-                    } else if (key.includes('status') && key.includes('optimierung')) {
-                        steckbrief.status_optimierung = value;
                     } else if (key.includes('status') && key.includes('steckbrief')) {
                         steckbrief.status_steckbrief = value;
                     } else if (key === 'start' || key.includes('start') && !key.includes('status')) {
