@@ -1358,6 +1358,47 @@
             margin-top: 2px;
         }
 
+        /* Section Edit Button in Header */
+        .section-edit-btn {
+            margin-left: auto;
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #666;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .section-edit-btn:hover {
+            background: #e8f5e9;
+            border-color: #009688;
+            color: #009688;
+        }
+
+        .section-edit-btn.hidden {
+            display: none;
+        }
+
+        /* Section Edit Actions (Save/Cancel per section) */
+        .section-edit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Section Edit area styling */
+        .section-edit {
+            padding: 16px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
         .genesis-section-body {
             padding: 0 24px 24px;
             transition: max-height 0.3s ease;
@@ -3563,18 +3604,11 @@
             <div class="detail-hero-badges" id="heroBadges"></div>
         </div>
 
-        <!-- Tabs + Actions -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
-            <div class="tabs" id="editTabs" style="display: none;">
-                <button class="tab active" onclick="switchTab('view')" id="tabViewBtn">Ansicht</button>
-                <button class="tab" id="tabEditBtn" onclick="switchTab('edit')">Bearbeiten</button>
-            </div>
-            <div class="detail-actions-bar" id="detailActionsBar">
-                <button class="btn btn-primary" id="btnDetailEdit" onclick="switchTab('edit')">✏️ Bearbeiten</button>
-                <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
-                <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
-                <button class="btn btn-danger admin-only hidden" id="btnDetailDelete" onclick="deleteSteckbrief()">🗑️ Löschen</button>
-            </div>
+        <!-- Actions (Export, Bearbeiter, Löschen) -->
+        <div class="detail-actions-bar" id="detailActionsBar">
+            <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
+            <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+            <button class="btn btn-danger admin-only hidden" id="btnDetailDelete" onclick="deleteSteckbrief()">🗑️ Löschen</button>
         </div>
 
         <!-- Section Controls -->
@@ -3584,339 +3618,436 @@
         </div>
 
         <div class="detail-card">
-            <!-- Ansicht -->
-            <div id="viewTab" class="detail-view">
-                <div id="viewContent"></div>
-            </div>
+            <form id="steckbriefForm" onsubmit="saveSteckbrief(event)">
+                <input type="hidden" id="steckbriefId">
 
-            <!-- Bearbeiten -->
-            <div id="editTab" style="display:none;">
-                <form id="steckbriefForm" onsubmit="saveSteckbrief(event)">
-                    <input type="hidden" id="steckbriefId">
-                    
-                    <!-- Rahmendaten -->
-                    <div class="form-section">
-                        <h3>1. Rahmendaten</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="displayId">ID</label>
-                                <input type="text" id="displayId" readonly style="background: #f0f0f0; color: #666; cursor: default;">
-                            </div>
-                            <div class="form-group">
-                                <label for="titel">Titel *</label>
-                                <input type="text" id="titel" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="auftraggeber">Auftraggeber/-in</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="auftraggeber" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="auftraggeberFID">
-                                    <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
+                <!-- 1. Rahmendaten -->
+                <div class="genesis-section" data-section="rahmendaten">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">📊</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Rahmendaten</div>
+                            <div class="genesis-section-desc">Grundlegende Informationen zum Prozess-/Projektsteckbrief</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('rahmendaten')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewRahmendaten"></div>
+                        <div class="section-edit" id="editRahmendaten" style="display:none">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="displayId">ID</label>
+                                    <input type="text" id="displayId" readonly style="background: #f0f0f0; color: #666; cursor: default;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="titel">Titel *</label>
+                                    <input type="text" id="titel" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auftraggeber">Auftraggeber/-in</label>
+                                    <div class="team-members-container" id="auftraggeberMembersContainer"></div>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="auftraggeberInput" autocomplete="off" placeholder="Person hinzufügen...">
+                                        <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prozessmanager">Prozessmanager/-in</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="prozessmanager" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="prozessmanagerFID">
+                                        <div class="autocomplete-dropdown" id="prozessmanager_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="anforderungsmanager">Anforderungsmanager/-in</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="anforderungsmanager" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="anforderungsmanagerFID">
+                                        <div class="autocomplete-dropdown" id="anforderungsmanager_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="prozessverantwortlicher" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="prozessverantwortlicherFID">
+                                        <div class="autocomplete-dropdown" id="prozessverantwortlicher_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Prozess-/Projektteam</label>
+                                    <div class="team-members-container" id="teamMembersContainer"></div>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
+                                        <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
+                                    <select id="prozesscluster" autocomplete="off">
+                                        <option value="">-- Bitte wählen --</option>
+                                        <option value="/">/</option>
+                                        <option value="Leitbild &amp; Charta entwickeln">Leitbild &amp; Charta entwickeln</option>
+                                        <option value="(Hochschul-)Entwicklung planen">(Hochschul-)Entwicklung planen</option>
+                                        <option value="Organisation &amp; QM lenken">Organisation &amp; QM lenken</option>
+                                        <option value="Organisation &amp; QM weiterentwickeln">Organisation &amp; QM weiterentwickeln</option>
+                                        <option value="Studiengänge (weiter-)entwickeln">Studiengänge (weiter-)entwickeln</option>
+                                        <option value="Studieneinstieg durchführen">Studieneinstieg durchführen</option>
+                                        <option value="Semesterplanung durchführen">Semesterplanung durchführen</option>
+                                        <option value="Lehren &amp; Lernen inkl. Feedback gestalten">Lehren &amp; Lernen inkl. Feedback gestalten</option>
+                                        <option value="Studienbegleitende Prüfungen organisieren">Studienbegleitende Prüfungen organisieren</option>
+                                        <option value="Studierende &amp; Lehrende beraten">Studierende &amp; Lehrende beraten</option>
+                                        <option value="Studienabschluss umsetzen">Studienabschluss umsetzen</option>
+                                        <option value="Lehre &amp; Studium evaluieren">Lehre &amp; Studium evaluieren</option>
+                                        <option value="Forschungsfragen identifizieren">Forschungsfragen identifizieren</option>
+                                        <option value="Forschungsmittel akquirieren">Forschungsmittel akquirieren</option>
+                                        <option value="Forschungsprojekte organisieren">Forschungsprojekte organisieren</option>
+                                        <option value="Forschungsprojekte durchführen">Forschungsprojekte durchführen</option>
+                                        <option value="Forschungsergebnisse transferieren">Forschungsergebnisse transferieren</option>
+                                        <option value="Forschungsprojekte abschließen">Forschungsprojekte abschließen</option>
+                                        <option value="Forschung evaluieren">Forschung evaluieren</option>
+                                        <option value="Lehrgänge (weiter-)entwickeln">Lehrgänge (weiter-)entwickeln</option>
+                                        <option value="Lehrgangseinstieg durchführen">Lehrgangseinstieg durchführen</option>
+                                        <option value="Lehrgangsplanung durchführen">Lehrgangsplanung durchführen</option>
+                                        <option value="Lehrgangsbegleitende Prüfungen organisieren">Lehrgangsbegleitende Prüfungen organisieren</option>
+                                        <option value="Lehrgangsteilnehmende &amp; Lehrende beraten">Lehrgangsteilnehmende &amp; Lehrende beraten</option>
+                                        <option value="Lehrgangsabschluss umsetzen">Lehrgangsabschluss umsetzen</option>
+                                        <option value="Fort-/Weiterbildung evaluieren">Fort-/Weiterbildung evaluieren</option>
+                                        <option value="Lehrangebot vermarkten &amp; Informationen bereitstellen">Lehrangebot vermarkten &amp; Informationen bereitstellen</option>
+                                        <option value="Studierende &amp; Teilnehmende gewinnen">Studierende &amp; Teilnehmende gewinnen</option>
+                                        <option value="(Lehr-)Personal bereitstellen">(Lehr-)Personal bereitstellen</option>
+                                        <option value="Räumliche &amp; sächliche Infrastruktur bereitstellen">Räumliche &amp; sächliche Infrastruktur bereitstellen</option>
+                                        <option value="IT-Strukturen bereitstellen">IT-Strukturen bereitstellen</option>
+                                        <option value="Finanzen bewirtschaften">Finanzen bewirtschaften</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
+                                    <select id="umsetzungsaufwand" autocomplete="off">
+                                        <option value="">-- Bitte wählen --</option>
+                                        <option value="klein">Klein</option>
+                                        <option value="mittel">Mittel</option>
+                                        <option value="gross">Groß</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
+                                    <select id="betroffener_lifecycle" autocomplete="off">
+                                        <option value="/">/</option>
+                                        <option value="Student-Life-Cycle">Student-Life-Cycle</option>
+                                        <option value="Product-Life-Cycle">Product-Life-Cycle</option>
+                                    </select>
                                 </div>
                             </div>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('rahmendaten')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('rahmendaten')">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Beschreibung -->
+                <div class="genesis-section" data-section="beschreibung">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">📝</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Beschreibung</div>
+                            <div class="genesis-section-desc">Vision, Ziele und Lösungsansätze der Prozessoptimierung</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('beschreibung')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewBeschreibung"></div>
+                        <div class="section-edit" id="editBeschreibung" style="display:none">
                             <div class="form-group">
-                                <label for="prozessmanager">Prozessmanager/-in</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="prozessmanager" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="prozessmanagerFID">
-                                    <div class="autocomplete-dropdown" id="prozessmanager_dropdown"></div>
+                                <label for="ziel_vision">Vision</label>
+                                <textarea id="ziel_vision"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="warum">Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Ist-Situation & Ausformulierung von 4.)</span></label>
+                                <textarea id="warum"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="wer">Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Aufzählung der Organisationseinheiten)</span></label>
+                                <textarea id="wer"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="welche">Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(ggfs. Verweis auf 3.)</span></label>
+                                <textarea id="welche"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="was">Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Kurzbeschreibung)</span></label>
+                                <textarea id="was"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="wie">Wie sollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Beschreibung erster Lösungsansätze)</span></label>
+                                <textarea id="wie"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="wo">Wo sind IT-Systeme von der Prozessoptimierung betroffen?</label>
+                                <textarea id="wo"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="wann">Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?</label>
+                                <textarea id="wann"></textarea>
+                            </div>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('beschreibung')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('beschreibung')">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Einordnung in den Gesamtprozess -->
+                <div class="genesis-section" data-section="einordnung">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">🔗</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Einordnung in den Gesamtprozess</div>
+                            <div class="genesis-section-desc">Strategische Zuordnung im Gesamtprozess</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('einordnung')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewEinordnung"></div>
+                        <div class="section-edit" id="editEinordnung" style="display:none">
+                            <div class="form-group">
+                                <label for="einordnung_gesamtprozess">Welcher strategische Prozess ist hauptsächlich betroffen?</label>
+                                <textarea id="einordnung_gesamtprozess"></textarea>
+                            </div>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('einordnung')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('einordnung')">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Zwänge & Anforderungen -->
+                <div class="genesis-section" data-section="zwaenge">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">⚖️</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Zwänge & Anforderungen</div>
+                            <div class="genesis-section-desc">Bewertung der externen und internen Anforderungen</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('zwaenge')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewZwaenge"></div>
+                        <div class="section-edit" id="editZwaenge" style="display:none">
+                            <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                                <strong>Gewichtung</strong><br>
+                                0 = irrelevant<br>
+                                1 = förderlich<br>
+                                2 = wichtig<br>
+                                3 = zwingend notwendig
+                            </div>
+                            <table class="bewertung-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">Kriterium</th>
+                                        <th style="width: 15%">Gewichtung</th>
+                                        <th style="width: 45%">Erläuterung</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span></td>
+                                        <td><select id="bewertung_strategie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_strategie_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span></td>
+                                        <td><select id="bewertung_recht"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_recht_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span></td>
+                                        <td><select id="bewertung_technik"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_technik_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
+                                        <td><select id="bewertung_kunden"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_kunden_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
+                                        <td><select id="bewertung_lehrende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_lehrende_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span></td>
+                                        <td><select id="bewertung_lieferanten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_lieferanten_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span></td>
+                                        <td><select id="bewertung_mitarbeitende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="bewertung_mitarbeitende_text"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('zwaenge')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('zwaenge')">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Zu erwartende Optimierungen -->
+                <div class="genesis-section" data-section="optimierungen">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">📈</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Zu erwartende Optimierungen</div>
+                            <div class="genesis-section-desc">Nutzen-Bewertung der geplanten Maßnahmen</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('optimierungen')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewOptimierungen"></div>
+                        <div class="section-edit" id="editOptimierungen" style="display:none">
+                            <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
+                                <strong>Gewichtung</strong><br>
+                                0 = irrelevant<br>
+                                1 = geringerer Nutzen<br>
+                                2 = mittlerer Nutzen<br>
+                                3 = hoher Nutzen
+                            </div>
+                            <table class="bewertung-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%">Kriterium</th>
+                                        <th style="width: 15%">Gewichtung</th>
+                                        <th style="width: 45%">Erläuterung</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Senkung der Durchlaufzeiten</td>
+                                        <td><select id="nutzen_durchlaufzeiten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_durchlaufzeiten_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Vermeidung von Fehlerwiederholungsraten</td>
+                                        <td><select id="nutzen_fehler"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_fehler_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Senkung der Prozesskosten</td>
+                                        <td><select id="nutzen_kosten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_kosten_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Reduktion nicht wertschöpfender Prozesse</td>
+                                        <td><select id="nutzen_reduktion"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_reduktion_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Steigerung der Studierendenzahlen</td>
+                                        <td><select id="nutzen_studierende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_studierende_text"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qualitätszuwachs</td>
+                                        <td><select id="nutzen_qualitaet"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                                        <td><input type="text" id="nutzen_qualitaet_text"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('optimierungen')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('optimierungen')">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Status -->
+                <div class="genesis-section" data-section="status">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">📅</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Status</div>
+                            <div class="genesis-section-desc">Aktueller Stand und Planung</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleSectionEdit('status')" title="Sektion bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewStatus"></div>
+                        <div class="section-edit" id="editStatus" style="display:none">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="start_datum">Start</label>
+                                    <input type="date" id="start_datum">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gesamtstatus">Gesamtstatus</label>
+                                    <select id="gesamtstatus" autocomplete="off">
+                                        <option value="/">/</option>
+                                        <option value="Idee / Konzeption">Idee / Konzeption</option>
+                                        <option value="Geplant">Geplant</option>
+                                        <option value="In Umsetzung">In Umsetzung</option>
+                                        <option value="Pilotierung">Pilotierung</option>
+                                        <option value="Im Betrieb">Im Betrieb</option>
+                                        <option value="Pausiert">Pausiert</option>
+                                        <option value="Abgeschlossen">Abgeschlossen</option>
+                                        <option value="Abgebrochen">Abgebrochen</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="status_steckbrief">Status Steckbrief</label>
+                                    <select id="status_steckbrief" autocomplete="off">
+                                        <option value="/">/</option>
+                                        <option value="Noch nicht gefüllt">Noch nicht gefüllt</option>
+                                        <option value="Rahmendaten hinterlegt">Rahmendaten hinterlegt</option>
+                                        <option value="Gefüllt">Gefüllt</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="teil_hochschulentwicklungsplan">Teil des Hochschulentwicklungsplans</label>
+                                    <select id="teil_hochschulentwicklungsplan">
+                                        <option value="">-- Bitte wählen --</option>
+                                        <option value="ja">Ja</option>
+                                        <option value="nein">Nein</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="anforderungsmanager">Anforderungsmanager/-in</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="anforderungsmanager" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="anforderungsmanagerFID">
-                                    <div class="autocomplete-dropdown" id="anforderungsmanager_dropdown"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="prozessverantwortlicher" autocomplete="off" placeholder="Name eingeben...">
-                                    <input type="hidden" id="prozessverantwortlicherFID">
-                                    <div class="autocomplete-dropdown" id="prozessverantwortlicher_dropdown"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Prozess-/Projektteam</label>
-                                <div class="team-members-container" id="teamMembersContainer"></div>
-                                <div class="personen-autocomplete">
-                                    <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
-                                    <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
-                                <select id="prozesscluster" autocomplete="off">
-                                    <option value="">-- Bitte wählen --</option>
-                                    <option value="/">/</option>
-                                    <option value="Leitbild &amp; Charta entwickeln">Leitbild &amp; Charta entwickeln</option>
-                                    <option value="(Hochschul-)Entwicklung planen">(Hochschul-)Entwicklung planen</option>
-                                    <option value="Organisation &amp; QM lenken">Organisation &amp; QM lenken</option>
-                                    <option value="Organisation &amp; QM weiterentwickeln">Organisation &amp; QM weiterentwickeln</option>
-                                    <option value="Studiengänge (weiter-)entwickeln">Studiengänge (weiter-)entwickeln</option>
-                                    <option value="Studieneinstieg durchführen">Studieneinstieg durchführen</option>
-                                    <option value="Semesterplanung durchführen">Semesterplanung durchführen</option>
-                                    <option value="Lehren &amp; Lernen inkl. Feedback gestalten">Lehren &amp; Lernen inkl. Feedback gestalten</option>
-                                    <option value="Studienbegleitende Prüfungen organisieren">Studienbegleitende Prüfungen organisieren</option>
-                                    <option value="Studierende &amp; Lehrende beraten">Studierende &amp; Lehrende beraten</option>
-                                    <option value="Studienabschluss umsetzen">Studienabschluss umsetzen</option>
-                                    <option value="Lehre &amp; Studium evaluieren">Lehre &amp; Studium evaluieren</option>
-                                    <option value="Forschungsfragen identifizieren">Forschungsfragen identifizieren</option>
-                                    <option value="Forschungsmittel akquirieren">Forschungsmittel akquirieren</option>
-                                    <option value="Forschungsprojekte organisieren">Forschungsprojekte organisieren</option>
-                                    <option value="Forschungsprojekte durchführen">Forschungsprojekte durchführen</option>
-                                    <option value="Forschungsergebnisse transferieren">Forschungsergebnisse transferieren</option>
-                                    <option value="Forschungsprojekte abschließen">Forschungsprojekte abschließen</option>
-                                    <option value="Forschung evaluieren">Forschung evaluieren</option>
-                                    <option value="Lehrgänge (weiter-)entwickeln">Lehrgänge (weiter-)entwickeln</option>
-                                    <option value="Lehrgangseinstieg durchführen">Lehrgangseinstieg durchführen</option>
-                                    <option value="Lehrgangsplanung durchführen">Lehrgangsplanung durchführen</option>
-                                    <option value="Lehrgangsbegleitende Prüfungen organisieren">Lehrgangsbegleitende Prüfungen organisieren</option>
-                                    <option value="Lehrgangsteilnehmende &amp; Lehrende beraten">Lehrgangsteilnehmende &amp; Lehrende beraten</option>
-                                    <option value="Lehrgangsabschluss umsetzen">Lehrgangsabschluss umsetzen</option>
-                                    <option value="Fort-/Weiterbildung evaluieren">Fort-/Weiterbildung evaluieren</option>
-                                    <option value="Lehrangebot vermarkten &amp; Informationen bereitstellen">Lehrangebot vermarkten &amp; Informationen bereitstellen</option>
-                                    <option value="Studierende &amp; Teilnehmende gewinnen">Studierende &amp; Teilnehmende gewinnen</option>
-                                    <option value="(Lehr-)Personal bereitstellen">(Lehr-)Personal bereitstellen</option>
-                                    <option value="Räumliche &amp; sächliche Infrastruktur bereitstellen">Räumliche &amp; sächliche Infrastruktur bereitstellen</option>
-                                    <option value="IT-Strukturen bereitstellen">IT-Strukturen bereitstellen</option>
-                                    <option value="Finanzen bewirtschaften">Finanzen bewirtschaften</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
-                                <select id="umsetzungsaufwand" autocomplete="off">
-                                    <option value="">-- Bitte wählen --</option>
-                                    <option value="klein">Klein</option>
-                                    <option value="mittel">Mittel</option>
-                                    <option value="gross">Groß</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
-                                <select id="betroffener_lifecycle" autocomplete="off">
-                                    <option value="/">/</option>
-                                    <option value="Student-Life-Cycle">Student-Life-Cycle</option>
-                                    <option value="Product-Life-Cycle">Product-Life-Cycle</option>
-                                </select>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveSectionAndClose('status')">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('status')">Abbrechen</button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Beschreibung -->
-                    <div class="form-section">
-                        <h3>2. Beschreibung</h3>
-                        <div class="form-group">
-                            <label for="ziel_vision">Vision</label>
-                            <textarea id="ziel_vision"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="warum">Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Ist-Situation & Ausformulierung von 4.)</span></label>
-                            <textarea id="warum"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="wer">Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Aufzählung der Organisationseinheiten)</span></label>
-                            <textarea id="wer"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="welche">Welche Teilprozesse, Projekte und Entwicklungen sind noch betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(ggfs. Verweis auf 3.)</span></label>
-                            <textarea id="welche"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="was">Was sind die konkreten Ziele der Prozessoptimierung (inkl. Nicht-Ziele)? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Kurzbeschreibung)</span></label>
-                            <textarea id="was"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="wie">Wie sollen die Ziele erreicht werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Beschreibung erster Lösungsansätze)</span></label>
-                            <textarea id="wie"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="wo">Wo sind IT-Systeme von der Prozessoptimierung betroffen?</label>
-                            <textarea id="wo"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="wann">Wann soll die Prozessoptimierung umgesetzt sein und welche zeitlichen Einschränkungen gibt es?</label>
-                            <textarea id="wann"></textarea>
+                <!-- 7. Änderungshistorie (nur Ansicht) -->
+                <div class="genesis-section" data-section="historie">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">🕐</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Änderungshistorie</div>
+                            <div class="genesis-section-desc">Protokoll aller Änderungen</div>
                         </div>
                     </div>
-
-                    <!-- Einordnung in den Gesamtprozess -->
-                    <div class="form-section">
-                        <h3>3. Einordnung in den Gesamtprozess</h3>
-                        <div class="form-group">
-                            <label for="einordnung_gesamtprozess">Welcher strategische Prozess ist hauptsächlich betroffen?</label>
-                            <textarea id="einordnung_gesamtprozess"></textarea>
-                        </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewHistorie"></div>
                     </div>
-
-                    <!-- Zwänge & Anforderungen -->
-                    <div class="form-section">
-                        <h3>4. Zwänge & Anforderungen</h3>
-                        <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                            <strong>Gewichtung</strong><br>
-                            0 = irrelevant<br>
-                            1 = förderlich<br>
-                            2 = wichtig<br>
-                            3 = zwingend notwendig
-                        </div>
-                        <table class="bewertung-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40%">Kriterium</th>
-                                    <th style="width: 15%">Gewichtung</th>
-                                    <th style="width: 45%">Erläuterung</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span></td>
-                                    <td><select id="bewertung_strategie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_strategie_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span></td>
-                                    <td><select id="bewertung_recht"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_recht_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span></td>
-                                    <td><select id="bewertung_technik"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_technik_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
-                                    <td><select id="bewertung_kunden"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_kunden_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
-                                    <td><select id="bewertung_lehrende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_lehrende_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span></td>
-                                    <td><select id="bewertung_lieferanten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_lieferanten_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span></td>
-                                    <td><select id="bewertung_mitarbeitende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="bewertung_mitarbeitende_text"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Zu erwartende Optimierungen -->
-                    <div class="form-section">
-                        <h3>5. Zu erwartende Optimierungen</h3>
-                        <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                            <strong>Gewichtung</strong><br>
-                            0 = irrelevant<br>
-                            1 = geringerer Nutzen<br>
-                            2 = mittlerer Nutzen<br>
-                            3 = hoher Nutzen
-                        </div>
-                        <table class="bewertung-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 40%">Kriterium</th>
-                                    <th style="width: 15%">Gewichtung</th>
-                                    <th style="width: 45%">Erläuterung</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Senkung der Durchlaufzeiten</td>
-                                    <td><select id="nutzen_durchlaufzeiten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_durchlaufzeiten_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Vermeidung von Fehlerwiederholungsraten</td>
-                                    <td><select id="nutzen_fehler"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_fehler_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Senkung der Prozesskosten</td>
-                                    <td><select id="nutzen_kosten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_kosten_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Reduktion nicht wertschöpfender Prozesse</td>
-                                    <td><select id="nutzen_reduktion"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_reduktion_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Steigerung der Studierendenzahlen</td>
-                                    <td><select id="nutzen_studierende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_studierende_text"></td>
-                                </tr>
-                                <tr>
-                                    <td>Qualitätszuwachs</td>
-                                    <td><select id="nutzen_qualitaet"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                    <td><input type="text" id="nutzen_qualitaet_text"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="form-section">
-                        <h3>6. Status</h3>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="start_datum">Start</label>
-                                <input type="date" id="start_datum">
-                            </div>
-                            <div class="form-group">
-                                <label for="gesamtstatus">Gesamtstatus</label>
-                                <select id="gesamtstatus" autocomplete="off">
-                                    <option value="/">/</option>
-                                    <option value="Idee / Konzeption">Idee / Konzeption</option>
-                                    <option value="Geplant">Geplant</option>
-                                    <option value="In Umsetzung">In Umsetzung</option>
-                                    <option value="Pilotierung">Pilotierung</option>
-                                    <option value="Im Betrieb">Im Betrieb</option>
-                                    <option value="Pausiert">Pausiert</option>
-                                    <option value="Abgeschlossen">Abgeschlossen</option>
-                                    <option value="Abgebrochen">Abgebrochen</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="status_steckbrief">Status Steckbrief</label>
-                                <select id="status_steckbrief" autocomplete="off">
-                                    <option value="/">/</option>
-                                    <option value="Noch nicht gefüllt">Noch nicht gefüllt</option>
-                                    <option value="Rahmendaten hinterlegt">Rahmendaten hinterlegt</option>
-                                    <option value="Gefüllt">Gefüllt</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="teil_hochschulentwicklungsplan">Teil des Hochschulentwicklungsplans</label>
-                                <select id="teil_hochschulentwicklungsplan">
-                                    <option value="">-- Bitte wählen --</option>
-                                    <option value="ja">Ja</option>
-                                    <option value="nein">Nein</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <h3>7. Änderungshistorie</h3>
-                        <div id="aenderungshistorie_container" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 13px; white-space: pre-wrap; color: #555;">
-                            <em>Noch keine Änderungen erfasst</em>
-                        </div>
-                    </div>
-
-                    <div class="detail-actions">
-                        <button type="submit" class="btn btn-success">💾 Speichern</button>
-                        <button type="button" class="btn btn-secondary" data-goback>Abbrechen</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -4251,6 +4382,7 @@
                 await loadSteckbriefeFromAPI();
                 initPersonenAutocomplete();
                 initTeamAutocomplete();
+                initAuftraggeberAutocomplete();
                 updateFilterDropdowns();
                 handleRouting();
             } catch (err) {
@@ -4461,12 +4593,8 @@
 
         // Detail-Buttons basierend auf Berechtigung aktualisieren
         function updateDetailButtons() {
-            const editBtn = document.getElementById('btnDetailEdit');
             const deleteBtn = document.getElementById('btnDetailDelete');
             const manageEditorsBtn = document.getElementById('btnManageEditors');
-            const tabEditBtn = document.getElementById('tabEditBtn');
-            const editTabs = document.getElementById('editTabs');
-            const sectionControls = document.getElementById('sectionControls');
             
             if (!currentSteckbriefId) return;
             
@@ -4477,13 +4605,12 @@
             const canEdit = canEditSteckbrief(steckbrief);
             const isAdmin = getEffectiveRole() === 'admin';
 
-            if (editBtn) editBtn.classList.toggle('hidden', !canEdit);
-            if (editTabs) editTabs.style.display = canEdit ? 'flex' : 'none';
-            if (tabEditBtn) tabEditBtn.classList.toggle('hidden', !canEdit);
+            // Section edit buttons: nur anzeigen wenn Benutzer bearbeiten darf
+            document.querySelectorAll('.detail-card .section-edit-btn').forEach(btn => {
+                btn.classList.toggle('hidden', !canEdit);
+            });
             if (deleteBtn) deleteBtn.classList.toggle('hidden', !isAdmin);
             if (manageEditorsBtn) manageEditorsBtn.classList.toggle('hidden', !isAdmin);
-            // Section controls only visible in view mode
-            if (sectionControls) sectionControls.style.display = '';
         }
 
         // ====== BENUTZERVERWALTUNG (Admin) ======
@@ -4938,6 +5065,15 @@
                 // Daten aggregieren
                 const counts = {};
                 steckbriefe.forEach(s => {
+                    // Auftraggeber: individuelle Personen aus Multi-Array zählen
+                    if (def.field === 'auftraggeber' && s.auftraggeber_multi) {
+                        let data = s.auftraggeber_multi;
+                        if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { data = null; } }
+                        if (Array.isArray(data) && data.length > 0) {
+                            data.forEach(m => { const name = m.name || '(leer)'; counts[name] = (counts[name] || 0) + 1; });
+                            return;
+                        }
+                    }
                     let val = s[def.field];
                     if (!val || (typeof val === 'string' && !val.trim())) val = '(leer)';
                     counts[val] = (counts[val] || 0) + 1;
@@ -5167,6 +5303,120 @@
             });
         }
 
+        // ====== AUFTRAGGEBER VERWALTUNG (Multi-Person) ======
+        let _currentAuftraggeber = [];
+
+        function parseAuftraggeber(steckbrief) {
+            let t = steckbrief.auftraggeber_multi;
+            if (!t) {
+                // Fallback: einzelner auftraggeberFID + Name
+                if (steckbrief.auftraggeberFID) {
+                    const name = [steckbrief.auftraggeber_titel, steckbrief.auftraggeber_vorname, steckbrief.auftraggeber_nachname].filter(Boolean).join(' ') || steckbrief.auftraggeber || '';
+                    return [{ fid: parseInt(steckbrief.auftraggeberFID), name: name }];
+                }
+                return [];
+            }
+            if (typeof t === 'string') {
+                try { t = JSON.parse(t); } catch(e) {
+                    return t.split(/[\n,;]+/)
+                        .map(n => n.trim())
+                        .filter(n => n.length > 0)
+                        .map(n => ({ fid: null, name: n }));
+                }
+            }
+            return Array.isArray(t) ? t : [];
+        }
+
+        function formatAuftraggeberDisplay(auftraggeber_multi) {
+            if (!auftraggeber_multi) return '';
+            let data = auftraggeber_multi;
+            if (typeof data === 'string') {
+                try { data = JSON.parse(data); } catch(e) {
+                    return data.split(/[\n,;]+/).map(n => n.trim()).filter(Boolean).join(', ');
+                }
+            }
+            if (!Array.isArray(data) || data.length === 0) return '';
+            return data.map(m => m.name).join(', ');
+        }
+
+        function renderAuftraggeberTags() {
+            const container = document.getElementById('auftraggeberMembersContainer');
+            if (!container) return;
+            container.innerHTML = _currentAuftraggeber.map((m, idx) => `
+                <span class="team-tag">
+                    ${escapeHtml(m.name)}
+                    <span class="remove-tag" onclick="removeAuftraggeber(${idx})">&times;</span>
+                </span>
+            `).join('');
+        }
+
+        function addAuftraggeber(fid, name) {
+            if (fid && _currentAuftraggeber.some(m => String(m.fid) === String(fid))) {
+                alert('Diese Person ist bereits als Auftraggeber/-in hinterlegt.');
+                return;
+            }
+            _currentAuftraggeber.push({ fid: fid ? parseInt(fid) : null, name: name });
+            renderAuftraggeberTags();
+            _formDirty = true;
+        }
+
+        function removeAuftraggeber(index) {
+            _currentAuftraggeber.splice(index, 1);
+            renderAuftraggeberTags();
+            _formDirty = true;
+        }
+
+        function initAuftraggeberAutocomplete() {
+            const input = document.getElementById('auftraggeberInput');
+            const dropdown = document.getElementById('auftraggeber_dropdown');
+            if (!input || !dropdown) return;
+            let debounceTimer = null;
+
+            input.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                const q = input.value.trim();
+                if (q.length < 2) {
+                    dropdown.classList.remove('show');
+                    return;
+                }
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        const response = await authFetch(API_URL + '/personen/suche?q=' + encodeURIComponent(q));
+                        if (!response.ok) return;
+                        const personen = await response.json();
+                        if (personen.length === 0) {
+                            dropdown.classList.remove('show');
+                            return;
+                        }
+                        dropdown.innerHTML = personen.map(p => `
+                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                                ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
+                                ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
+                            </div>
+                        `).join('');
+                        dropdown.classList.add('show');
+                    } catch (e) {
+                        console.error('Auftraggeber-Personen-Suche fehlgeschlagen:', e);
+                    }
+                }, 300);
+            });
+
+            dropdown.addEventListener('click', (e) => {
+                const item = e.target.closest('.autocomplete-item');
+                if (item) {
+                    addAuftraggeber(item.dataset.id, item.dataset.name);
+                    input.value = '';
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#auftraggeber_dropdown') && !e.target.closest('#auftraggeberInput')) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+
         function parseBearbeiter(steckbrief) {
             let b = steckbrief.bearbeiter;
             if (!b) return [];
@@ -5361,6 +5611,7 @@
                 // Personen-Autocomplete initialisieren
                 initPersonenAutocomplete();
                 initTeamAutocomplete();
+                initAuftraggeberAutocomplete();
                 initDirtyTracking();
                 
                 updateFilterDropdowns();
@@ -5509,7 +5760,12 @@
                     _steckbriefeCache = await response.json();
                     // Personennamen für Frontend-Kompatibilität zusammensetzen (mit Titel)
                     _steckbriefeCache.forEach(s => {
-                        s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
+                        // Auftraggeber: Multi-Format bevorzugen, Fallback auf Single-FID
+                        if (s.auftraggeber_multi) {
+                            s.auftraggeber = formatAuftraggeberDisplay(s.auftraggeber_multi);
+                        } else {
+                            s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
+                        }
                         s.prozessmanager = [s.prozessmanager_titel, s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
                         s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
                         s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
@@ -5566,7 +5822,15 @@
                 steckbriefe = steckbriefe.filter(s => s.prozesscluster === activeFilters.cluster);
             }
             if (activeFilters.auftraggeber) {
-                steckbriefe = steckbriefe.filter(s => s.auftraggeber === activeFilters.auftraggeber);
+                steckbriefe = steckbriefe.filter(s => {
+                    // Multi-Auftraggeber: prüfe ob gesuchte Person enthalten
+                    if (s.auftraggeber_multi) {
+                        let data = s.auftraggeber_multi;
+                        if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { return false; } }
+                        if (Array.isArray(data)) return data.some(m => m.name === activeFilters.auftraggeber);
+                    }
+                    return s.auftraggeber === activeFilters.auftraggeber;
+                });
             }
             if (activeFilters.prozessmanager) {
                 steckbriefe = steckbriefe.filter(s => s.prozessmanager === activeFilters.prozessmanager);
@@ -5790,7 +6054,18 @@
             
             // Eindeutige Werte sammeln
             const clusters = [...new Set(steckbriefe.map(s => s.prozesscluster).filter(Boolean))].sort();
-            const auftraggeber = [...new Set(steckbriefe.map(s => s.auftraggeber).filter(Boolean))].sort();
+            // Auftraggeber: individuelle Personen aus Multi-Arrays extrahieren
+            const auftraggeberNames = new Set();
+            steckbriefe.forEach(s => {
+                if (s.auftraggeber_multi) {
+                    let data = s.auftraggeber_multi;
+                    if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { return; } }
+                    if (Array.isArray(data)) data.forEach(m => { if (m.name) auftraggeberNames.add(m.name); });
+                } else if (s.auftraggeber) {
+                    auftraggeberNames.add(s.auftraggeber);
+                }
+            });
+            const auftraggeber = [...auftraggeberNames].sort();
             const prozessmanager = [...new Set(steckbriefe.map(s => s.prozessmanager).filter(Boolean))].sort();
             const anforderungsmanager = [...new Set(steckbriefe.map(s => s.anforderungsmanager).filter(Boolean))].sort();
             const gesamtstatusValues = [...new Set(steckbriefe.map(s => s.gesamtstatus).filter(Boolean))].sort();
@@ -6023,7 +6298,6 @@
         // ====== PERSONEN-AUTOCOMPLETE ======
         function initPersonenAutocomplete() {
             const personFields = [
-                { input: 'auftraggeber', fid: 'auftraggeberFID', dropdown: 'auftraggeber_dropdown' },
                 { input: 'prozessmanager', fid: 'prozessmanagerFID', dropdown: 'prozessmanager_dropdown' },
                 { input: 'anforderungsmanager', fid: 'anforderungsmanagerFID', dropdown: 'anforderungsmanager_dropdown' },
                 { input: 'prozessverantwortlicher', fid: 'prozessverantwortlicherFID', dropdown: 'prozessverantwortlicher_dropdown' }
@@ -6123,15 +6397,25 @@
             document.getElementById('steckbriefForm').reset();
             document.getElementById('steckbriefId').value = '';
             document.getElementById('displayId').value = '(wird beim Speichern vergeben)';
-            document.getElementById('auftraggeberFID').value = '';
             document.getElementById('prozessmanagerFID').value = '';
             document.getElementById('anforderungsmanagerFID').value = '';
             document.getElementById('prozessverantwortlicherFID').value = '';
+            _currentAuftraggeber = [];
+            renderAuftraggeberTags();
             _currentTeamMembers = [];
             renderTeamTags();
             document.getElementById('modalTitle').textContent = 'Neuer Steckbrief';
-            document.getElementById('detailUrl').innerHTML = '';
-            switchTab('edit');
+            currentSteckbriefId = null;
+            showPage('detail');
+            // Alle Sektionen: View-Bereiche leeren, Edit öffnen
+            ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status'].forEach(name => {
+                const viewEl = document.getElementById('view' + name.charAt(0).toUpperCase() + name.slice(1));
+                if (viewEl) viewEl.innerHTML = '';
+            });
+            document.getElementById('viewHistorie').innerHTML = '<em>Noch keine Änderungen erfasst</em>';
+            openAllSectionEdits();
+            // Section edit buttons verstecken (neuer Steckbrief = alles schon offen)
+            document.querySelectorAll('.detail-card .section-edit-btn').forEach(btn => btn.style.display = 'none');
         }
 
         // Steckbrief öffnen (URL ändern)
@@ -6176,7 +6460,13 @@
             // Buttons basierend auf Berechtigung aktualisieren
             updateDetailButtons();
             
-            switchTab(editMode ? 'edit' : 'view');
+            // Alle Sektionen in View-Modus versetzen
+            closeAllSectionEdits();
+            
+            // Bei editMode=true alle Sektionen zum Bearbeiten öffnen
+            if (editMode && canEditSteckbrief(steckbrief)) {
+                openAllSectionEdits();
+            }
         }
 
         // Link kopieren
@@ -6187,121 +6477,98 @@
             });
         }
 
-        // Ansicht rendern (Genesis-Stil mit klappbaren Sektionen)
+        // Ansicht rendern (füllt die View-Bereiche der einzelnen Sektionen)
         function renderViewContent(s) {
-            const container = document.getElementById('viewContent');
-            container.innerHTML = `
-                ${renderGenesisSection('📊', 'Rahmendaten', 'Grundlegende Informationen zum Prozess-/Projektsteckbrief', `
-                    <div class="genesis-sub-header">Identifikation</div>
-                    <div class="form-grid">
-                        ${renderField('ID', s.id)}
-                        ${renderField('Titel', s.titel)}
-                        ${renderField('Prozesscluster', s.prozesscluster)}
-                        ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
-                    </div>
-                    <div class="genesis-sub-header">Verantwortliche</div>
-                    <div class="form-grid">
-                        ${renderField('Auftraggeber/-in', s.auftraggeber)}
-                        ${renderField('Prozessmanager/-in', s.prozessmanager)}
-                        ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
-                        ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
-                        ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam), true)}
-                    </div>
-                    <div class="genesis-sub-header">Aufwand</div>
-                    <div class="form-grid">
-                        ${renderField('Geschätzter Umsetzungsaufwand', getAufwandLabel(s.umsetzungsaufwand))}
-                    </div>
-                `)}
-
-                ${renderGenesisSection('📝', 'Beschreibung', 'Vision, Ziele und Lösungsansätze der Prozessoptimierung', `
-                    <div class="genesis-sub-header">Vision & Motivation</div>
-                    ${renderField('Vision', s.ziel_vision, true)}
-                    ${renderField('Warum soll der Prozess optimiert werden?', s.warum, true)}
-                    <div class="genesis-sub-header">Beteiligte & Betroffene</div>
-                    ${renderField('Wer ist beteiligt bzw. betroffen?', s.wer, true)}
-                    ${renderField('Welche Teilprozesse/Projekte sind betroffen?', s.welche, true)}
-                    <div class="genesis-sub-header">Ziele & Umsetzung</div>
-                    ${renderField('Konkrete Ziele (inkl. Nicht-Ziele)', s.was, true)}
-                    ${renderField('Wie sollen die Ziele erreicht werden?', s.wie, true)}
-                    ${renderField('Betroffene IT-Systeme', s.wo, true)}
-                    ${renderField('Zeitplanung & Einschränkungen', s.wann, true)}
-                `)}
-
-                ${renderGenesisSection('🔗', 'Einordnung in den Gesamtprozess', 'Strategische Zuordnung im Gesamtprozess', `
-                    ${renderField('Hauptsächlich betroffener strategischer Prozess', s.einordnung_gesamtprozess, true)}
-                `)}
-
-                ${renderGenesisSection('⚖️', 'Zwänge & Anforderungen', 'Bewertung der externen und internen Anforderungen', `
-                    <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
-                        <strong>Gewichtung:</strong> 0 = irrelevant · 1 = förderlich · 2 = wichtig · 3 = zwingend notwendig
-                    </div>
-                    <table class="bewertung-table">
-                        <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
-                        <tbody>
-                            ${renderBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie, s.bewertung_strategie_text)}
-                            ${renderBewertungRow('Rechtliche Vorschriften', s.bewertung_recht, s.bewertung_recht_text)}
-                            ${renderBewertungRow('Technische Zwänge', s.bewertung_technik, s.bewertung_technik_text)}
-                            ${renderBewertungRow('Anforderungen Kunden', s.bewertung_kunden, s.bewertung_kunden_text)}
-                            ${renderBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende, s.bewertung_lehrende_text)}
-                            ${renderBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
-                            ${renderBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
-                        </tbody>
-                    </table>
-                `)}
-
-                ${renderGenesisSection('📈', 'Zu erwartende Optimierungen', 'Nutzen-Bewertung der geplanten Maßnahmen', `
-                    <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
-                        <strong>Gewichtung:</strong> 0 = irrelevant · 1 = geringerer Nutzen · 2 = mittlerer Nutzen · 3 = hoher Nutzen
-                    </div>
-                    <table class="bewertung-table">
-                        <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
-                        <tbody>
-                            ${renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)}
-                            ${renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)}
-                            ${renderBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten, s.nutzen_kosten_text)}
-                            ${renderBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion, s.nutzen_reduktion_text)}
-                            ${renderBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende, s.nutzen_studierende_text)}
-                            ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
-                        </tbody>
-                    </table>
-                `)}
-
-                ${renderGenesisSection('📅', 'Status', 'Aktueller Stand und Planung', `
-                    <div class="genesis-sub-header">Status & Planung</div>
-                    <div class="form-grid">
-                        ${renderField('Start', s.start_datum)}
-                        ${renderField('Gesamtstatus', s.gesamtstatus)}
-                        ${renderField('Status Steckbrief', s.status_steckbrief)}
-                        ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
-                    </div>
-                `)}
-
-                ${renderGenesisSection('🕐', 'Änderungshistorie', 'Protokoll aller Änderungen', `
-                    ${renderAenderungshistorieTable(s.aenderungshistorie)}
-                `)}
-            `;
-        }
-
-        function renderGenesisSection(icon, title, desc, content) {
-            return `
-                <div class="genesis-section">
-                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
-                        <span class="genesis-section-chevron">▼</span>
-                        <div class="genesis-section-icon">${icon}</div>
-                        <div class="genesis-section-title-group">
-                            <div class="genesis-section-title">${title}</div>
-                            <div class="genesis-section-desc">${desc}</div>
-                        </div>
-                    </div>
-                    <div class="genesis-section-body">
-                        ${content}
-                    </div>
+            document.getElementById('viewRahmendaten').innerHTML = `
+                <div class="genesis-sub-header">Identifikation</div>
+                <div class="form-grid">
+                    ${renderField('ID', s.id)}
+                    ${renderField('Titel', s.titel)}
+                    ${renderField('Prozesscluster', s.prozesscluster)}
+                    ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                </div>
+                <div class="genesis-sub-header">Verantwortliche</div>
+                <div class="form-grid">
+                    ${renderField('Auftraggeber/-in', s.auftraggeber)}
+                    ${renderField('Prozessmanager/-in', s.prozessmanager)}
+                    ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
+                    ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
+                    ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam), true)}
+                </div>
+                <div class="genesis-sub-header">Aufwand</div>
+                <div class="form-grid">
+                    ${renderField('Geschätzter Umsetzungsaufwand', getAufwandLabel(s.umsetzungsaufwand))}
                 </div>
             `;
+
+            document.getElementById('viewBeschreibung').innerHTML = `
+                <div class="genesis-sub-header">Vision & Motivation</div>
+                ${renderField('Vision', s.ziel_vision, true)}
+                ${renderField('Warum soll der Prozess optimiert werden?', s.warum, true)}
+                <div class="genesis-sub-header">Beteiligte & Betroffene</div>
+                ${renderField('Wer ist beteiligt bzw. betroffen?', s.wer, true)}
+                ${renderField('Welche Teilprozesse/Projekte sind betroffen?', s.welche, true)}
+                <div class="genesis-sub-header">Ziele & Umsetzung</div>
+                ${renderField('Konkrete Ziele (inkl. Nicht-Ziele)', s.was, true)}
+                ${renderField('Wie sollen die Ziele erreicht werden?', s.wie, true)}
+                ${renderField('Betroffene IT-Systeme', s.wo, true)}
+                ${renderField('Zeitplanung & Einschränkungen', s.wann, true)}
+            `;
+
+            document.getElementById('viewEinordnung').innerHTML = `
+                ${renderField('Hauptsächlich betroffener strategischer Prozess', s.einordnung_gesamtprozess, true)}
+            `;
+
+            document.getElementById('viewZwaenge').innerHTML = `
+                <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
+                    <strong>Gewichtung:</strong> 0 = irrelevant · 1 = förderlich · 2 = wichtig · 3 = zwingend notwendig
+                </div>
+                <table class="bewertung-table">
+                    <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
+                    <tbody>
+                        ${renderBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie, s.bewertung_strategie_text)}
+                        ${renderBewertungRow('Rechtliche Vorschriften', s.bewertung_recht, s.bewertung_recht_text)}
+                        ${renderBewertungRow('Technische Zwänge', s.bewertung_technik, s.bewertung_technik_text)}
+                        ${renderBewertungRow('Anforderungen Kunden', s.bewertung_kunden, s.bewertung_kunden_text)}
+                        ${renderBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende, s.bewertung_lehrende_text)}
+                        ${renderBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
+                        ${renderBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('viewOptimierungen').innerHTML = `
+                <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
+                    <strong>Gewichtung:</strong> 0 = irrelevant · 1 = geringerer Nutzen · 2 = mittlerer Nutzen · 3 = hoher Nutzen
+                </div>
+                <table class="bewertung-table">
+                    <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
+                    <tbody>
+                        ${renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)}
+                        ${renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)}
+                        ${renderBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten, s.nutzen_kosten_text)}
+                        ${renderBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion, s.nutzen_reduktion_text)}
+                        ${renderBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende, s.nutzen_studierende_text)}
+                        ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('viewStatus').innerHTML = `
+                <div class="genesis-sub-header">Status & Planung</div>
+                <div class="form-grid">
+                    ${renderField('Start', s.start_datum)}
+                    ${renderField('Gesamtstatus', s.gesamtstatus)}
+                    ${renderField('Status Steckbrief', s.status_steckbrief)}
+                    ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
+                </div>
+            `;
+
+            document.getElementById('viewHistorie').innerHTML = renderAenderungshistorieTable(s.aenderungshistorie);
         }
 
         function toggleAllSections(expand) {
-            document.querySelectorAll('#viewContent .genesis-section').forEach(s => {
+            document.querySelectorAll('.detail-card .genesis-section').forEach(s => {
                 if (expand) {
                     s.classList.remove('collapsed');
                 } else {
@@ -6349,8 +6616,8 @@
             document.getElementById('steckbriefId').value = s.id;
             document.getElementById('displayId').value = s.id || '(wird beim Speichern vergeben)';
             document.getElementById('titel').value = s.titel || '';
-            document.getElementById('auftraggeber').value = s.auftraggeber || '';
-            document.getElementById('auftraggeberFID').value = s.auftraggeberFID || '';
+            _currentAuftraggeber = parseAuftraggeber(s);
+            renderAuftraggeberTags();
             document.getElementById('prozessmanager').value = s.prozessmanager || '';
             document.getElementById('prozessmanagerFID').value = s.prozessmanagerFID || '';
             document.getElementById('anforderungsmanager').value = s.anforderungsmanager || '';
@@ -6408,8 +6675,6 @@
             document.getElementById('nutzen_qualitaet').value = s.nutzen_qualitaet || '0';
             document.getElementById('nutzen_qualitaet_text').value = s.nutzen_qualitaet_text || '';
             
-            // Änderungshistorie laden (read-only)
-            renderAenderungshistorie(s.aenderungshistorie);
             // Nach dem Befüllen: Formular ist "sauber"
             setTimeout(() => { _formDirty = false; }, 0);
         }
@@ -6422,12 +6687,20 @@
             form.addEventListener('change', () => { _formDirty = true; });
         }
 
+        // Prüft ob eine Sektion gerade im Bearbeitungsmodus ist
+        function isAnySectionEditing() {
+            const editDivs = document.querySelectorAll('.detail-card .section-edit');
+            for (const div of editDivs) {
+                if (div.style.display !== 'none') return true;
+            }
+            return false;
+        }
+
         // Prüft ob ungespeicherte Änderungen vorliegen
         // Gibt zurück: true (navigieren erlaubt), false (abbrechen), 'save' (erst speichern)
         async function checkUnsavedChanges() {
             if (!_formDirty) return true;
-            const editTab = document.getElementById('editTab');
-            if (!editTab || editTab.style.display === 'none') return true;
+            if (!isAnySectionEditing()) return true;
             const result = await showCustomDialog({
                 icon: '⚠️',
                 title: 'Ungespeicherte Änderungen',
@@ -6440,7 +6713,7 @@
             });
             if (result === 'save') {
                 document.getElementById('steckbriefForm').requestSubmit();
-                return false; // Navigation wird durch den Redirect nach dem Speichern übernommen
+                return false;
             }
             return result === 'discard';
         }
@@ -6448,8 +6721,7 @@
         // beforeunload: Browser-Warnung bei ungespeicherten Änderungen
         window.addEventListener('beforeunload', function(e) {
             if (!_formDirty) return;
-            const editTab = document.getElementById('editTab');
-            if (!editTab || editTab.style.display === 'none') return;
+            if (!isAnySectionEditing()) return;
             e.preventDefault();
         });
 
@@ -6476,7 +6748,7 @@
 
         // Feldnamen für menschenlesbare Labels
         const FELD_LABELS = {
-            titel: 'Titel', auftraggeber: 'Auftraggeber', prozessmanager: 'Prozessmanager',
+            titel: 'Titel', auftraggeber: 'Auftraggeber', auftraggeber_multi: 'Auftraggeber', prozessmanager: 'Prozessmanager',
             anforderungsmanager: 'Anforderungsmanager', prozessverantwortlicher: 'Prozessverantwortlicher',
             projektteam: 'Projektteam', prozesscluster: 'Prozesscluster', umsetzungsaufwand: 'Umsetzungsaufwand',
             betroffener_lifecycle: 'Betroffener Lifecycle', status_steckbrief: 'Status Steckbrief',
@@ -6557,7 +6829,6 @@
             // Personen-Felder validieren: Name eingetippt aber nicht aus Dropdown gewählt?
             // Automatisch per API-Suche zuordnen, falls FID leer aber Text vorhanden
             const personenFelder = [
-                { text: 'auftraggeber', fid: 'auftraggeberFID', label: 'Auftraggeber/-in' },
                 { text: 'prozessmanager', fid: 'prozessmanagerFID', label: 'Prozessmanager/-in' },
                 { text: 'anforderungsmanager', fid: 'anforderungsmanagerFID', label: 'Anforderungsmanager/-in' },
                 { text: 'prozessverantwortlicher', fid: 'prozessverantwortlicherFID', label: 'Prozessverantwortliche/r' }
@@ -6639,7 +6910,8 @@
             const apiData = {
                 id: id ? parseInt(id) : null,
                 titel: document.getElementById('titel').value,
-                auftraggeberFID: document.getElementById('auftraggeberFID').value || null,
+                auftraggeber_multi: _currentAuftraggeber.length > 0 ? JSON.stringify(_currentAuftraggeber) : null,
+                auftraggeberFID: _currentAuftraggeber.length > 0 ? _currentAuftraggeber[0].fid : null,
                 prozessmanagerFID: document.getElementById('prozessmanagerFID').value || null,
                 anforderungsmanagerFID: document.getElementById('anforderungsmanagerFID').value || null,
                 prozessverantwortlicherFID: document.getElementById('prozessverantwortlicherFID').value || null,
@@ -6730,6 +7002,7 @@
             
             // DEBUG: FID-Werte vor dem Senden loggen
             console.log('[SAVE DEBUG] Personen-FIDs:', {
+                auftraggeber_multi: apiData.auftraggeber_multi,
                 auftraggeberFID: apiData.auftraggeberFID,
                 prozessmanagerFID: apiData.prozessmanagerFID,
                 anforderungsmanagerFID: apiData.anforderungsmanagerFID,
@@ -6755,8 +7028,32 @@
                 
                 // Nach dem Speichern: Formular ist sauber
                 _formDirty = false;
-                // Nach dem Speichern Seite neu laden, damit Änderungen sofort sichtbar sind
-                window.location.href = '?id=' + encodeURIComponent(savedId);
+                
+                // In-Place Refresh: Daten neu laden und Ansicht aktualisieren
+                await loadSteckbriefeFromAPI();
+                currentSteckbriefId = savedId;
+                const refreshed = getSteckbriefe().find(s => String(s.id) === String(savedId));
+                if (refreshed) {
+                    renderViewContent(refreshed);
+                    fillForm(refreshed);
+                    closeAllSectionEdits();
+                    updateDetailButtons();
+                    // Hero-Badges aktualisieren
+                    const badges = document.getElementById('heroBadges');
+                    const statusText = refreshed.gesamtstatus || '';
+                    badges.innerHTML = `
+                        <span class="hero-badge"># ${escapeHtml(String(refreshed.id))}</span>
+                        ${refreshed.prozesscluster ? `<span class="hero-badge">📁 ${escapeHtml(refreshed.prozesscluster)}</span>` : ''}
+                        ${refreshed.auftraggeber ? `<span class="hero-badge">👤 ${escapeHtml(refreshed.auftraggeber)}</span>` : ''}
+                        ${statusText ? `<span class="hero-badge status-badge-hero">${escapeHtml(statusText)}</span>` : ''}
+                        ${refreshed.teil_hochschulentwicklungsplan === 'ja' ? '<span class="hero-badge">📋 HEP</span>' : ''}
+                    `;
+                    document.getElementById('modalTitle').textContent = refreshed.titel;
+                    document.getElementById('breadcrumbTitle').textContent = refreshed.titel;
+                    // URL aktualisieren falls neuer Steckbrief
+                    window.history.replaceState({}, '', '?id=' + encodeURIComponent(savedId));
+                }
+                showToast('Steckbrief erfolgreich gespeichert', 'success');
                 return;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
@@ -6790,15 +7087,10 @@
             }
         }
 
-        // Tab wechseln
-        async function switchTab(tab) {
-            // Bei Wechsel von edit → view: ungespeicherte Änderungen prüfen
-            if (tab === 'view') {
-                if (!(await checkUnsavedChanges())) return;
-                _formDirty = false;
-            }
-            // Berechtigungsprüfung beim Wechsel zu Bearbeiten
-            if (tab === 'edit' && currentSteckbriefId) {
+        // Sektions-Bearbeitung umschalten
+        function toggleSectionEdit(sectionName) {
+            // Berechtigungsprüfung
+            if (currentSteckbriefId) {
                 const steckbriefe = getSteckbriefe();
                 const steckbrief = steckbriefe.find(s => String(s.id) === String(currentSteckbriefId));
                 if (steckbrief && !canEditSteckbrief(steckbrief)) {
@@ -6806,18 +7098,69 @@
                     return;
                 }
             }
-            
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.tab:nth-child(${tab === 'view' ? 1 : 2})`).classList.add('active');
-            
-            document.getElementById('viewTab').style.display = tab === 'view' ? 'block' : 'none';
-            document.getElementById('editTab').style.display = tab === 'edit' ? 'block' : 'none';
-            
-            // Section controls + actions bar nur in Ansicht zeigen
-            const sectionControls = document.getElementById('sectionControls');
-            const actionsBar = document.getElementById('detailActionsBar');
-            if (sectionControls) sectionControls.style.display = tab === 'view' ? '' : 'none';
-            if (actionsBar) actionsBar.style.display = tab === 'view' ? '' : 'none';
+            const section = document.querySelector(`.genesis-section[data-section="${sectionName}"]`);
+            if (!section) return;
+            // Sektion aufklappen falls zugeklappt
+            section.classList.remove('collapsed');
+            const viewDiv = section.querySelector('.section-view');
+            const editDiv = section.querySelector('.section-edit');
+            if (viewDiv) viewDiv.style.display = 'none';
+            if (editDiv) editDiv.style.display = '';
+            // Edit-Button in dieser Sektion verstecken
+            const editBtn = section.querySelector('.section-edit-btn');
+            if (editBtn) editBtn.style.display = 'none';
+        }
+
+        function cancelSectionEdit(sectionName) {
+            const section = document.querySelector(`.genesis-section[data-section="${sectionName}"]`);
+            if (!section) return;
+            const viewDiv = section.querySelector('.section-view');
+            const editDiv = section.querySelector('.section-edit');
+            if (viewDiv) viewDiv.style.display = '';
+            if (editDiv) editDiv.style.display = 'none';
+            // Edit-Button wieder anzeigen
+            const editBtn = section.querySelector('.section-edit-btn');
+            if (editBtn) editBtn.style.display = '';
+            // Formular-Werte aus Cache zurücksetzen
+            if (currentSteckbriefId) {
+                const steckbriefe = getSteckbriefe();
+                const s = steckbriefe.find(st => String(st.id) === String(currentSteckbriefId));
+                if (s) fillForm(s);
+            }
+            _formDirty = false;
+        }
+
+        function closeAllSectionEdits() {
+            const sections = ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status'];
+            sections.forEach(name => {
+                const section = document.querySelector(`.genesis-section[data-section="${name}"]`);
+                if (!section) return;
+                const viewDiv = section.querySelector('.section-view');
+                const editDiv = section.querySelector('.section-edit');
+                if (viewDiv) viewDiv.style.display = '';
+                if (editDiv) editDiv.style.display = 'none';
+                const editBtn = section.querySelector('.section-edit-btn');
+                if (editBtn) editBtn.style.display = '';
+            });
+        }
+
+        function openAllSectionEdits() {
+            const sections = ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status'];
+            sections.forEach(name => toggleSectionEdit(name));
+        }
+
+        async function saveSectionAndClose(sectionName) {
+            // Speichern über das bestehende Form-Submit
+            const form = document.getElementById('steckbriefForm');
+            // Validierung: Titel-Pflichtfeld
+            if (!document.getElementById('titel').value.trim()) {
+                alert('Bitte gib einen Titel für den Steckbrief ein.');
+                toggleSectionEdit('rahmendaten');
+                document.getElementById('titel').focus();
+                return;
+            }
+            // saveSteckbrief aufrufen (mit fake Event)
+            await saveSteckbrief(new Event('submit', { cancelable: true }));
         }
 
         // Modal schließen (Kompatibilität - verwendet goBack)
@@ -6926,7 +7269,12 @@
             const sections = [
                 { name: 'Rahmendaten', fields: [
                     { key: 'titel', label: 'Titel' },
-                    { key: 'auftraggeber', label: 'Auftraggeber/-in', check: s => s.auftraggeber || s.auftraggeberFID },
+                    { key: 'auftraggeber', label: 'Auftraggeber/-in', check: s => {
+                        if (s.auftraggeber_multi) {
+                            try { const a = typeof s.auftraggeber_multi === 'string' ? JSON.parse(s.auftraggeber_multi) : s.auftraggeber_multi; return Array.isArray(a) && a.length > 0; } catch(e) { return false; }
+                        }
+                        return s.auftraggeber || s.auftraggeberFID;
+                    } },
                     { key: 'prozessmanager', label: 'Prozessmanager/-in', check: s => s.prozessmanager || s.prozessmanagerFID },
                     { key: 'prozessverantwortlicher', label: 'Prozessverantwortliche/r', check: s => s.prozessverantwortlicher || s.prozessverantwortlicherFID },
                     { key: 'projektteam', label: 'Prozess-/Projektteam', check: s => { try { const t = typeof s.projektteam === 'string' ? JSON.parse(s.projektteam) : s.projektteam; return Array.isArray(t) && t.length > 0; } catch(e) { return false; } } },
@@ -7712,9 +8060,49 @@
         }
 
         // Personen-Freitext aus Word-Import in FIDs auflösen
+        // Auftraggeber-Freitext aus Word-Import in auftraggeber_multi JSON auflösen
+        async function resolveAuftraggeberMulti(steckbrief) {
+            const name = steckbrief.auftraggeber;
+            if (!name || steckbrief.auftraggeber_multi) return;
+            // Namen an Trennzeichen aufsplitten
+            const namen = name.split(/[,&\/|\n;]|\bund\b/i).map(n => n.trim()).filter(n => n.length > 1);
+            if (namen.length === 0) return;
+            const result = [];
+            for (const einzelName of namen) {
+                const cleanName = einzelName.replace(/^(Prof\.\s*)?(Dr\.[-\w]*\s*)?(Hr\.|Herr|Fr\.|Frau)?\s*/i, '').replace(/\s*\(.*?\)\s*/g, '').trim();
+                if (cleanName.length < 2) { result.push({ fid: null, name: einzelName }); continue; }
+                const parts = cleanName.split(/\s+/);
+                const searchTerm = parts[parts.length - 1];
+                try {
+                    const resp = await authFetch(API_URL + '/personen/suche?q=' + encodeURIComponent(searchTerm));
+                    if (!resp.ok) { result.push({ fid: null, name: einzelName }); continue; }
+                    const results = await resp.json();
+                    let match = results.find(p => [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase() === cleanName.toLowerCase());
+                    if (!match) match = results.find(p => [p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase() === cleanName.toLowerCase());
+                    if (!match) {
+                        const nachnameMatches = results.filter(p => p.Nachname.toLowerCase() === searchTerm.toLowerCase());
+                        if (nachnameMatches.length === 1) match = nachnameMatches[0];
+                    }
+                    if (match) {
+                        const fullName = [match.Titel_de, match.Vorname, match.Nachname].filter(Boolean).join(' ');
+                        result.push({ fid: match.PersonenID, name: fullName });
+                    } else {
+                        result.push({ fid: null, name: einzelName });
+                    }
+                } catch (e) { result.push({ fid: null, name: einzelName }); }
+            }
+            if (result.length > 0) {
+                steckbrief.auftraggeber_multi = JSON.stringify(result);
+                steckbrief.auftraggeberFID = result[0].fid || null;
+                console.log(`Import Auftraggeber: "${name}" → ${JSON.stringify(result)}`);
+            }
+        }
+
         async function resolvePersonenFIDs(steckbrief) {
+            // Auftraggeber separat behandeln (Multi-Person)
+            await resolveAuftraggeberMulti(steckbrief);
+            
             const personFields = [
-                { text: 'auftraggeber', fid: 'auftraggeberFID' },
                 { text: 'prozessmanager', fid: 'prozessmanagerFID' },
                 { text: 'anforderungsmanager', fid: 'anforderungsmanagerFID' },
                 { text: 'prozessverantwortlicher', fid: 'prozessverantwortlicherFID' }
@@ -8205,6 +8593,7 @@
             return {
                 id: v(s.id),
                 titel: v(s.titel),
+                auftraggeber_multi: v(s.auftraggeber_multi),
                 auftraggeberFID: v(s.auftraggeberFID),
                 prozessmanagerFID: v(s.prozessmanagerFID),
                 anforderungsmanagerFID: v(s.anforderungsmanagerFID),

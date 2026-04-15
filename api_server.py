@@ -411,7 +411,7 @@ def save_steckbrief():
     cursor = conn.cursor()
 
     fields = [
-        'titel', 'auftraggeberFID', 'prozessmanagerFID', 'anforderungsmanagerFID',
+        'titel', 'auftraggeberFID', 'auftraggeber_multi', 'prozessmanagerFID', 'anforderungsmanagerFID',
         'prozessverantwortlicherFID', 'projektteam', 'prozesscluster', 'umsetzungsaufwand',
         'betroffener_lifecycle', 'ziel_vision', 'warum', 'wer', 'welche', 'was', 'wie', 'wo', 'wann',
         'einordnung_gesamtprozess',
