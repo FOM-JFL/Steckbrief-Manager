@@ -435,7 +435,8 @@ def save_steckbrief():
         'beginn_datum', 'fertigstellung_datum', 'abnahme_datum',
         'kommunikation_datum', 'auswertung_datum',
         'status_optimierung',
-        'start', 'gesamtstatus', 'status_steckbrief', 'teil_hochschulentwicklungsplan'
+        'start', 'gesamtstatus', 'status_steckbrief', 'teil_hochschulentwicklungsplan',
+        'zeitplan_data'
     ]
 
     # Leere Strings in None umwandeln für korrekte DB-Typen

@@ -1382,6 +1382,243 @@
             display: none;
         }
 
+        /* ===== GANTT CHART STYLES ===== */
+        .gantt-container {
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .gantt-table {
+            border-collapse: collapse;
+            min-width: 100%;
+            table-layout: fixed;
+        }
+        .gantt-table th, .gantt-table td {
+            border: 1px solid #dee2e6;
+            text-align: center;
+            vertical-align: middle;
+            padding: 0;
+            height: 38px;
+            min-width: 72px;
+            font-size: 13px;
+            position: relative;
+        }
+        .gantt-table thead th {
+            background: #b2dfdb;
+            color: #00695c;
+            font-weight: 700;
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .gantt-table thead tr:first-child th {
+            background: #009688;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .gantt-table thead tr:nth-child(2) th {
+            background: #4db6ac;
+            color: #fff;
+            font-weight: 700;
+        }
+        .gantt-table thead tr:nth-child(3) th {
+            background: #b2dfdb;
+            color: #00695c;
+        }
+        .gantt-label-col {
+            min-width: 180px !important;
+            max-width: 220px;
+            text-align: left !important;
+            padding: 4px 10px !important;
+            font-weight: 600;
+            background: #f5f5f5;
+        }
+        .gantt-milestone-row td {
+            background: #f0faf9;
+            height: 50px;
+        }
+        .gantt-bar-cell {
+            position: relative;
+            padding: 0 !important;
+            height: 38px;
+            overflow: visible;
+        }
+        /* Bar inside cells */
+        .gantt-bar {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: #009688;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .gantt-bar-start-mid {
+            left: 50%;
+        }
+        .gantt-bar-start-border {
+            left: 0;
+        }
+        .gantt-bar-end-mid {
+            right: 50%;
+        }
+        .gantt-bar-end-border {
+            right: 0;
+        }
+        /* Arrowhead at end */
+        .gantt-bar-arrow {
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 10px solid #009688;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+        .gantt-bar-arrow.at-mid {
+            left: 50%;
+        }
+        .gantt-bar-arrow.at-border {
+            right: -10px;
+        }
+        /* Diamond milestone marker */
+        .gantt-diamond {
+            width: 16px;
+            height: 16px;
+            background: #009688;
+            transform: rotate(45deg);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -8px;
+            margin-left: -8px;
+            z-index: 3;
+            cursor: default;
+            border-radius: 2px;
+        }
+        .gantt-diamond.at-border {
+            left: 100%;
+        }
+        .gantt-diamond.orange {
+            background: #ff9800;
+        }
+        .gantt-diamond.cyan {
+            background: #00bcd4;
+        }
+        .gantt-diamond.lightblue {
+            background: #64b5f6;
+        }
+        .gantt-diamond-label {
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            white-space: nowrap;
+            color: #555;
+            z-index: 4;
+            pointer-events: none;
+        }
+        /* Edit mode styles */
+        .gantt-edit-mode .gantt-diamond {
+            cursor: grab;
+        }
+        .gantt-edit-mode .gantt-diamond:active {
+            cursor: grabbing;
+        }
+        .gantt-edit-mode .gantt-bar-cell {
+            cursor: pointer;
+        }
+        .gantt-edit-mode .gantt-bar {
+            cursor: ew-resize;
+        }
+        .gantt-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .gantt-toolbar button {
+            padding: 6px 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.15s;
+        }
+        .gantt-toolbar button:hover {
+            background: #e0f2f1;
+            border-color: #009688;
+        }
+        .gantt-toolbar .gantt-tb-sep {
+            width: 1px;
+            height: 28px;
+            background: #ddd;
+        }
+        .gantt-toolbar select, .gantt-toolbar input {
+            padding: 5px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .gantt-ctx-menu {
+            position: fixed;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            z-index: 10000;
+            min-width: 160px;
+            padding: 4px 0;
+        }
+        .gantt-ctx-menu div {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .gantt-ctx-menu div:hover {
+            background: #e0f2f1;
+        }
+        .gantt-ctx-menu hr {
+            margin: 4px 0;
+            border: none;
+            border-top: 1px solid #eee;
+        }
+        .gantt-row-label-edit {
+            width: 100%;
+            border: 1px solid #009688;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+            outline: none;
+        }
+        .gantt-empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+        .gantt-empty-state button {
+            margin-top: 12px;
+            padding: 8px 20px;
+            background: #009688;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .gantt-empty-state button:hover {
+            background: #00796b;
+        }
+
         /* Section Edit Actions (Save/Cancel per section) */
         .section-edit-actions {
             display: flex;
@@ -4032,7 +4269,35 @@
                     </div>
                 </div>
 
-                <!-- 7. Änderungshistorie (nur Ansicht) -->
+                <!-- 7. Zeitplan (Gantt-Diagramm) -->
+                <div class="genesis-section" data-section="zeitplan">
+                    <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        <span class="genesis-section-chevron">▼</span>
+                        <div class="genesis-section-icon">📊</div>
+                        <div class="genesis-section-title-group">
+                            <div class="genesis-section-title">Zeitplan</div>
+                            <div class="genesis-section-desc">Gantt-Diagramm mit Meilensteinen</div>
+                        </div>
+                        <button type="button" class="section-edit-btn hidden" onclick="event.stopPropagation(); toggleGanttEdit()" title="Zeitplan bearbeiten">✏️</button>
+                    </div>
+                    <div class="genesis-section-body">
+                        <div class="section-view" id="viewZeitplan"></div>
+                        <div class="section-edit" id="editZeitplan" style="display:none">
+                            <div style="background:#e0f2f1;border:1px solid #b2dfdb;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#00695c;line-height:1.6;">
+                                <strong>💡 Bedienung:</strong>
+                                Balken am linken/rechten Rand <b>ziehen</b> = Start/Ende verschieben · <b>Doppelklick</b> auf Balken = Datum eingeben · <b>Rechtsklick</b> auf Balken = Umbenennen, Duplizieren, Löschen · <b>Doppelklick</b> auf Bezeichnung = Umbenennen ·
+                                Meilensteine <b>ziehen</b> = verschieben (auch auf Balkenzeilen) · <b>Doppelklick</b> auf Raute = Zeile, Monat &amp; Position eingeben · <b>Rechtsklick</b> = Farbe, Position, Duplizieren
+                            </div>
+                            <div id="ganttEditorContainer"></div>
+                            <div class="section-edit-actions">
+                                <button type="button" class="btn btn-success" onclick="saveGanttAndClose()">💾 Speichern</button>
+                                <button type="button" class="btn btn-secondary" onclick="cancelGanttEdit()">Abbrechen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Änderungshistorie (nur Ansicht) -->
                 <div class="genesis-section" data-section="historie">
                     <div class="genesis-section-header" onclick="this.parentElement.classList.toggle('collapsed')">
                         <span class="genesis-section-chevron">▼</span>
@@ -6563,6 +6828,10 @@
                 </div>
             `;
 
+            // Zeitplan (Gantt)
+            _ganttData = parseGanttData(s.zeitplan_data);
+            document.getElementById('viewZeitplan').innerHTML = renderGanttView(_ganttData);
+
             document.getElementById('viewHistorie').innerHTML = renderAenderungshistorieTable(s.aenderungshistorie);
         }
 
@@ -6573,6 +6842,916 @@
                 } else {
                     s.classList.add('collapsed');
                 }
+            });
+        }
+
+        // ====== GANTT CHART ======
+        let _ganttData = null;
+        let _ganttEditData = null;
+        const MONTH_NAMES = ['Jan','Feb','Mrz','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+        function getDefaultGanttData() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = now.getMonth(); // 0-based
+            return {
+                startYear: y,
+                startMonth: m, // 0-based
+                monthCount: 12,
+                globalMilestones: [],
+                bars: []
+            };
+        }
+
+        function parseGanttData(raw) {
+            if (!raw) return null;
+            if (typeof raw === 'string') {
+                try { return JSON.parse(raw); } catch(e) { return null; }
+            }
+            return raw;
+        }
+
+        function monthIndex(year, month, baseYear, baseMonth) {
+            return (year - baseYear) * 12 + (month - baseMonth);
+        }
+
+        function monthFromIndex(idx, baseYear, baseMonth) {
+            const total = baseYear * 12 + baseMonth + idx;
+            return { year: Math.floor(total / 12), month: total % 12 };
+        }
+
+        function formatMonthLabel(monthIdx) {
+            return MONTH_NAMES[monthIdx];
+        }
+
+        function renderGanttView(data) {
+            if (!data || (!data.bars?.length && !data.globalMilestones?.length)) {
+                return '<div class="gantt-empty-state"><p>Noch kein Zeitplan erstellt</p></div>';
+            }
+            return buildGanttHTML(data, false);
+        }
+
+        function buildGanttHTML(data, editable) {
+            const { startYear, startMonth, monthCount, globalMilestones = [], bars = [] } = data;
+            const totalCols = monthCount;
+
+            // Compute year spans and semester spans
+            let yearSpans = [];
+            let semSpans = [];
+            let prevYear = -1, prevSem = '';
+            for (let i = 0; i < totalCols; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                if (m.year !== prevYear) {
+                    yearSpans.push({ year: m.year, count: 1 });
+                    prevYear = m.year;
+                } else {
+                    yearSpans[yearSpans.length - 1].count++;
+                }
+                // Semester: SS = Mar-Aug (2-7), WS = Sep-Feb (8-1)
+                const semLabel = (m.month >= 2 && m.month <= 7) ? m.year + '-SS' : (m.month >= 8 ? m.year + '-WS' : (m.year - 1) + '-WS');
+                if (semLabel !== prevSem) {
+                    semSpans.push({ label: semLabel, count: 1 });
+                    prevSem = semLabel;
+                } else {
+                    semSpans[semSpans.length - 1].count++;
+                }
+            }
+
+            let html = '<div class="gantt-container' + (editable ? ' gantt-edit-mode' : '') + '">';
+            html += '<table class="gantt-table">';
+
+            // THEAD: 3 header rows + milestone row
+            html += '<thead>';
+            // Row 1: Jahre
+            html += '<tr><th class="gantt-label-col">Jahr</th>';
+            yearSpans.forEach(ys => { html += `<th colspan="${ys.count}">${ys.year}</th>`; });
+            html += '</tr>';
+            // Row 2: Semester
+            html += '<tr><th class="gantt-label-col">Semester</th>';
+            semSpans.forEach(ss => { html += `<th colspan="${ss.count}">${ss.label}</th>`; });
+            html += '</tr>';
+            // Row 3: Monate
+            html += '<tr><th class="gantt-label-col">Monat</th>';
+            for (let i = 0; i < totalCols; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                const isToday = (new Date().getFullYear() === m.year && new Date().getMonth() === m.month);
+                html += `<th style="${isToday ? 'color:#ff5722;' : ''}">${formatMonthLabel(m.month)}${isToday ? '<br><span style=\"font-size:9px\">heute</span>' : ''}</th>`;
+            }
+            html += '</tr>';
+            // Row 4: Global milestones
+            html += '<tr class="gantt-milestone-row"><td class="gantt-label-col" style="font-size:12px;color:#666;">allgemeine Milestones</td>';
+            for (let i = 0; i < totalCols; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                const mKeyMid = m.year + '-' + String(m.month).padStart(2, '0') + '-mid';
+                const mKeyBorder = m.year + '-' + String(m.month).padStart(2, '0') + '-border';
+                const mKeyLegacy = m.year + '-' + String(m.month).padStart(2, '0');
+                const msHere = globalMilestones.filter(ms => {
+                    const k = ms.month;
+                    const msRow = (ms.row === undefined || ms.row === null) ? -1 : ms.row;
+                    return msRow === -1 && (k === mKeyMid || k === mKeyLegacy || k === mKeyBorder);
+                });
+                html += '<td class="gantt-bar-cell" data-ms-row="-1">';
+                msHere.forEach(ms => {
+                    const colorMap = {'#ff9800':'orange','#00bcd4':'cyan','#64b5f6':'lightblue','#009688':'','#f44336':'','#9c27b0':''};
+                    const colorClass = colorMap[ms.color] || '';
+                    const customStyle = (!colorClass && ms.color && ms.color !== '#009688') ? `background:${ms.color};` : '';
+                    const isBorder = ms.month.endsWith('-border');
+                    const posClass = isBorder ? ' at-border' : '';
+                    html += `<div class="gantt-diamond ${colorClass}${posClass}" data-ms-id="${ms.id}" title="${escapeHtml(ms.label || '')}" ${customStyle ? 'style="'+customStyle+'"' : ''}></div>`;
+                    if (ms.label) {
+                        const labelStyle = isBorder ? 'left:100%;' : '';
+                        html += `<div class="gantt-diamond-label" ${labelStyle ? 'style="'+labelStyle+'"' : ''}>${escapeHtml(ms.label)}</div>`;
+                    }
+                });
+                html += '</td>';
+            }
+            html += '</tr>';
+            html += '</thead>';
+
+            // TBODY: bars
+            html += '<tbody>';
+            if (bars.length === 0 && !editable) {
+                html += `<tr><td colspan="${totalCols + 1}" style="padding:20px;color:#888;text-align:center;">Keine Einträge</td></tr>`;
+            }
+            bars.forEach((bar, barIdx) => {
+                const barStartIdx = monthIndex(bar.startYear, bar.startMonth, startYear, startMonth);
+                const barEndIdx = monthIndex(bar.endYear, bar.endMonth, startYear, startMonth);
+                const startHalf = bar.startHalf || 0; // 0 = mid, 1 = border (end of cell)
+                const endHalf = bar.endHalf || 0; // 0 = mid, 1 = border (end of cell)
+                html += `<tr data-bar-idx="${barIdx}">`;
+                html += `<td class="gantt-label-col">${editable ? '<span class="gantt-bar-label" data-bar-idx="'+barIdx+'" title="Doppelklick zum Umbenennen">'+escapeHtml(bar.label || '')+'</span>' : escapeHtml(bar.label || '')}</td>`;
+                for (let i = 0; i < totalCols; i++) {
+                    const isInRange = (i >= barStartIdx && i <= barEndIdx);
+                    const isStart = (i === barStartIdx);
+                    const isEnd = (i === barEndIdx);
+                    html += `<td class="gantt-bar-cell" data-col="${i}" data-bar-idx="${barIdx}">`;
+                    // Render milestones placed on this bar row
+                    const mOnBar = globalMilestones.filter(ms => {
+                        if (ms.row !== barIdx) return false;
+                        const mi = monthFromIndex(i, startYear, startMonth);
+                        const mKeyMid = mi.year + '-' + String(mi.month).padStart(2, '0') + '-mid';
+                        const mKeyBorder = mi.year + '-' + String(mi.month).padStart(2, '0') + '-border';
+                        const mKeyLegacy = mi.year + '-' + String(mi.month).padStart(2, '0');
+                        return ms.month === mKeyMid || ms.month === mKeyLegacy || ms.month === mKeyBorder;
+                    });
+                    mOnBar.forEach(ms => {
+                        const colorMap = {'#ff9800':'orange','#00bcd4':'cyan','#64b5f6':'lightblue','#009688':'','#f44336':'','#9c27b0':''};
+                        const colorClass = colorMap[ms.color] || '';
+                        const customStyle = (!colorClass && ms.color && ms.color !== '#009688') ? `background:${ms.color};` : '';
+                        const isBorder = ms.month.endsWith('-border');
+                        const posClass = isBorder ? ' at-border' : '';
+                        html += `<div class="gantt-diamond ${colorClass}${posClass}" data-ms-id="${ms.id}" title="${escapeHtml(ms.label || '')}" ${customStyle ? 'style="'+customStyle+'"' : ''}></div>`;
+                        if (ms.label) {
+                            const labelStyle = isBorder ? 'left:100%;' : '';
+                            html += `<div class="gantt-diamond-label" ${labelStyle ? 'style="'+labelStyle+'"' : ''}>${escapeHtml(ms.label)}</div>`;
+                        }
+                    });
+                    if (isInRange) {
+                        let barClass = 'gantt-bar';
+                        if (isStart) barClass += (startHalf === 1 ? ' gantt-bar-start-border' : ' gantt-bar-start-mid');
+                        if (isEnd) barClass += (endHalf === 1 ? ' gantt-bar-end-border' : ' gantt-bar-end-mid');
+                        html += `<div class="${barClass}"></div>`;
+                    }
+                    if (isEnd) {
+                        const arrowPos = endHalf === 1 ? 'at-border' : 'at-mid';
+                        html += `<div class="gantt-bar-arrow ${arrowPos}"></div>`;
+                    }
+                    html += '</td>';
+                }
+                html += '</tr>';
+            });
+            html += '</tbody></table></div>';
+
+            return html;
+        }
+
+        // Toggle Gantt edit
+        function toggleGanttEdit() {
+            if (currentSteckbriefId) {
+                const steckbriefe = getSteckbriefe();
+                const steckbrief = steckbriefe.find(s => String(s.id) === String(currentSteckbriefId));
+                if (steckbrief && !canEditSteckbrief(steckbrief)) {
+                    alert('Keine Berechtigung zum Bearbeiten.');
+                    return;
+                }
+            }
+            const section = document.querySelector('.genesis-section[data-section="zeitplan"]');
+            section.classList.remove('collapsed');
+            document.getElementById('viewZeitplan').style.display = 'none';
+            document.getElementById('editZeitplan').style.display = '';
+            section.querySelector('.section-edit-btn').style.display = 'none';
+
+            // Deep clone current data for editing
+            _ganttEditData = JSON.parse(JSON.stringify(_ganttData || getDefaultGanttData()));
+            renderGanttEditor();
+        }
+
+        function cancelGanttEdit() {
+            document.getElementById('viewZeitplan').style.display = '';
+            document.getElementById('editZeitplan').style.display = 'none';
+            const section = document.querySelector('.genesis-section[data-section="zeitplan"]');
+            const btn = section.querySelector('.section-edit-btn');
+            if (btn) btn.style.display = '';
+            _ganttEditData = null;
+        }
+
+        async function saveGanttAndClose() {
+            if (!_ganttEditData) return;
+            _ganttData = JSON.parse(JSON.stringify(_ganttEditData));
+
+            // Render the view
+            document.getElementById('viewZeitplan').innerHTML = renderGanttView(_ganttData);
+            cancelGanttEdit();
+
+            // Save via API
+            if (currentSteckbriefId) {
+                try {
+                    await authFetch(API_URL + '/steckbriefe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id: parseInt(currentSteckbriefId),
+                            zeitplan_data: JSON.stringify(_ganttData)
+                        })
+                    });
+                    // Update local cache
+                    const steckbriefe = getSteckbriefe();
+                    const s = steckbriefe.find(st => String(st.id) === String(currentSteckbriefId));
+                    if (s) s.zeitplan_data = JSON.stringify(_ganttData);
+                } catch(e) {
+                    console.error('Gantt save error:', e);
+                    alert('Fehler beim Speichern des Zeitplans: ' + e.message);
+                }
+            }
+        }
+
+        function renderGanttEditor() {
+            const container = document.getElementById('ganttEditorContainer');
+            if (!_ganttEditData) {
+                _ganttEditData = getDefaultGanttData();
+            }
+            const d = _ganttEditData;
+
+            // Toolbar
+            let toolbarHTML = `<div class="gantt-toolbar">
+                <label style="font-size:13px;font-weight:600;">Start:</label>
+                <select id="ganttStartMonth" onchange="updateGanttConfig()">
+                    ${MONTH_NAMES.map((n,i) => `<option value="${i}" ${i===d.startMonth?'selected':''}>${n}</option>`).join('')}
+                </select>
+                <input type="number" id="ganttStartYear" value="${d.startYear}" min="2020" max="2035" style="width:80px" onchange="updateGanttConfig()">
+                <label style="font-size:13px;font-weight:600;margin-left:8px;">Monate:</label>
+                <input type="number" id="ganttMonthCount" value="${d.monthCount}" min="3" max="36" style="width:60px" onchange="updateGanttConfig()">
+                <div class="gantt-tb-sep"></div>
+                <button onclick="addGanttBar()">➕ Balken</button>
+                <button onclick="addGanttMilestone()">💎 Meilenstein</button>
+            </div>`;
+
+            container.innerHTML = toolbarHTML + buildGanttHTML(d, true);
+            attachGanttEditorEvents(container);
+        }
+
+        function updateGanttConfig() {
+            _ganttEditData.startMonth = parseInt(document.getElementById('ganttStartMonth').value);
+            _ganttEditData.startYear = parseInt(document.getElementById('ganttStartYear').value);
+            _ganttEditData.monthCount = parseInt(document.getElementById('ganttMonthCount').value);
+            renderGanttEditor();
+        }
+
+        function addGanttBar() {
+            const d = _ganttEditData;
+            const newId = 'bar_' + Date.now();
+            const sm = monthFromIndex(0, d.startYear, d.startMonth);
+            const em = monthFromIndex(Math.min(2, d.monthCount - 1), d.startYear, d.startMonth);
+            d.bars.push({
+                id: newId,
+                label: 'Neuer Balken',
+                startYear: sm.year,
+                startMonth: sm.month,
+                startHalf: 0,
+                endYear: em.year,
+                endMonth: em.month,
+                endHalf: 0
+            });
+            renderGanttEditor();
+        }
+
+        function addGanttMilestone() {
+            const d = _ganttEditData;
+            const newId = 'ms_' + Date.now();
+            const m = monthFromIndex(0, d.startYear, d.startMonth);
+            d.globalMilestones.push({
+                id: newId,
+                label: 'Neuer Meilenstein',
+                month: m.year + '-' + String(m.month).padStart(2, '0') + '-mid',
+                color: '#ff9800',
+                row: -1
+            });
+            renderGanttEditor();
+        }
+
+        function attachGanttEditorEvents(container) {
+            // Context menu on diamonds (milestones)
+            container.querySelectorAll('.gantt-diamond[data-ms-id]').forEach(el => {
+                el.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showGanttMilestoneContextMenu(e, el.dataset.msId);
+                });
+                el.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showMilestoneDialog(el.dataset.msId);
+                });
+            });
+
+            // Context menu on bars (right-click on bar or arrow)
+            container.querySelectorAll('.gantt-bar, .gantt-bar-arrow').forEach(el => {
+                el.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    const cell = el.closest('.gantt-bar-cell');
+                    if (cell) showGanttBarContextMenu(e, parseInt(cell.dataset.barIdx));
+                });
+            });
+
+            // Double-click on bar to edit dates
+            container.querySelectorAll('.gantt-bar').forEach(el => {
+                el.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const cell = el.closest('.gantt-bar-cell');
+                    if (cell) showBarDateDialog(parseInt(cell.dataset.barIdx));
+                });
+            });
+
+            // Double-click on bar labels to rename
+            container.querySelectorAll('.gantt-bar-label').forEach(el => {
+                el.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    const idx = parseInt(el.dataset.barIdx);
+                    startBarLabelEdit(el, idx);
+                });
+            });
+
+            // Click on empty cells to extend/create bars
+            container.querySelectorAll('.gantt-bar-cell[data-col]').forEach(cell => {
+                cell.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('gantt-diamond') || e.target.classList.contains('gantt-bar') || e.target.classList.contains('gantt-bar-arrow')) return;
+                    handleGanttCellClick(parseInt(cell.dataset.col), parseInt(cell.dataset.barIdx));
+                });
+            });
+
+            // Drag support for bars (start/end)
+            initGanttDrag(container);
+
+            // Drag support for global milestones
+            initGanttMilestoneDrag(container);
+        }
+
+        function handleGanttCellClick(colIdx, barIdx) {
+            const d = _ganttEditData;
+            if (barIdx >= 0 && barIdx < d.bars.length) {
+                const bar = d.bars[barIdx];
+                const barStartIdx = monthIndex(bar.startYear, bar.startMonth, d.startYear, d.startMonth);
+                const barEndIdx = monthIndex(bar.endYear, bar.endMonth, d.startYear, d.startMonth);
+                const isInRange = (colIdx >= barStartIdx && colIdx <= barEndIdx);
+                if (!isInRange) {
+                    // Extend bar to include this cell
+                    if (colIdx < barStartIdx) {
+                        const m = monthFromIndex(colIdx, d.startYear, d.startMonth);
+                        bar.startYear = m.year;
+                        bar.startMonth = m.month;
+                    } else {
+                        const m = monthFromIndex(colIdx, d.startYear, d.startMonth);
+                        bar.endYear = m.year;
+                        bar.endMonth = m.month;
+                    }
+                    renderGanttEditor();
+                }
+            }
+        }
+
+        // Drag for bar start/end by dragging on the bar itself
+        function initGanttDrag(container) {
+            let dragState = null;
+
+            // Mousedown on bar elements to start drag
+            container.querySelectorAll('.gantt-bar').forEach(barEl => {
+                barEl.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const cell = barEl.closest('.gantt-bar-cell');
+                    if (!cell) return;
+                    const barIdx = parseInt(cell.dataset.barIdx);
+                    const d = _ganttEditData;
+                    const bar = d.bars[barIdx];
+                    if (!bar) return;
+                    // Determine if dragging start or end based on click position within cell
+                    const rect = barEl.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const barWidth = rect.width;
+                    const type = (clickX < barWidth * 0.35) ? 'bar-start' : 'bar-end';
+                    dragState = { barIdx, type };
+                    document.body.style.cursor = 'ew-resize';
+                    document.body.style.userSelect = 'none';
+                });
+            });
+
+            // Also allow drag from arrowhead
+            container.querySelectorAll('.gantt-bar-arrow').forEach(arrow => {
+                arrow.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const cell = arrow.closest('.gantt-bar-cell');
+                    if (!cell) return;
+                    const barIdx = parseInt(cell.dataset.barIdx);
+                    dragState = { barIdx, type: 'bar-end' };
+                    document.body.style.cursor = 'ew-resize';
+                    document.body.style.userSelect = 'none';
+                });
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (dragState) {
+                    dragState = null;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+
+            container.querySelectorAll('.gantt-bar-cell[data-col]').forEach(cell => {
+                cell.addEventListener('mouseenter', () => {
+                    if (!dragState) return;
+                    const colIdx = parseInt(cell.dataset.col);
+                    const d = _ganttEditData;
+                    const bar = d.bars[dragState.barIdx];
+                    if (!bar) return;
+                    const m = monthFromIndex(colIdx, d.startYear, d.startMonth);
+
+                    if (dragState.type === 'bar-start') {
+                        const endIdx = monthIndex(bar.endYear, bar.endMonth, d.startYear, d.startMonth);
+                        if (colIdx <= endIdx) {
+                            bar.startYear = m.year;
+                            bar.startMonth = m.month;
+                            renderGanttEditor();
+                        }
+                    } else if (dragState.type === 'bar-end') {
+                        const startIdx = monthIndex(bar.startYear, bar.startMonth, d.startYear, d.startMonth);
+                        if (colIdx >= startIdx) {
+                            bar.endYear = m.year;
+                            bar.endMonth = m.month;
+                            renderGanttEditor();
+                        }
+                    }
+                });
+            });
+        }
+
+        // Drag for global milestone diamonds
+        function initGanttMilestoneDrag(container) {
+            let dragMs = null;
+
+            container.querySelectorAll('.gantt-diamond[data-ms-id]').forEach(diamond => {
+                diamond.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragMs = { msId: diamond.dataset.msId };
+                    document.body.style.cursor = 'grabbing';
+                    document.body.style.userSelect = 'none';
+                });
+            });
+
+            const onMouseUp = () => {
+                if (dragMs) {
+                    dragMs = null;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            };
+            document.addEventListener('mouseup', onMouseUp);
+
+            // Listen on ALL gantt-bar-cell elements (milestone row + bar rows)
+            container.querySelectorAll('td.gantt-bar-cell').forEach(cell => {
+                cell.addEventListener('mousemove', (e) => {
+                    if (!dragMs) return;
+
+                    // Determine column index and row
+                    let colIdx;
+                    let rowVal;
+                    if (cell.dataset.msRow !== undefined) {
+                        // Global milestone row
+                        const tr = cell.parentElement;
+                        const siblings = Array.from(tr.querySelectorAll('td.gantt-bar-cell'));
+                        colIdx = siblings.indexOf(cell);
+                        rowVal = -1;
+                    } else if (cell.dataset.col !== undefined) {
+                        // Bar row
+                        colIdx = parseInt(cell.dataset.col);
+                        rowVal = cell.dataset.barIdx !== undefined ? parseInt(cell.dataset.barIdx) : -1;
+                    } else {
+                        return;
+                    }
+                    if (isNaN(colIdx) || colIdx < 0) return;
+
+                    const d = _ganttEditData;
+                    const ms = d.globalMilestones.find(m => m.id === dragMs.msId);
+                    if (!ms) return;
+
+                    // Determine mid vs border based on mouse position in cell
+                    const rect = cell.getBoundingClientRect();
+                    const relX = e.clientX - rect.left;
+                    const isBorder = (relX / rect.width) > 0.75;
+
+                    const m = monthFromIndex(colIdx, d.startYear, d.startMonth);
+                    const suffix = isBorder ? '-border' : '-mid';
+                    const newKey = m.year + '-' + String(m.month).padStart(2, '0') + suffix;
+                    const currentRow = (ms.row === undefined || ms.row === null) ? -1 : ms.row;
+                    if (ms.month !== newKey || currentRow !== rowVal) {
+                        ms.month = newKey;
+                        ms.row = rowVal;
+                        renderGanttEditor();
+                    }
+                });
+            });
+        }
+
+        function showGanttMilestoneContextMenu(e, msId) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            const ms = d.globalMilestones.find(m => m.id === msId);
+            const posLabel = ms && ms.month.endsWith('-border') ? 'Grenze' : 'Mitte';
+            const menu = document.createElement('div');
+            menu.className = 'gantt-ctx-menu';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+            menu.innerHTML = `
+                <div onclick="renameGanttMilestone('${msId}')">✏️ Umbenennen</div>
+                <div onclick="toggleMilestonePosition('${msId}')">📍 Position: ${posLabel}</div>
+                <div class="gantt-ctx-color-parent" style="position:relative;">
+                    🎨 Farbe ändern ▸
+                    <div class="gantt-ctx-color-sub" style="display:none;position:absolute;left:100%;top:-4px;background:#fff;border:1px solid #e0e0e0;border-radius:8px;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:none;flex-wrap:wrap;gap:4px;width:120px;">
+                        <span onclick="changeGanttMilestoneColor('${msId}','#ff9800')" title="Orange" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#ff9800;cursor:pointer;border:2px solid ${ms.color==='#ff9800'?'#333':'transparent'};"></span>
+                        <span onclick="changeGanttMilestoneColor('${msId}','#00bcd4')" title="Cyan" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#00bcd4;cursor:pointer;border:2px solid ${ms.color==='#00bcd4'?'#333':'transparent'};"></span>
+                        <span onclick="changeGanttMilestoneColor('${msId}','#64b5f6')" title="Hellblau" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#64b5f6;cursor:pointer;border:2px solid ${ms.color==='#64b5f6'?'#333':'transparent'};"></span>
+                        <span onclick="changeGanttMilestoneColor('${msId}','#009688')" title="Teal" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#009688;cursor:pointer;border:2px solid ${ms.color==='#009688'?'#333':'transparent'};"></span>
+                        <span onclick="changeGanttMilestoneColor('${msId}','#f44336')" title="Rot" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#f44336;cursor:pointer;border:2px solid ${ms.color==='#f44336'?'#333':'transparent'};"></span>
+                        <span onclick="changeGanttMilestoneColor('${msId}','#9c27b0')" title="Lila" style="display:inline-block;width:24px;height:24px;border-radius:50%;background:#9c27b0;cursor:pointer;border:2px solid ${ms.color==='#9c27b0'?'#333':'transparent'};"></span>
+                    </div>
+                </div>
+                <div onclick="duplicateGanttMilestone('${msId}')">📋 Duplizieren</div>
+                <hr>
+                <div onclick="deleteGanttMilestone('${msId}')" style="color:#e53e3e;">🗑️ Löschen</div>
+            `;
+            document.body.appendChild(menu);
+            // Show color submenu on hover
+            const colorParent = menu.querySelector('.gantt-ctx-color-parent');
+            const colorSub = menu.querySelector('.gantt-ctx-color-sub');
+            if (colorParent && colorSub) {
+                colorParent.addEventListener('mouseenter', () => { colorSub.style.display = 'flex'; });
+                colorParent.addEventListener('mouseleave', () => { colorSub.style.display = 'none'; });
+            }
+            // Close on click outside
+            setTimeout(() => {
+                document.addEventListener('click', removeGanttContextMenu, { once: true });
+            }, 10);
+        }
+
+        function showGanttBarContextMenu(e, barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            const bar = d.bars[barIdx];
+            if (!bar) return;
+            const startPosLabel = (bar.startHalf || 0) === 0 ? 'Mitte' : 'Grenze';
+            const endPosLabel = (bar.endHalf || 0) === 0 ? 'Mitte' : 'Grenze';
+            const menu = document.createElement('div');
+            menu.className = 'gantt-ctx-menu';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+            menu.innerHTML = `
+                <div onclick="renameGanttBar(${barIdx})">✏️ Umbenennen</div>
+                <div onclick="toggleBarStartPos(${barIdx})">📍 Start-Position: ${startPosLabel}</div>
+                <div onclick="toggleBarEndPos(${barIdx})">🏁 Ende-Position: ${endPosLabel}</div>
+                <hr>
+                <div onclick="duplicateGanttBar(${barIdx})">📋 Duplizieren</div>
+                <div onclick="moveGanttBarUp(${barIdx})">⬆️ Nach oben</div>
+                <div onclick="moveGanttBarDown(${barIdx})">⬇️ Nach unten</div>
+                <hr>
+                <div onclick="deleteGanttBar(${barIdx})" style="color:#e53e3e;">🗑️ Löschen</div>
+            `;
+            document.body.appendChild(menu);
+            setTimeout(() => {
+                document.addEventListener('click', removeGanttContextMenu, { once: true });
+            }, 10);
+        }
+
+        function removeGanttContextMenu() {
+            document.querySelectorAll('.gantt-ctx-menu').forEach(m => m.remove());
+        }
+
+        function renameGanttMilestone(msId) {
+            removeGanttContextMenu();
+            showMilestoneDialog(msId);
+        }
+
+        function showMilestoneDialog(msId) {
+            const d = _ganttEditData;
+            const ms = d.globalMilestones.find(m => m.id === msId);
+            if (!ms) return;
+
+            // Parse current month key
+            const parts = ms.month.match(/^(\d{4})-(\d{2})(?:-(mid|border))?$/);
+            const curYear = parts ? parseInt(parts[1]) : d.startYear;
+            const curMonth = parts ? parseInt(parts[2]) : d.startMonth;
+            const curPos = parts && parts[3] === 'border' ? 'border' : 'mid';
+            const curRow = (ms.row === undefined || ms.row === null) ? -1 : ms.row;
+
+            removeGanttContextMenu();
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            const dialog = document.createElement('div');
+            dialog.style.cssText = 'background:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.2);min-width:340px;';
+
+            // Build row options
+            let rowOptions = '<option value="-1"' + (curRow === -1 ? ' selected' : '') + '>Allgemeine Milestones</option>';
+            if (d.bars) {
+                d.bars.forEach((bar, idx) => {
+                    rowOptions += '<option value="' + idx + '"' + (curRow === idx ? ' selected' : '') + '>' + escapeHtml(bar.label || 'Balken ' + (idx + 1)) + '</option>';
+                });
+            }
+
+            dialog.innerHTML = `
+                <h3 style="margin:0 0 16px;color:#009688;font-size:16px;">💎 Meilenstein bearbeiten</h3>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Bezeichnung</label>
+                    <input type="text" id="msDialogLabel" value="${escapeHtml(ms.label || '')}" style="width:100%;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Zeile</label>
+                    <select id="msDialogRow" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                        ${rowOptions}
+                    </select>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Farbe</label>
+                    <div id="msDialogColors" style="display:flex;gap:6px;">
+                        ${[{c:'#ff9800',n:'Orange'},{c:'#00bcd4',n:'Cyan'},{c:'#64b5f6',n:'Hellblau'},{c:'#009688',n:'Teal'},{c:'#f44336',n:'Rot'},{c:'#9c27b0',n:'Lila'}].map(x => '<span data-color="'+x.c+'" title="'+x.n+'" style="display:inline-block;width:28px;height:28px;border-radius:50%;background:'+x.c+';cursor:pointer;border:3px solid '+(ms.color===x.c?'#333':'transparent')+';transition:border .15s;"></span>').join('')}
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-bottom:12px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Monat</label>
+                        <select id="msDialogMonth" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            ${MONTH_NAMES.map((n,i) => '<option value="' + i + '"' + (i === curMonth ? ' selected' : '') + '>' + n + '</option>').join('')}
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Jahr</label>
+                        <input type="number" id="msDialogYear" value="${curYear}" min="2020" max="2035" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Position</label>
+                        <select id="msDialogPos" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            <option value="mid"${curPos === 'mid' ? ' selected' : ''}>Mitte</option>
+                            <option value="border"${curPos === 'border' ? ' selected' : ''}>Grenze</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button id="msDialogCancel" style="padding:6px 16px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;">Abbrechen</button>
+                    <button id="msDialogOk" style="padding:6px 16px;border:none;border-radius:6px;background:#009688;color:#fff;cursor:pointer;font-size:13px;">Übernehmen</button>
+                </div>
+            `;
+            overlay.appendChild(dialog);
+            document.body.appendChild(overlay);
+
+            // Color picker interaction
+            let selectedColor = ms.color;
+            dialog.querySelectorAll('#msDialogColors span').forEach(el => {
+                el.addEventListener('click', () => {
+                    selectedColor = el.dataset.color;
+                    dialog.querySelectorAll('#msDialogColors span').forEach(s => s.style.border = '3px solid transparent');
+                    el.style.border = '3px solid #333';
+                });
+            });
+
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            dialog.querySelector('#msDialogCancel').addEventListener('click', () => overlay.remove());
+            dialog.querySelector('#msDialogOk').addEventListener('click', () => {
+                ms.label = document.getElementById('msDialogLabel').value;
+                ms.color = selectedColor;
+                ms.row = parseInt(document.getElementById('msDialogRow').value);
+                const mon = parseInt(document.getElementById('msDialogMonth').value);
+                const yr = parseInt(document.getElementById('msDialogYear').value);
+                const pos = document.getElementById('msDialogPos').value;
+                ms.month = yr + '-' + String(mon).padStart(2, '0') + '-' + pos;
+                overlay.remove();
+                renderGanttEditor();
+            });
+        }
+
+        function changeGanttMilestoneColor(msId, color) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            const ms = d.globalMilestones.find(m => m.id === msId);
+            if (!ms) return;
+            ms.color = color;
+            renderGanttEditor();
+        }
+
+        function duplicateGanttMilestone(msId) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            const ms = d.globalMilestones.find(m => m.id === msId);
+            if (!ms) return;
+            const copy = JSON.parse(JSON.stringify(ms));
+            copy.id = 'ms_' + Date.now();
+            copy.label = (copy.label || '') + ' (Kopie)';
+            d.globalMilestones.push(copy);
+            renderGanttEditor();
+        }
+
+        function deleteGanttMilestone(msId) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            d.globalMilestones = d.globalMilestones.filter(m => m.id !== msId);
+            renderGanttEditor();
+        }
+
+        function toggleMilestonePosition(msId) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            const ms = d.globalMilestones.find(m => m.id === msId);
+            if (!ms) return;
+            // Toggle between -mid and -border suffix
+            if (ms.month.endsWith('-border')) {
+                ms.month = ms.month.replace(/-border$/, '-mid');
+            } else if (ms.month.endsWith('-mid')) {
+                ms.month = ms.month.replace(/-mid$/, '-border');
+            } else {
+                // Legacy format without suffix → add -border
+                ms.month = ms.month + '-border';
+            }
+            renderGanttEditor();
+        }
+
+        function renameGanttBar(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            const newLabel = prompt('Balken umbenennen:', d.bars[barIdx].label || '');
+            if (newLabel !== null) {
+                d.bars[barIdx].label = newLabel;
+                renderGanttEditor();
+            }
+        }
+
+        function startBarLabelEdit(el, barIdx) {
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            const current = d.bars[barIdx].label || '';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'gantt-row-label-edit';
+            input.value = current;
+            el.textContent = '';
+            el.appendChild(input);
+            input.focus();
+            input.select();
+
+            const finish = () => {
+                d.bars[barIdx].label = input.value;
+                renderGanttEditor();
+            };
+            input.addEventListener('blur', finish);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); finish(); }
+                if (e.key === 'Escape') { input.value = current; finish(); }
+            });
+        }
+
+        function duplicateGanttBar(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            const copy = JSON.parse(JSON.stringify(d.bars[barIdx]));
+            copy.id = 'bar_' + Date.now();
+            copy.label = (copy.label || '') + ' (Kopie)';
+            d.bars.splice(barIdx + 1, 0, copy);
+            renderGanttEditor();
+        }
+
+        function moveGanttBarUp(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (barIdx <= 0) return;
+            [d.bars[barIdx - 1], d.bars[barIdx]] = [d.bars[barIdx], d.bars[barIdx - 1]];
+            renderGanttEditor();
+        }
+
+        function moveGanttBarDown(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (barIdx >= d.bars.length - 1) return;
+            [d.bars[barIdx], d.bars[barIdx + 1]] = [d.bars[barIdx + 1], d.bars[barIdx]];
+            renderGanttEditor();
+        }
+
+        function deleteGanttBar(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            d.bars.splice(barIdx, 1);
+            renderGanttEditor();
+        }
+
+        function toggleBarStartPos(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            d.bars[barIdx].startHalf = (d.bars[barIdx].startHalf || 0) === 0 ? 1 : 0;
+            renderGanttEditor();
+        }
+
+        function toggleBarEndPos(barIdx) {
+            removeGanttContextMenu();
+            const d = _ganttEditData;
+            if (!d.bars[barIdx]) return;
+            d.bars[barIdx].endHalf = (d.bars[barIdx].endHalf || 0) === 0 ? 1 : 0;
+            renderGanttEditor();
+        }
+
+        function showBarDateDialog(barIdx) {
+            const d = _ganttEditData;
+            const bar = d.bars[barIdx];
+            if (!bar) return;
+
+            removeGanttContextMenu();
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.3);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            const dialog = document.createElement('div');
+            dialog.style.cssText = 'background:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.2);min-width:320px;';
+            dialog.innerHTML = `
+                <h3 style="margin:0 0 16px;color:#009688;font-size:16px;">📊 Balkenzeitraum bearbeiten</h3>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Bezeichnung</label>
+                    <input type="text" id="barDialogLabel" value="${escapeHtml(bar.label || '')}" style="width:100%;padding:6px 10px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div style="display:flex;gap:12px;margin-bottom:12px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Start-Monat</label>
+                        <select id="barDialogStartMonth" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            ${MONTH_NAMES.map((n,i) => `<option value="${i}" ${i===bar.startMonth?'selected':''}>${n}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Start-Jahr</label>
+                        <input type="number" id="barDialogStartYear" value="${bar.startYear}" min="2020" max="2035" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Position</label>
+                        <select id="barDialogStartHalf" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            <option value="0" ${(bar.startHalf||0)===0?'selected':''}>Mitte</option>
+                            <option value="1" ${(bar.startHalf||0)===1?'selected':''}>Grenze</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-bottom:18px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Ende-Monat</label>
+                        <select id="barDialogEndMonth" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            ${MONTH_NAMES.map((n,i) => `<option value="${i}" ${i===bar.endMonth?'selected':''}>${n}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Ende-Jahr</label>
+                        <input type="number" id="barDialogEndYear" value="${bar.endYear}" min="2020" max="2035" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;box-sizing:border-box;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-weight:600;margin-bottom:4px;font-size:13px;">Position</label>
+                        <select id="barDialogEndHalf" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px;font-size:13px;">
+                            <option value="0" ${(bar.endHalf||0)===0?'selected':''}>Mitte</option>
+                            <option value="1" ${(bar.endHalf||0)===1?'selected':''}>Grenze</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;">
+                    <button id="barDialogCancel" style="padding:6px 16px;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;">Abbrechen</button>
+                    <button id="barDialogOk" style="padding:6px 16px;border:none;border-radius:6px;background:#009688;color:#fff;cursor:pointer;font-size:13px;">Übernehmen</button>
+                </div>
+            `;
+            overlay.appendChild(dialog);
+            document.body.appendChild(overlay);
+
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+            dialog.querySelector('#barDialogCancel').addEventListener('click', () => overlay.remove());
+            dialog.querySelector('#barDialogOk').addEventListener('click', () => {
+                bar.label = document.getElementById('barDialogLabel').value;
+                bar.startMonth = parseInt(document.getElementById('barDialogStartMonth').value);
+                bar.startYear = parseInt(document.getElementById('barDialogStartYear').value);
+                bar.startHalf = parseInt(document.getElementById('barDialogStartHalf').value);
+                bar.endMonth = parseInt(document.getElementById('barDialogEndMonth').value);
+                bar.endYear = parseInt(document.getElementById('barDialogEndYear').value);
+                bar.endHalf = parseInt(document.getElementById('barDialogEndHalf').value);
+                overlay.remove();
+                renderGanttEditor();
             });
         }
 
@@ -6923,6 +8102,8 @@
                 gesamtstatus: document.getElementById('gesamtstatus').value,
                 teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
                 
+                zeitplan_data: _ganttData ? JSON.stringify(_ganttData) : null,
+
                 ziel_vision: document.getElementById('ziel_vision').value,
                 warum: document.getElementById('warum').value,
                 wer: document.getElementById('wer').value,
@@ -7130,7 +8311,7 @@
         }
 
         function closeAllSectionEdits() {
-            const sections = ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status'];
+            const sections = ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status', 'zeitplan'];
             sections.forEach(name => {
                 const section = document.querySelector(`.genesis-section[data-section="${name}"]`);
                 if (!section) return;
@@ -7141,11 +8322,13 @@
                 const editBtn = section.querySelector('.section-edit-btn');
                 if (editBtn) editBtn.style.display = '';
             });
+            _ganttEditData = null;
         }
 
         function openAllSectionEdits() {
             const sections = ['rahmendaten', 'beschreibung', 'einordnung', 'zwaenge', 'optimierungen', 'status'];
             sections.forEach(name => toggleSectionEdit(name));
+            toggleGanttEdit();
         }
 
         async function saveSectionAndClose(sectionName) {
@@ -7440,6 +8623,194 @@
                 img.onerror = () => reject(new Error('Header-Bild konnte nicht geladen werden'));
                 img.src = 'Rahmengebendes/Header%20Steckbriefe.png';
             });
+        }
+
+        // ===== GANTT-Diagramm als PDF zeichnen =====
+        function drawGanttPDF(doc, data, M, PW, startY, C, steckbrief, ensureSpace, newPage) {
+            const { startYear, startMonth, monthCount, globalMilestones = [], bars = [] } = data;
+            const labelW = 35;
+            const cellW = Math.min((PW - labelW) / monthCount, 14);
+            const totalW = labelW + cellW * monthCount;
+            const rowH = 7;
+            const headerH = 5;
+            let y = startY;
+
+            const teal = [0, 150, 136];
+            const tealLight = [178, 223, 219];
+            const tealDark = [0, 105, 92];
+            const orange = [255, 152, 0];
+            const cyan = [0, 188, 212];
+            const lightblue = [100, 181, 246];
+
+            function getColor(hex) {
+                const map = {'#ff9800': orange, '#00bcd4': cyan, '#64b5f6': lightblue, '#009688': teal, '#f44336': [244,67,54], '#9c27b0': [156,39,176]};
+                return map[hex] || teal;
+            }
+
+            // Ensure space for header + milestone row + bars
+            const totalHeight = headerH * 3 + rowH + bars.length * rowH + 10;
+            ensureSpace(totalHeight, steckbrief);
+
+            // Row 1: Jahre
+            let yearSpans = [];
+            let prevYear = -1;
+            for (let i = 0; i < monthCount; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                if (m.year !== prevYear) { yearSpans.push({ year: m.year, count: 1 }); prevYear = m.year; }
+                else yearSpans[yearSpans.length - 1].count++;
+            }
+            doc.setFillColor(...teal);
+            doc.rect(M.left, y, labelW, headerH, 'F');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(6); doc.setTextColor(255,255,255);
+            doc.text('Jahr', M.left + 2, y + 3.5);
+            let xOff = M.left + labelW;
+            yearSpans.forEach(ys => {
+                const w = cellW * ys.count;
+                doc.setFillColor(...teal); doc.rect(xOff, y, w, headerH, 'F');
+                doc.setTextColor(255,255,255);
+                doc.text(String(ys.year), xOff + w / 2, y + 3.5, { align: 'center' });
+                xOff += w;
+            });
+            y += headerH;
+
+            // Row 2: Semester
+            let semSpans = [];
+            let prevSem = '';
+            for (let i = 0; i < monthCount; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                const sl = (m.month >= 2 && m.month <= 7) ? m.year + '-SS' : (m.month >= 8 ? m.year + '-WS' : (m.year - 1) + '-WS');
+                if (sl !== prevSem) { semSpans.push({ label: sl, count: 1 }); prevSem = sl; }
+                else semSpans[semSpans.length - 1].count++;
+            }
+            doc.setFillColor(77, 182, 172); doc.rect(M.left, y, labelW, headerH, 'F');
+            doc.setTextColor(255,255,255); doc.text('Semester', M.left + 2, y + 3.5);
+            xOff = M.left + labelW;
+            semSpans.forEach(ss => {
+                const w = cellW * ss.count;
+                doc.setFillColor(77, 182, 172); doc.rect(xOff, y, w, headerH, 'F');
+                doc.setFontSize(5); doc.setTextColor(255,255,255);
+                doc.text(ss.label, xOff + w / 2, y + 3.5, { align: 'center' });
+                xOff += w;
+            });
+            y += headerH;
+
+            // Row 3: Monate
+            doc.setFillColor(...tealLight); doc.rect(M.left, y, labelW, headerH, 'F');
+            doc.setFontSize(5); doc.setTextColor(...tealDark); doc.text('Monat', M.left + 2, y + 3.5);
+            for (let i = 0; i < monthCount; i++) {
+                const m = monthFromIndex(i, startYear, startMonth);
+                const x = M.left + labelW + i * cellW;
+                doc.setFillColor(...tealLight); doc.rect(x, y, cellW, headerH, 'F');
+                doc.setTextColor(...tealDark); doc.setFontSize(5);
+                doc.text(MONTH_NAMES[m.month], x + cellW / 2, y + 3.5, { align: 'center' });
+            }
+            y += headerH;
+
+            // Row 4: Global milestones
+            doc.setFillColor(240, 250, 249); doc.rect(M.left, y, totalW, rowH, 'F');
+            doc.setDrawColor(200,200,200); doc.setLineWidth(0.15);
+            doc.rect(M.left, y, labelW, rowH); 
+            doc.setFontSize(4.5); doc.setTextColor(120,120,120);
+            doc.text('Milestones', M.left + 2, y + rowH / 2 + 1);
+            for (let i = 0; i < monthCount; i++) {
+                const x = M.left + labelW + i * cellW;
+                doc.rect(x, y, cellW, rowH);
+                const m = monthFromIndex(i, startYear, startMonth);
+                const mKeyMid = m.year + '-' + String(m.month).padStart(2, '0') + '-mid';
+                const mKeyBorder = m.year + '-' + String(m.month).padStart(2, '0') + '-border';
+                const mKeyLegacy = m.year + '-' + String(m.month).padStart(2, '0');
+                const msHere = globalMilestones.filter(ms => {
+                    const r = (ms.row === undefined || ms.row === null) ? -1 : ms.row;
+                    return r === -1 && (ms.month === mKeyMid || ms.month === mKeyLegacy || ms.month === mKeyBorder);
+                });
+                msHere.forEach(ms => {
+                    const isBorder = ms.month.endsWith('-border');
+                    const dx = isBorder ? x + cellW : x + cellW / 2;
+                    const dy = y + rowH / 2;
+                    const col = getColor(ms.color);
+                    doc.setFillColor(...col);
+                    // Draw diamond (rotated square)
+                    const s = 2;
+                    doc.triangle(dx, dy - s, dx + s, dy, dx, dy + s, 'F');
+                    doc.triangle(dx, dy - s, dx - s, dy, dx, dy + s, 'F');
+                    if (ms.label) {
+                        doc.setFontSize(3.5); doc.setTextColor(...col);
+                        doc.text(ms.label, dx, dy + s + 2.5, { align: 'center' });
+                    }
+                });
+            }
+            y += rowH;
+
+            // Bars
+            bars.forEach((bar, barIdx) => {
+                doc.setFillColor(250, 250, 250); doc.rect(M.left, y, totalW, rowH, 'F');
+                doc.setDrawColor(200,200,200); doc.setLineWidth(0.15);
+                doc.rect(M.left, y, labelW, rowH);
+                doc.setFontSize(5); doc.setTextColor(60,60,60); doc.setFont('helvetica', 'normal');
+                doc.text(String(bar.label || '').replace(/[^\x00-\xFF]/g, '').substring(0, 25), M.left + 2, y + rowH / 2 + 1);
+
+                const barStartIdx = monthIndex(bar.startYear, bar.startMonth, startYear, startMonth);
+                const barEndIdx = monthIndex(bar.endYear, bar.endMonth, startYear, startMonth);
+                const startHalf = bar.startHalf || 0;
+                const endHalf = bar.endHalf || 0;
+
+                for (let i = 0; i < monthCount; i++) {
+                    const x = M.left + labelW + i * cellW;
+                    doc.rect(x, y, cellW, rowH);
+                    const isInRange = (i >= barStartIdx && i <= barEndIdx);
+                    if (isInRange) {
+                        const isStart = (i === barStartIdx);
+                        const isEnd = (i === barEndIdx);
+                        let bx = x;
+                        let bEndX = x + cellW;
+                        if (isStart) bx = x + (startHalf === 1 ? 0 : cellW / 2);
+                        if (isEnd) bEndX = x + (endHalf === 1 ? cellW : cellW / 2);
+                        const bw = bEndX - bx;
+                        if (bw > 0) {
+                            const barY = y + rowH / 2 - 1;
+                            doc.setFillColor(...teal);
+                            doc.rect(bx, barY, bw, 2, 'F');
+                        }
+                        // Arrow at end
+                        if (isEnd) {
+                            const ax = x + (endHalf === 1 ? cellW : cellW / 2);
+                            const ay = y + rowH / 2;
+                            doc.setFillColor(...teal);
+                            doc.triangle(ax, ay - 2.5, ax + 2.5, ay, ax, ay + 2.5, 'F');
+                        }
+                    }
+
+                    // Milestones on bar rows
+                    const m = monthFromIndex(i, startYear, startMonth);
+                    const mKeyMid = m.year + '-' + String(m.month).padStart(2, '0') + '-mid';
+                    const mKeyBorder = m.year + '-' + String(m.month).padStart(2, '0') + '-border';
+                    const mKeyLegacy = m.year + '-' + String(m.month).padStart(2, '0');
+                    const msOnBar = globalMilestones.filter(ms => ms.row === barIdx && (ms.month === mKeyMid || ms.month === mKeyLegacy || ms.month === mKeyBorder));
+                    msOnBar.forEach(ms => {
+                        const isBorder = ms.month.endsWith('-border');
+                        const dx = isBorder ? x + cellW : x + cellW / 2;
+                        const dy = y + rowH / 2;
+                        const col = getColor(ms.color);
+                        doc.setFillColor(...col);
+                        const sz = 2;
+                        doc.triangle(dx, dy - sz, dx + sz, dy, dx, dy + sz, 'F');
+                        doc.triangle(dx, dy - sz, dx - sz, dy, dx, dy + sz, 'F');
+                        if (ms.label) {
+                            doc.setFontSize(3.5); doc.setTextColor(...col);
+                            doc.text(ms.label, dx, dy + sz + 2.5, { align: 'center' });
+                        }
+                    });
+                }
+                y += rowH;
+            });
+
+            // Border around whole chart
+            doc.setDrawColor(180, 180, 180); doc.setLineWidth(0.3);
+            doc.rect(M.left, startY, totalW, y - startY);
+
+            // Update parent yPos - hacky but needed since yPos is closure-scoped
+            // We return the new y via a trick: set it on the document
+            doc._ganttEndY = y + 4;
         }
 
         async function exportAsPDF(steckbriefe) {
@@ -7784,14 +9155,34 @@
                 drawRow2('Status Steckbrief', s.status_steckbrief || '', null, s);
                 drawRow2('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '')), null, s);
 
-                // ========== 7. ÄNDERUNGSHISTORIE ==========
+                // ========== 7. ZEITPLAN (Gantt) ==========
+                yPos += 6;
+                const ganttData = parseGanttData(s.zeitplan_data);
+                if (ganttData && (ganttData.bars?.length || ganttData.globalMilestones?.length)) {
+                    ensureSpace(60, s);
+                    drawSectionTitle('7', 'Zeitplan', s);
+                    drawGanttPDF(doc, ganttData, M, PW, yPos, C, s, ensureSpace, newPage);
+                    if (doc._ganttEndY) { yPos = doc._ganttEndY; delete doc._ganttEndY; }
+                }
+
+                // ========== 8. ÄNDERUNGSHISTORIE ==========
                 yPos += 6;
                 ensureSpace(25, s);
-                drawSectionTitle('7', 'Änderungshistorie', s);
-                const cwH = [PW * 0.25, PW * 0.45, PW * 0.30];
-                drawRow3(['Datum', 'Änderungen', 'Geändert durch'], cwH, { header: true, bg: C.headingBg }, s);
-                // Leere Zeile als Platzhalter
-                drawRow3(['', '', ''], cwH, {}, s);
+                drawSectionTitle('8', 'Änderungshistorie', s);
+                const cwH = [PW * 0.20, PW * 0.25, PW * 0.55];
+                drawRow3(['Datum', 'Benutzer', 'Änderungen'], cwH, { header: true, bg: C.headingBg }, s);
+
+                let parsedHist = s.aenderungshistorie;
+                if (typeof parsedHist === 'string') {
+                    try { parsedHist = JSON.parse(parsedHist); } catch(e) { parsedHist = []; }
+                }
+                if (parsedHist && Array.isArray(parsedHist) && parsedHist.length > 0) {
+                    parsedHist.forEach(entry => {
+                        drawRow3([entry.datum || '', entry.benutzer || '', entry.aenderungen || ''], cwH, {}, s);
+                    });
+                } else {
+                    drawRow3(['Noch keine Änderungen', '', ''], cwH, {}, s);
+                }
             });
 
             const fileName = steckbriefe.length === 1 
