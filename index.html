@@ -985,6 +985,135 @@
             border-color: #ef9a9a;
         }
 
+        .btn-archive {
+            background: white;
+            color: #6a1b9a;
+            border: 1px solid #e0e0e0;
+        }
+        .btn-archive:hover {
+            background: #f3e5f5;
+            border-color: #ce93d8;
+        }
+
+        .archiv-badge {
+            background: #f3e5f5;
+            color: #6a1b9a;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .archiv-badge {
+            background: #f3e5f5;
+            color: #6a1b9a;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        /* ====== GUIDED TOUR ====== */
+        .tour-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            pointer-events: none;
+        }
+        .tour-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0,0,0,0.55);
+            transition: opacity 0.3s;
+        }
+        .tour-highlight {
+            position: absolute;
+            z-index: 100001;
+            box-shadow: 0 0 0 4px #009688, 0 0 0 9999px rgba(0,0,0,0.55);
+            border-radius: 8px;
+            transition: all 0.35s ease;
+            pointer-events: none;
+        }
+        .tour-tooltip {
+            position: absolute;
+            z-index: 100002;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+            padding: 24px 28px 20px;
+            max-width: 400px;
+            min-width: 280px;
+            pointer-events: auto;
+            animation: tourFadeIn 0.3s ease;
+        }
+        @keyframes tourFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tour-tooltip-title {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: #009688;
+            margin-bottom: 8px;
+        }
+        .tour-tooltip-body {
+            font-size: 0.92em;
+            color: #444;
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+        .tour-tooltip-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .tour-tooltip-footer .tour-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .tour-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        .tour-dot.active { background: #009688; }
+        .tour-tooltip-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .tour-btn {
+            padding: 7px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+        }
+        .tour-btn-skip {
+            background: #f0f0f0;
+            color: #666;
+        }
+        .tour-btn-skip:hover { background: #e0e0e0; }
+        .tour-btn-next {
+            background: #009688;
+            color: #fff;
+        }
+        .tour-btn-next:hover { background: #00796b; }
+        .tour-btn-prev {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .tour-btn-prev:hover { background: #e0e0e0; }
+        .tour-arrow {
+            position: absolute;
+            width: 14px; height: 14px;
+            background: #fff;
+            transform: rotate(45deg);
+        }
+
         .btn-export {
             background: white;
             color: #009688;
@@ -1768,6 +1897,31 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 18px;
         }
+
+        /* Phasen-Rows */
+        .phase-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .phase-row .form-group { margin-bottom: 0; flex: 1; }
+        .phase-row .btn-remove-phase {
+            background: none;
+            border: none;
+            color: #c0392b;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            align-self: flex-end;
+            margin-bottom: 2px;
+        }
+        .phase-row .btn-remove-phase:hover { background: #fdecea; }
 
         .form-group {
             margin-bottom: 12px;
@@ -3628,6 +3782,11 @@
                             <span class="dropdown-label">Benutzerverwaltung</span>
                         </button>
                         <div class="user-dropdown-divider"></div>
+                        <button class="user-dropdown-item" onclick="startTour(); closeUserDropdown();">
+                            <span class="dropdown-icon">🎓</span>
+                            <span class="dropdown-label">Rundgang starten</span>
+                        </button>
+                        <div class="user-dropdown-divider"></div>
                         <button class="user-dropdown-item" onclick="logout(); closeUserDropdown();">
                             <span class="dropdown-icon">🚪</span>
                             <span class="dropdown-label">Abmelden</span>
@@ -3810,6 +3969,13 @@
                             <span>📥</span> Auswahl exportieren
                         </button>
                     </div>
+
+                    <div class="sidebar-section admin-only hidden" id="sidebarArchivSection">
+                        <div class="sidebar-section-label">Archiv</div>
+                        <button class="sidebar-action-btn" onclick="showArchiv()" style="color:#6a1b9a;">
+                            <span>📦</span> Archiv anzeigen
+                        </button>
+                    </div>
                 </div>
                 <button class="sidebar-toggle" onclick="toggleOverviewSidebar()" title="Seitenleiste ein-/ausklappen">‹</button>
             </div>
@@ -3821,6 +3987,17 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Archiv-Ansicht (nur Admins) -->
+    <div class="container" id="archivContainer" style="display: none;">
+        <div class="overview-title-bar">
+            <h2>📦 Archiv</h2>
+            <div class="overview-title-actions">
+                <button class="btn btn-secondary" onclick="hideArchiv(); showOverview(true); renderOverview();">← Zurück zur Übersicht</button>
+            </div>
+        </div>
+        <div id="archivContent" style="padding: 20px 0;"></div>
     </div>
 
     <!-- Detail-Seite (Genesis-Style) -->
@@ -3845,6 +4022,7 @@
         <div class="detail-actions-bar" id="detailActionsBar">
             <button class="btn btn-export" onclick="exportSingleSteckbrief()">📥 Exportieren</button>
             <button class="btn btn-editors admin-only hidden" id="btnManageEditors" onclick="openEditorModal(currentSteckbriefId)">👥 Bearbeiter</button>
+            <button class="btn btn-archive admin-only hidden" id="btnArchive" onclick="toggleArchivSteckbrief()">📦 Archivieren</button>
             <button class="btn btn-danger admin-only hidden" id="btnDetailDelete" onclick="deleteSteckbrief()">🗑️ Löschen</button>
         </div>
 
@@ -4261,6 +4439,10 @@
                                     </select>
                                 </div>
                             </div>
+                            <!-- Phasen -->
+                            <div class="genesis-sub-header" style="margin-top:18px;">Phasen <span style="font-size:0.85em;color:#888;">(optional, bis zu 3)</span></div>
+                            <div id="phasenEditContainer"></div>
+                            <button type="button" class="btn btn-secondary" id="btnAddPhase" onclick="addPhaseRow()" style="margin-top:6px;">➕ Phase hinzufügen</button>
                             <div class="section-edit-actions">
                                 <button type="button" class="btn btn-success" onclick="saveSectionAndClose('status')">💾 Speichern</button>
                                 <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('status')">Abbrechen</button>
@@ -4649,6 +4831,10 @@
                 initAuftraggeberAutocomplete();
                 updateFilterDropdowns();
                 handleRouting();
+                // Tour beim ersten Login anzeigen
+                if (shouldShowTour()) {
+                    setTimeout(() => startTour(), 600);
+                }
             } catch (err) {
                 if (err.message && !err.message.includes('Nicht angemeldet')) {
                     errorEl.textContent = 'Verbindungsfehler: ' + err.message;
@@ -5976,6 +6162,7 @@
         // Übersicht anzeigen/ausblenden
         function showOverview(show) {
             document.getElementById('overviewContainer').style.display = show ? 'block' : 'none';
+            if (show) hideArchiv();
         }
 
         // Sidebar-Filter auf-/zuklappen
@@ -6011,6 +6198,7 @@
             showLanding(false);
             showUserMgmtPage(false);
             showAnalyticsPage(false);
+            hideArchiv();
             showOverview(true);
             showDetailPage(false);
             renderOverview();
@@ -6064,6 +6252,9 @@
             const sidebarSearch = document.getElementById('sidebarSearchInput');
             const searchTerm = (sidebarSearch ? sidebarSearch.value : '').toLowerCase();
             let steckbriefe = getSteckbriefe();
+
+            // Archivierte Steckbriefe aus der normalen Übersicht ausblenden
+            steckbriefe = steckbriefe.filter(s => !s.archiviert);
 
             // Textsuche
             if (searchTerm) {
@@ -6257,7 +6448,15 @@
                                 <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.prozesscluster || '–')}</td>
                                 <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.auftraggeber || '–')}</td>
                                 <td onclick="openSteckbrief('${s.id}')">
-                                    <span class="status-badge ${getStatusClass(s.gesamtstatus)}">${escapeHtml(s.gesamtstatus || '–')}</span>
+                                    ${(() => {
+                                        const phasen = parsePhasenData(s.phasen_data);
+                                        if (phasen.length > 0) {
+                                            return phasen.map(p => 
+                                                `<span class="status-badge ${getStatusClass(p.status)}" style="display:inline-block;margin:1px 3px;" title="${escapeHtml(p.name || '')}">${escapeHtml((p.name || '') + ': ' + (p.status || '/'))}</span>`
+                                            ).join('');
+                                        }
+                                        return `<span class="status-badge ${getStatusClass(s.gesamtstatus)}">${escapeHtml(s.gesamtstatus || '–')}</span>`;
+                                    })()}
                                 </td>
                                 <td>
                                     <div class="actions-cell">
@@ -6713,7 +6912,14 @@
                 ${steckbrief.auftraggeber ? `<span class="hero-badge">👤 ${escapeHtml(steckbrief.auftraggeber)}</span>` : ''}
                 ${statusText ? `<span class="hero-badge status-badge-hero">${escapeHtml(statusText)}</span>` : ''}
                 ${steckbrief.teil_hochschulentwicklungsplan === 'ja' ? '<span class="hero-badge">📋 HEP</span>' : ''}
+                ${steckbrief.archiviert ? '<span class="archiv-badge">📦 Archiviert</span>' : ''}
             `;
+
+            // Archiv-Button Text anpassen
+            const btnArchiv = document.getElementById('btnArchive');
+            if (btnArchiv) {
+                btnArchiv.innerHTML = steckbrief.archiviert ? '📤 Wiederherstellen' : '📦 Archivieren';
+            }
             
             // Ansicht füllen
             renderViewContent(steckbrief);
@@ -6826,6 +7032,13 @@
                     ${renderField('Status Steckbrief', s.status_steckbrief)}
                     ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
                 </div>
+                ${(() => {
+                    const phasen = parsePhasenData(s.phasen_data);
+                    if (!phasen.length) return '';
+                    return '<div class="genesis-sub-header" style="margin-top:14px;">Phasen</div><div class="form-grid">' +
+                        phasen.map((p, i) => renderField('Phase ' + (i+1) + ': ' + escapeHtml(p.name || ''), p.status || '-')).join('') +
+                        '</div>';
+                })()}
             `;
 
             // Zeitplan (Gantt)
@@ -6843,6 +7056,57 @@
                     s.classList.add('collapsed');
                 }
             });
+        }
+
+        // ====== PHASEN-VERWALTUNG ======
+        let _currentPhasen = [];
+        const GESAMTSTATUS_OPTIONS = ['/', 'Idee / Konzeption', 'Geplant', 'In Umsetzung', 'Pilotierung', 'Im Betrieb', 'Pausiert', 'Abgebrochen'];
+
+        function parsePhasenData(raw) {
+            if (!raw) return [];
+            try {
+                const arr = typeof raw === 'string' ? JSON.parse(raw) : raw;
+                return Array.isArray(arr) ? arr : [];
+            } catch { return []; }
+        }
+
+        function renderPhasenEdit() {
+            const container = document.getElementById('phasenEditContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            _currentPhasen.forEach((ph, idx) => {
+                const row = document.createElement('div');
+                row.className = 'phase-row';
+                row.innerHTML = `
+                    <div class="form-group" style="flex:1.5">
+                        <label>Phase ${idx + 1} – Name</label>
+                        <input type="text" value="${(ph.name || '').replace(/"/g, '&quot;')}" placeholder="z.B. Konzeption"
+                               onchange="_currentPhasen[${idx}].name = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select onchange="_currentPhasen[${idx}].status = this.value">
+                            ${GESAMTSTATUS_OPTIONS.map(o => `<option value="${o}"${ph.status === o ? ' selected' : ''}>${o}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button type="button" class="btn-remove-phase" title="Phase entfernen" onclick="removePhaseRow(${idx})">🗑️</button>
+                `;
+                container.appendChild(row);
+            });
+            // Button ausblenden wenn 3 Phasen
+            const btn = document.getElementById('btnAddPhase');
+            if (btn) btn.style.display = _currentPhasen.length >= 3 ? 'none' : '';
+        }
+
+        function addPhaseRow() {
+            if (_currentPhasen.length >= 3) return;
+            _currentPhasen.push({ name: '', status: '/' });
+            renderPhasenEdit();
+        }
+
+        function removePhaseRow(idx) {
+            _currentPhasen.splice(idx, 1);
+            renderPhasenEdit();
         }
 
         // ====== GANTT CHART ======
@@ -7812,6 +8076,10 @@
             document.getElementById('gesamtstatus').value = s.gesamtstatus || '';
             document.getElementById('teil_hochschulentwicklungsplan').value = s.teil_hochschulentwicklungsplan || '';
             
+            // Phasen laden
+            _currentPhasen = parsePhasenData(s.phasen_data);
+            renderPhasenEdit();
+            
             document.getElementById('ziel_vision').value = s.ziel_vision || '';
             document.getElementById('warum').value = s.warum || '';
             document.getElementById('wer').value = s.wer || '';
@@ -7945,7 +8213,9 @@
             nutzen_kosten: 'Nutzen Kosten', nutzen_kosten_text: 'Kosten Text',
             nutzen_reduktion: 'Nutzen Reduktion', nutzen_reduktion_text: 'Reduktion Text',
             nutzen_studierende: 'Nutzen Studierende', nutzen_studierende_text: 'Studierende Text',
-            nutzen_qualitaet: 'Nutzen Qualität', nutzen_qualitaet_text: 'Qualität Text'
+            nutzen_qualitaet: 'Nutzen Qualität', nutzen_qualitaet_text: 'Qualität Text',
+            zeitplan_data: 'Zeitplan',
+            phasen_data: 'Phasen'
         };
 
         // Automatische Änderungserkennung: Nur geänderte Feldnamen erfassen (keine Werte)
@@ -7956,8 +8226,12 @@
                 'auftraggeber_vorname', 'auftraggeber_nachname', 'auftraggeber_titel', 'prozessmanager_vorname', 'prozessmanager_nachname', 'prozessmanager_titel',
                 'anforderungsmanager_vorname', 'anforderungsmanager_nachname', 'anforderungsmanager_titel', 'prozessverantwortlicher_vorname', 'prozessverantwortlicher_nachname', 'prozessverantwortlicher_titel'];
             
-            // Hilfsfunktion: null/undefined → '', sonst String (0 bleibt "0")
-            const norm = v => (v === null || v === undefined) ? '' : String(v).trim();
+            // Hilfsfunktion: null/undefined → '', Objekte/Arrays → JSON-String, sonst String
+            const norm = v => {
+                if (v === null || v === undefined) return '';
+                if (typeof v === 'object') return JSON.stringify(v);
+                return String(v).trim();
+            };
             
             for (const key of Object.keys(newData)) {
                 if (skipFields.includes(key)) continue;
@@ -8102,6 +8376,7 @@
                 gesamtstatus: document.getElementById('gesamtstatus').value,
                 teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
                 
+                phasen_data: _currentPhasen.length > 0 ? JSON.stringify(_currentPhasen.filter(p => p.name && p.name.trim())) : null,
                 zeitplan_data: _ganttData ? JSON.stringify(_ganttData) : null,
 
                 ziel_vision: document.getElementById('ziel_vision').value,
@@ -8233,7 +8508,7 @@
                     // URL aktualisieren falls neuer Steckbrief
                     window.history.replaceState({}, '', '?id=' + encodeURIComponent(savedId));
                 }
-                showToast('Steckbrief erfolgreich gespeichert', 'success');
+                await showAlert('Steckbrief erfolgreich gespeichert', 'Gespeichert');
                 return;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
@@ -8264,6 +8539,148 @@
             } catch (error) {
                 console.error('Fehler beim Löschen:', error);
                 alert('Fehler beim Löschen: ' + error.message);
+            }
+        }
+
+        // Archivieren / Wiederherstellen
+        async function toggleArchivSteckbrief() {
+            if (!currentSteckbriefId) return;
+            if (getEffectiveRole() !== 'admin') return;
+
+            const steckbriefe = getSteckbriefe();
+            const s = steckbriefe.find(st => String(st.id) === String(currentSteckbriefId));
+            const istArchiviert = s && s.archiviert;
+            const aktion = istArchiviert ? 'aus dem Archiv holen' : 'archivieren';
+
+            if (!confirm(`Möchten Sie diesen Steckbrief wirklich ${aktion}?`)) return;
+
+            try {
+                const response = await authFetch(API_URL + '/steckbriefe/' + currentSteckbriefId + '/archiv', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ archiviert: !istArchiviert })
+                });
+                if (!response.ok) throw new Error('Serverfehler: ' + response.status);
+
+                await loadSteckbriefeFromAPI();
+                updateFilterDropdowns();
+                if (!istArchiviert) {
+                    // Gerade archiviert → zurück zur Übersicht
+                    goBack();
+                } else {
+                    // Wiederhergestellt → Detailansicht aktualisieren
+                    openSteckbrief(currentSteckbriefId);
+                }
+            } catch (error) {
+                console.error('Fehler beim Archivieren:', error);
+                alert('Fehler beim Archivieren: ' + error.message);
+            }
+        }
+
+        // Archiv-Ansicht laden (nur für Admins)
+        let _archivCache = null;
+        async function loadArchiv() {
+            if (getEffectiveRole() !== 'admin') return;
+            try {
+                const response = await authFetch(API_URL + '/steckbriefe?include_archived=only');
+                if (!response.ok) throw new Error('Serverfehler');
+                _archivCache = await response.json();
+                // Personennamen zusammensetzen (wie in loadSteckbriefeFromAPI)
+                _archivCache.forEach(s => {
+                    s.auftraggeber = buildPersonName(s, 'auftraggeber');
+                    s.prozessmanager = buildPersonName(s, 'prozessmanager');
+                    s.start_datum = s.start || s.beginn_datum || '';
+                });
+            } catch (e) {
+                console.error('Archiv laden fehlgeschlagen:', e);
+                _archivCache = [];
+            }
+        }
+
+        function buildPersonName(s, prefix) {
+            const vn = s[prefix + '_vorname'] || '';
+            const nn = s[prefix + '_nachname'] || '';
+            const ti = s[prefix + '_titel'] || '';
+            if (!nn) return '';
+            return (ti ? ti + ' ' : '') + vn + ' ' + nn;
+        }
+
+        async function showArchiv() {
+            if (getEffectiveRole() !== 'admin') return;
+            await loadArchiv();
+            showLanding(false);
+            showDetailPage(false);
+            showOverview(false);
+            document.getElementById('archivContainer').style.display = '';
+            renderArchivTable();
+        }
+
+        function hideArchiv() {
+            document.getElementById('archivContainer').style.display = 'none';
+        }
+
+        function renderArchivTable() {
+            const container = document.getElementById('archivContent');
+            if (!_archivCache || _archivCache.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:#888;">Keine archivierten Steckbriefe vorhanden.</div>';
+                return;
+            }
+            container.innerHTML = `
+                <table class="overview-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>TITEL</th>
+                            <th>PROZESSCLUSTER</th>
+                            <th>GESAMTSTATUS</th>
+                            <th style="text-align:right;">AKTIONEN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${_archivCache.map(s => `
+                            <tr>
+                                <td>${s.id}</td>
+                                <td>${escapeHtml(s.titel || '')}</td>
+                                <td>${escapeHtml(s.prozesscluster || '–')}</td>
+                                <td>${escapeHtml(s.gesamtstatus || '–')}</td>
+                                <td style="text-align:right;">
+                                    <button class="action-btn btn-view" onclick="openArchivSteckbrief('${s.id}')" title="Ansehen">👁</button>
+                                    <button class="action-btn" onclick="restoreFromArchiv('${s.id}')" title="Wiederherstellen" style="color:#6a1b9a;">📤</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function openArchivSteckbrief(id) {
+            // Lade den archivierten Steckbrief in die Detailansicht
+            hideArchiv();
+            // Steckbrief zum Cache hinzufügen falls nötig
+            let allSteckbriefe = getSteckbriefe();
+            const archivS = _archivCache.find(s => String(s.id) === String(id));
+            if (archivS && !allSteckbriefe.find(s => String(s.id) === String(id))) {
+                _steckbriefeCache.push(archivS);
+            }
+            openSteckbrief(id);
+        }
+
+        async function restoreFromArchiv(id) {
+            if (!confirm('Steckbrief wiederherstellen?')) return;
+            try {
+                const response = await authFetch(API_URL + '/steckbriefe/' + id + '/archiv', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ archiviert: false })
+                });
+                if (!response.ok) throw new Error('Serverfehler');
+                await loadSteckbriefeFromAPI();
+                updateFilterDropdowns();
+                await loadArchiv();
+                renderArchivTable();
+            } catch (e) {
+                alert('Fehler: ' + e.message);
             }
         }
 
@@ -9154,6 +9571,14 @@
                 drawRow2('Gesamtstatus', s.gesamtstatus || '', null, s);
                 drawRow2('Status Steckbrief', s.status_steckbrief || '', null, s);
                 drawRow2('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '')), null, s);
+
+                // Phasen im PDF
+                const pdfPhasen = parsePhasenData(s.phasen_data);
+                if (pdfPhasen.length) {
+                    pdfPhasen.forEach((p, i) => {
+                        drawRow2('Phase ' + (i+1) + ': ' + (p.name || ''), p.status || '', null, s);
+                    });
+                }
 
                 // ========== 7. ZEITPLAN (Gantt) ==========
                 yPos += 6;
@@ -10087,8 +10512,244 @@
                 closeExportModal();
                 closeUserManagement();
                 closeEditorModal();
+                endTour();
             }
         });
+
+        // ====== GUIDED TOUR ======
+        const TOUR_SEEN_KEY = 'steckbrief_tour_seen';
+        let _tourSteps = [];
+        let _tourIndex = 0;
+        let _tourActive = false;
+
+        function getTourSteps() {
+            const role = getEffectiveRole();
+            const isEditor = role === 'editor' || role === 'admin';
+
+            const steps = [
+                {
+                    title: '👋 Willkommen beim Steckbrief Manager!',
+                    body: 'Dieser kurze Rundgang zeigt Ihnen die wichtigsten Funktionen. Sie können ihn jederzeit über Ihr Benutzermenü erneut starten.',
+                    element: null,
+                    roles: ['viewer', 'editor', 'admin']
+                },
+                {
+                    title: '🏠 Startseite',
+                    body: 'Von hier navigieren Sie zu den verschiedenen Bereichen. Klicken Sie auf „Steckbriefe einsehen", um die Übersicht zu öffnen.',
+                    element: '#landingPage .landing-grid',
+                    roles: ['viewer', 'editor', 'admin'],
+                    prepare: () => { showLanding(true); showOverview(false); showDetailPage(false); hideArchiv(); }
+                },
+                {
+                    title: '📋 Steckbrief-Übersicht',
+                    body: 'Hier sehen Sie alle Steckbriefe auf einen Blick – als Kacheln oder Tabelle. Klicken Sie auf einen Steckbrief, um ihn zu öffnen.',
+                    element: '#overview',
+                    position: 'center',
+                    roles: ['viewer', 'editor', 'admin'],
+                    prepare: () => { showLanding(false); showOverview(true); showDetailPage(false); renderOverview(); }
+                },
+                {
+                    title: '🔍 Suche & Filter',
+                    body: 'Nutzen Sie die Seitenleiste, um Steckbriefe zu suchen und nach Prozesscluster, Auftraggeber, Status und mehr zu filtern.',
+                    element: '#overviewSidebar',
+                    roles: ['viewer', 'editor', 'admin'],
+                    prepare: () => { showLanding(false); showOverview(true); showDetailPage(false); }
+                },
+                {
+                    title: '🔲 Ansicht wechseln',
+                    body: 'Wechseln Sie zwischen Kachel- und Tabellenansicht – je nachdem, wie Sie die Steckbriefe am liebsten sehen.',
+                    element: '#sidebarBtnCards',
+                    roles: ['viewer', 'editor', 'admin']
+                },
+                {
+                    title: '📥 Export',
+                    body: 'Wählen Sie einen oder mehrere Steckbriefe aus und exportieren Sie diese als PDF-Dokument.',
+                    element: '#btnExportSelected',
+                    roles: ['viewer', 'editor', 'admin']
+                },
+                {
+                    title: '✏️ Steckbriefe bearbeiten',
+                    body: 'Als Editor können Sie Ihnen zugewiesene Steckbriefe bearbeiten. Klicken Sie auf das ✏️-Symbol in einer Sektion, um sie zu bearbeiten. Änderungen werden pro Sektion gespeichert.',
+                    element: null,
+                    roles: ['editor']
+                },
+                {
+                    title: '➕ Neuer Steckbrief',
+                    body: 'Als Administrator können Sie neue Steckbriefe anlegen. Klicken Sie hier, um einen leeren Steckbrief zu erstellen.',
+                    element: '#btnNewSteckbrief',
+                    roles: ['admin']
+                },
+                {
+                    title: '📦 Archiv',
+                    body: 'Steckbriefe können archiviert werden. Archivierte Steckbriefe sind nur für Administratoren in der Archiv-Ansicht sichtbar und können jederzeit wiederhergestellt werden.',
+                    element: '#sidebarArchivSection',
+                    roles: ['admin']
+                },
+                {
+                    title: '👤 Ihr Benutzermenü',
+                    body: 'Hier finden Sie Ihre Rolle, können sich abmelden und diesen Rundgang jederzeit erneut starten.',
+                    element: '#userInfo',
+                    roles: ['viewer', 'editor', 'admin']
+                },
+                {
+                    title: '🎉 Geschafft!',
+                    body: 'Sie kennen jetzt die wichtigsten Funktionen. Viel Erfolg mit dem Steckbrief Manager! Bei Fragen wenden Sie sich an das Prozessmanagement.',
+                    element: null,
+                    roles: ['viewer', 'editor', 'admin']
+                }
+            ];
+
+            return steps.filter(s => s.roles.includes(role));
+        }
+
+        function startTour() {
+            _tourSteps = getTourSteps();
+            _tourIndex = 0;
+            _tourActive = true;
+            // Tour-Container erstellen
+            let container = document.getElementById('tourContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'tourContainer';
+                document.body.appendChild(container);
+            }
+            showTourStep();
+        }
+
+        function showTourStep() {
+            const container = document.getElementById('tourContainer');
+            if (!container || _tourIndex >= _tourSteps.length) {
+                endTour();
+                return;
+            }
+            const step = _tourSteps[_tourIndex];
+            // Prepare-Schritt ausführen (z.B. Navigation)
+            if (step.prepare) step.prepare();
+
+            // Kurz warten, damit DOM-Updates greifen
+            setTimeout(() => {
+                container.innerHTML = '';
+
+                const el = step.element ? document.querySelector(step.element) : null;
+                const isVisible = el && el.offsetParent !== null && el.offsetWidth > 0;
+
+                // Element ins Sichtfeld scrollen, dann positionieren
+                if (isVisible) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                // Nach Scroll kurz warten, damit frische Koordinaten vorliegen
+                setTimeout(() => {
+                    const freshRect = isVisible ? el.getBoundingClientRect() : null;
+
+                    // Highlight-Box
+                    if (freshRect && isVisible) {
+                        const highlight = document.createElement('div');
+                        highlight.className = 'tour-highlight';
+                        highlight.style.top = (freshRect.top - 6) + 'px';
+                        highlight.style.left = (freshRect.left - 6) + 'px';
+                        highlight.style.width = (freshRect.width + 12) + 'px';
+                        highlight.style.height = (freshRect.height + 12) + 'px';
+                        container.appendChild(highlight);
+                    } else {
+                        // Nur Backdrop ohne Highlight
+                        const backdrop = document.createElement('div');
+                        backdrop.className = 'tour-backdrop';
+                        container.appendChild(backdrop);
+                    }
+
+                    // Tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tour-tooltip';
+
+                    // Dots
+                    const dots = _tourSteps.map((_, i) =>
+                        `<span class="tour-dot ${i === _tourIndex ? 'active' : ''}"></span>`
+                    ).join('');
+
+                    const isFirst = _tourIndex === 0;
+                    const isLast = _tourIndex === _tourSteps.length - 1;
+
+                    tooltip.innerHTML = `
+                        <div class="tour-tooltip-title">${step.title}</div>
+                        <div class="tour-tooltip-body">${step.body}</div>
+                        <div class="tour-tooltip-footer">
+                            <div class="tour-dots">${dots}</div>
+                        </div>
+                        <div class="tour-tooltip-actions">
+                            ${_tourIndex > 0 ? `<button class="tour-btn tour-btn-prev" onclick="prevTourStep()">← Zurück</button>` : ''}
+                            <button class="tour-btn tour-btn-skip" onclick="endTour()">Überspringen</button>
+                            <button class="tour-btn tour-btn-next" onclick="${isLast ? 'endTour()' : 'nextTourStep()'}">${isLast ? 'Fertig ✓' : 'Weiter →'}</button>
+                        </div>
+                    `;
+
+                    // Tooltip positionieren
+                    if (step.position === 'center') {
+                        // Zentriert über dem Inhalt anzeigen
+                        tooltip.style.top = '50%';
+                        tooltip.style.left = '50%';
+                        tooltip.style.transform = 'translate(-50%, -50%)';
+                    } else if (freshRect && isVisible) {
+                        const spaceBelow = window.innerHeight - freshRect.bottom;
+                        const spaceAbove = freshRect.top;
+                        const tooltipLeft = Math.max(16, Math.min(freshRect.left, window.innerWidth - 420));
+                        if (spaceBelow > 200 || spaceBelow > spaceAbove) {
+                            tooltip.style.top = (freshRect.bottom + 18) + 'px';
+                            tooltip.style.left = tooltipLeft + 'px';
+                            const arrow = document.createElement('div');
+                            arrow.className = 'tour-arrow';
+                            arrow.style.top = '-7px';
+                            arrow.style.left = Math.min(60, Math.max(14, freshRect.left + freshRect.width / 2 - tooltipLeft)) + 'px';
+                            tooltip.appendChild(arrow);
+                        } else {
+                            tooltip.style.top = (freshRect.top - 18) + 'px';
+                            tooltip.style.left = tooltipLeft + 'px';
+                            tooltip.style.transform = 'translateY(-100%)';
+                            const arrow = document.createElement('div');
+                            arrow.className = 'tour-arrow';
+                            arrow.style.bottom = '-7px';
+                            arrow.style.left = Math.min(60, Math.max(14, freshRect.left + freshRect.width / 2 - tooltipLeft)) + 'px';
+                            tooltip.appendChild(arrow);
+                        }
+                    } else {
+                        // Zentriert
+                        tooltip.style.top = '50%';
+                        tooltip.style.left = '50%';
+                        tooltip.style.transform = 'translate(-50%, -50%)';
+                    }
+
+                    container.appendChild(tooltip);
+                }, 200);
+            }, 250);
+        }
+
+        function nextTourStep() {
+            _tourIndex++;
+            showTourStep();
+        }
+
+        function prevTourStep() {
+            if (_tourIndex > 0) _tourIndex--;
+            showTourStep();
+        }
+
+        function endTour() {
+            _tourActive = false;
+            const container = document.getElementById('tourContainer');
+            if (container) container.innerHTML = '';
+            // Als gesehen markieren
+            if (currentUser && currentUser.username) {
+                const seen = JSON.parse(localStorage.getItem(TOUR_SEEN_KEY) || '{}');
+                seen[currentUser.username] = true;
+                localStorage.setItem(TOUR_SEEN_KEY, JSON.stringify(seen));
+            }
+        }
+
+        function shouldShowTour() {
+            if (!currentUser || !currentUser.username) return false;
+            const seen = JSON.parse(localStorage.getItem(TOUR_SEEN_KEY) || '{}');
+            return !seen[currentUser.username];
+        }
     </script>
 
     <!-- Custom Dialog Modal -->

@@ -346,7 +346,15 @@ def personen_suche():
 def get_steckbriefe():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("""
+    # Für Nicht-Admins: archivierte ausblenden
+    include_archived = request.args.get('include_archived', '0')
+    is_admin = g.user.get('role') == 'admin'
+    where_clause = ''
+    if not is_admin:
+        where_clause = 'WHERE (s.archiviert IS NULL OR s.archiviert = 0)'
+    elif include_archived == 'only':
+        where_clause = 'WHERE s.archiviert = 1'
+    cursor.execute(f"""
         SELECT s.*,
             pa.Vorname AS auftraggeber_vorname, pa.Nachname AS auftraggeber_nachname, pa.Titel_de AS auftraggeber_titel,
             pp.Vorname AS prozessmanager_vorname, pp.Nachname AS prozessmanager_nachname, pp.Titel_de AS prozessmanager_titel,
@@ -357,6 +365,7 @@ def get_steckbriefe():
         LEFT JOIN datapool.t_personen pp ON s.prozessmanagerFID = pp.PersonenID
         LEFT JOIN datapool.t_personen pan ON s.anforderungsmanagerFID = pan.PersonenID
         LEFT JOIN datapool.t_personen pv ON s.prozessverantwortlicherFID = pv.PersonenID
+        {where_clause}
         ORDER BY s.id DESC
     """)
     rows = cursor.fetchall()
@@ -436,6 +445,7 @@ def save_steckbrief():
         'kommunikation_datum', 'auswertung_datum',
         'status_optimierung',
         'start', 'gesamtstatus', 'status_steckbrief', 'teil_hochschulentwicklungsplan',
+        'phasen_data',
         'zeitplan_data'
     ]
 
@@ -476,6 +486,21 @@ def save_steckbrief():
     conn.commit()
     conn.close()
     return jsonify({'id': sid, 'success': True})
+
+
+# --- Steckbrief archivieren / wiederherstellen ---
+@app.route('/api/steckbriefe/<int:sid>/archiv', methods=['POST'])
+@require_auth
+@require_role('admin')
+def toggle_archiv(sid):
+    data = request.json
+    archiviert = 1 if data.get('archiviert') else 0
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE t_hochschulsteckbriefe SET archiviert = %s WHERE id = %s", (archiviert, sid))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'archiviert': archiviert})
 
 
 # --- Steckbrief löschen ---
