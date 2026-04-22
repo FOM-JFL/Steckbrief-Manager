@@ -870,8 +870,52 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: none;
             gap: 12px 30px;
+        }
+
+        /* Sub-Navigation im Genesis-Stil */
+        .sub-nav {
+            background: linear-gradient(135deg, #00897b 0%, #00695c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 0 20px;
+            position: sticky;
+            top: 68px;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+        .sub-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 22px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .sub-nav-item:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        .sub-nav-item.active {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+            border-bottom-color: #fff;
+            font-weight: 600;
+        }
+        .sub-nav-icon {
+            font-size: 15px;
+        }
+        .sub-nav-item.admin-nav-item.locked {
+            opacity: 0.4;
+            pointer-events: none;
         }
 
         .header-logo {
@@ -1529,9 +1573,43 @@
             vertical-align: middle;
             padding: 0;
             height: 38px;
-            min-width: 72px;
+            min-width: var(--gantt-col-width, 72px);
+            width: var(--gantt-col-width, 72px);
             font-size: 13px;
             position: relative;
+        }
+        .gantt-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #555;
+        }
+        .gantt-zoom-controls button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gantt-zoom-controls button:hover {
+            background: #e0f2f1;
+            border-color: #009688;
+        }
+        .gantt-zoom-controls span.zoom-label {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
         }
         .gantt-table thead th {
             background: #b2dfdb;
@@ -1564,6 +1642,26 @@
             padding: 4px 10px !important;
             font-weight: 600;
             background: #f5f5f5;
+        }
+        .gantt-group-row .gantt-label-col {
+            font-weight: 700;
+            background: #e8f5e9;
+        }
+        .gantt-group-row .gantt-bar-cell {
+            background: #f1f8f2;
+        }
+        .gantt-phase-row .gantt-label-col {
+            font-weight: 400;
+            font-size: 12px;
+            color: #555;
+            padding-left: 14px !important;
+        }
+        .gantt-phase-row .gantt-bar-cell {
+            height: 30px;
+        }
+        .gantt-phase-row .gantt-bar {
+            background: #4db6ac;
+            opacity: 0.7;
         }
         .gantt-milestone-row td {
             background: #f0faf9;
@@ -2961,6 +3059,94 @@
             display: block;
         }
 
+        /* Multiselect Dropdown */
+        .multiselect-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .multiselect-toggle {
+            padding: 6px 26px 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.82em;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            width: 100%;
+            min-width: 0;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            color: #333;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .multiselect-toggle:focus {
+            outline: none;
+            border-color: #009688;
+        }
+
+        .multiselect-toggle.has-selection {
+            border-color: #009688;
+            color: #009688;
+            font-weight: 600;
+        }
+
+        .multiselect-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .multiselect-dropdown.open {
+            display: block;
+        }
+
+        .multiselect-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            font-size: 0.82em;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .multiselect-item:hover {
+            background: #e0f2f1;
+        }
+
+        .multiselect-item input[type="checkbox"] {
+            accent-color: #009688;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .multiselect-item label {
+            cursor: pointer;
+            font-size: 1em !important;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+            color: #333 !important;
+            font-weight: 400 !important;
+            margin: 0 !important;
+        }
+
         .filter-group input[type="text"]:focus {
             outline: none;
             border-color: #009688;
@@ -3800,6 +3986,22 @@
         </div>
     </header>
 
+    <!-- Sub-Navigation -->
+    <nav id="subNav" class="sub-nav" style="display:none;">
+        <a href="?page=steckbriefe" class="sub-nav-item" data-nav="steckbriefe" onclick="subNavClick(event,'steckbriefe')">
+            <span class="sub-nav-icon">📋</span> Steckbriefe
+        </a>
+        <a href="?page=auswertung" class="sub-nav-item admin-nav-item" data-nav="auswertung" onclick="subNavClick(event,'auswertung')">
+            <span class="sub-nav-icon">📊</span> Auswertung
+        </a>
+        <a href="?page=portfolio" class="sub-nav-item" data-nav="portfolio" onclick="subNavClick(event,'portfolio')">
+            <span class="sub-nav-icon">📅</span> Projektportfolio
+        </a>
+        <a href="?page=benutzer" class="sub-nav-item admin-nav-item" data-nav="benutzer" onclick="subNavClick(event,'benutzer')">
+            <span class="sub-nav-icon">👥</span> Benutzer
+        </a>
+    </nav>
+
     <!-- Landing Page -->
     <div id="landingPage" class="landing-page" style="display: none;">
         <div class="landing-title">
@@ -3827,10 +4029,16 @@
                 <h3>Benutzerverwaltung</h3>
                 <p>Benutzer anlegen, Rollen vergeben und Zugriffsrechte verwalten</p>
             </div>
+
+            <div class="landing-card" onclick="navigateFromLanding('portfolio')">
+                <div class="landing-card-icon">📅</div>
+                <h3>Projektportfolio steuern</h3>
+                <p>Gesamtübersicht aller Projekte als Gantt-Diagramm mit Filtern</p>
+            </div>
         </div>
 
         <div class="landing-footer">
-            Steckbrief Manager v17.3.0 · FOM Hochschule für Oekonomie & Management
+            Steckbrief Manager v17.12.0 · FOM Hochschule für Oekonomie & Management
         </div>
     </div>
 
@@ -3875,73 +4083,79 @@
                                 <input type="text" id="filterId" placeholder="ID..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterTitel">Titel</label>
+                                <label>Titel</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterTitel" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterTitelMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Titel" onclick="toggleMultiselect('filterTitelMultiselect')" style="border-radius:4px 0 0 4px;">Alle Titel</button>
+                                        <div class="multiselect-dropdown" id="filterTitelDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterTitelText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterTitelText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterCluster">Prozesscluster</label>
+                                <label>Prozesscluster</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterCluster" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterClusterMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Cluster" onclick="toggleMultiselect('filterClusterMultiselect')" style="border-radius:4px 0 0 4px;">Alle Cluster</button>
+                                        <div class="multiselect-dropdown" id="filterClusterDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterClusterText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterClusterText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterAuftraggeber">Auftraggeber</label>
+                                <label>Auftraggeber</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterAuftraggeber" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterAuftraggeberMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Auftraggeber" onclick="toggleMultiselect('filterAuftraggeberMultiselect')" style="border-radius:4px 0 0 4px;">Alle Auftraggeber</button>
+                                        <div class="multiselect-dropdown" id="filterAuftraggeberDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAuftraggeberText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterAuftraggeberText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterGesamtstatus">Gesamtstatus</label>
+                                <label>Gesamtstatus</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterGesamtstatus" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterGesamtstatusMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Gesamtstatus" onclick="toggleMultiselect('filterGesamtstatusMultiselect')" style="border-radius:4px 0 0 4px;">Alle Gesamtstatus</button>
+                                        <div class="multiselect-dropdown" id="filterGesamtstatusDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterGesamtstatusText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterGesamtstatusText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterProzessmanager">Prozessmanager</label>
+                                <label>Prozessmanager</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterProzessmanager" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterProzessmanagerMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Prozessmanager" onclick="toggleMultiselect('filterProzessmanagerMultiselect')" style="border-radius:4px 0 0 4px;">Alle Prozessmanager</button>
+                                        <div class="multiselect-dropdown" id="filterProzessmanagerDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterProzessmanagerText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterProzessmanagerText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterAnforderungsmanager">Anforderungsmgr.</label>
+                                <label>Anforderungsmgr.</label>
                                 <div class="filter-select-wrapper">
-                                    <select id="filterAnforderungsmanager" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                    </select>
+                                    <div class="multiselect-wrapper" id="filterAnforderungsmanagerMultiselect" style="flex:1;min-width:0;">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Anforderungsm." onclick="toggleMultiselect('filterAnforderungsmanagerMultiselect')" style="border-radius:4px 0 0 4px;">Alle Anforderungsm.</button>
+                                        <div class="multiselect-dropdown" id="filterAnforderungsmanagerDropdown"></div>
+                                    </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
                                 </div>
                                 <input type="text" id="filterAnforderungsmanagerText" placeholder="Schlagwort..." oninput="applyFilters()">
                             </div>
                             <div class="filter-group">
-                                <label for="filterHEP">Teil des HEP</label>
-                                <div class="filter-select-wrapper">
-                                    <select id="filterHEP" onchange="applyFilters()">
-                                        <option value="">Alle</option>
-                                        <option value="ja">Ja</option>
-                                        <option value="nein">Nein</option>
-                                    </select>
+                                <label>Teil des HEP</label>
+                                <div class="multiselect-wrapper" id="filterHEPMultiselect">
+                                    <button type="button" class="multiselect-toggle" data-default-label="Alle" onclick="toggleMultiselect('filterHEPMultiselect')">Alle</button>
+                                    <div class="multiselect-dropdown" id="filterHEPDropdown">
+                                        <div class="multiselect-item" onclick="toggleOverviewMultiselectItem(this, 'filterHEPMultiselect')"><input type="checkbox" value="ja"><label>Ja</label></div>
+                                        <div class="multiselect-item" onclick="toggleOverviewMultiselectItem(this, 'filterHEPMultiselect')"><input type="checkbox" value="nein"><label>Nein</label></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -4409,6 +4623,10 @@
                                     <input type="date" id="start_datum">
                                 </div>
                                 <div class="form-group">
+                                    <label for="geplanter_abschluss">Geplanter Abschluss</label>
+                                    <input type="date" id="geplanter_abschluss">
+                                </div>
+                                <div class="form-group">
                                     <label for="gesamtstatus">Gesamtstatus</label>
                                     <select id="gesamtstatus" autocomplete="off">
                                         <option value="/">/</option>
@@ -4676,6 +4894,135 @@
 
             <div class="analytics-charts-grid" id="analyticsChartsGrid">
                 <!-- Wird dynamisch befüllt -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio-Gantt Page -->
+    <div id="portfolioPage" style="display: none;">
+        <div class="container">
+            <div class="overview-title-bar">
+                <h2>Projektportfolio steuern</h2>
+                <div class="overview-title-actions">
+                    <button class="btn-new-steckbrief" onclick="navigateToLanding()">← Zurück zur Startseite</button>
+                </div>
+            </div>
+
+            <div class="overview-layout">
+                <!-- Sidebar -->
+                <div class="overview-sidebar">
+                    <div class="sidebar-content">
+                        <div class="sidebar-title">
+                            <span class="sidebar-title-icon">📅</span>
+                            Portfolio
+                            <span class="sidebar-count-badge" id="portfolioCount">0</span>
+                        </div>
+
+                        <div class="sidebar-search">
+                            <span class="sidebar-search-icon">🔍</span>
+                            <input type="text" id="portfolioSearch" placeholder="Titel suchen..." oninput="renderPortfolioGantt()">
+                        </div>
+
+                        <div class="sidebar-filter-section">
+                            <div class="sidebar-filter-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                                <span class="filter-header-icon">▾</span>
+                                <h3>Filter</h3>
+                                <div class="sidebar-filter-actions">
+                                    <button class="filter-reset-btn" onclick="event.stopPropagation(); resetPortfolioFilters()" title="Filter zurücksetzen">↻</button>
+                                    <span class="filter-chevron">▾</span>
+                                </div>
+                            </div>
+                            <div class="sidebar-filter-grid">
+                                <div class="filter-group">
+                                    <label>Prozesscluster</label>
+                                    <div class="multiselect-wrapper" id="portfolioClusterMultiselect">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Cluster" onclick="toggleMultiselect('portfolioClusterMultiselect')">Alle Cluster</button>
+                                        <div class="multiselect-dropdown" id="portfolioClusterDropdown">
+                                            <!-- Wird dynamisch befüllt -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Gesamtstatus</label>
+                                    <div class="multiselect-wrapper" id="portfolioStatusMultiselect">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle" onclick="toggleMultiselect('portfolioStatusMultiselect')">Alle</button>
+                                        <div class="multiselect-dropdown" id="portfolioStatusDropdown">
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Idee / Konzeption"><label>Idee / Konzeption</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Geplant"><label>Geplant</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="In Umsetzung"><label>In Umsetzung</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Pilotierung"><label>Pilotierung</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Im Betrieb"><label>Im Betrieb</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Pausiert"><label>Pausiert</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Abgebrochen"><label>Abgebrochen</label></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Auftraggeber</label>
+                                    <div class="multiselect-wrapper" id="portfolioAuftraggeberMultiselect">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle" onclick="toggleMultiselect('portfolioAuftraggeberMultiselect')">Alle</button>
+                                        <div class="multiselect-dropdown" id="portfolioAuftraggeberDropdown">
+                                            <!-- Wird dynamisch befüllt -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Teil des HEP</label>
+                                    <div class="multiselect-wrapper" id="portfolioHEPMultiselect">
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle" onclick="toggleMultiselect('portfolioHEPMultiselect')">Alle</button>
+                                        <div class="multiselect-dropdown" id="portfolioHEPDropdown">
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioHEPMultiselect')"><input type="checkbox" value="ja"><label>Ja</label></div>
+                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioHEPMultiselect')"><input type="checkbox" value="nein"><label>Nein</label></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">Ansicht</div>
+                            <div class="sidebar-filter-grid">
+                                <div class="filter-group">
+                                    <label for="portfolioViewMode">Darstellung</label>
+                                    <select id="portfolioViewMode" onchange="renderPortfolioGantt()">
+                                        <option value="auto">Automatisch</option>
+                                        <option value="gesamt">Nur Gesamtzeitraum</option>
+                                        <option value="phasen">Nur Phasen</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">Zeitraum</div>
+                            <div class="sidebar-filter-grid">
+                                <div class="filter-group">
+                                    <label for="portfolioDateFrom">Von</label>
+                                    <input type="date" id="portfolioDateFrom" onchange="renderPortfolioGantt()" style="padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:0.82em;width:100%;">
+                                </div>
+                                <div class="filter-group">
+                                    <label for="portfolioDateTo">Bis</label>
+                                    <input type="date" id="portfolioDateTo" onchange="renderPortfolioGantt()" style="padding:6px 8px;border:1px solid #ddd;border-radius:4px;font-size:0.82em;width:100%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="overview-main">
+                    <div style="padding:10px 10px 0 10px;">
+                        <div class="gantt-zoom-controls">
+                            <button onclick="portfolioZoom(-1)" title="Verkleinern">−</button>
+                            <span class="zoom-label" id="portfolioZoomLabel">100%</span>
+                            <button onclick="portfolioZoom(1)" title="Vergrößern">+</button>
+                            <button onclick="portfolioZoom(0)" title="Zurücksetzen" style="font-size:12px;width:auto;padding:0 8px;">Reset</button>
+                        </div>
+                    </div>
+                    <div id="portfolioGanttContainer" style="padding:0 10px 10px 10px;">
+                        <!-- Wird dynamisch befüllt -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -5460,11 +5807,16 @@
             document.getElementById('analyticsPage').style.display = show ? 'block' : 'none';
         }
 
+        function showPortfolioPage(show) {
+            document.getElementById('portfolioPage').style.display = show ? 'block' : 'none';
+        }
+
         function openAnalytics() {
             showLanding(false);
             showOverview(false);
             showDetailPage(false);
             showUserMgmtPage(false);
+            showPortfolioPage(false);
             showAnalyticsPage(true);
             window.history.pushState({}, '', '?page=auswertung');
             renderAnalytics();
@@ -6034,13 +6386,14 @@
         let tableSortColumn = null;
         let tableSortDirection = 'asc'; // 'asc' oder 'desc'
         let activeFilters = {
-            cluster: '',
-            auftraggeber: '',
-            prozessmanager: '',
-            anforderungsmanager: '',
-            gesamtstatus: '',
-            titel: '',
-            hep: '',
+            id: '',
+            cluster: [],
+            auftraggeber: [],
+            prozessmanager: [],
+            anforderungsmanager: [],
+            gesamtstatus: [],
+            titel: [],
+            hep: [],
             clusterText: '',
             auftraggeberText: '',
             prozessmanagerText: '',
@@ -6095,6 +6448,7 @@
             showDetailPage(false);
             showUserMgmtPage(false);
             showAnalyticsPage(false);
+            showPortfolioPage(false);
 
             if (page === 'steckbriefe' || steckbriefId || newMode) {
                 if (newMode) {
@@ -6117,10 +6471,15 @@
                 } else {
                     showLanding(true);
                 }
+            } else if (page === 'portfolio') {
+                showPortfolioPage(true);
+                renderPortfolioGantt();
             } else {
                 // Landing Page anzeigen
                 showLanding(true);
             }
+
+            updateSubNav();
         }
 
         // Landing-Page anzeigen/ausblenden
@@ -6149,7 +6508,45 @@
             } else if (target === 'benutzer') {
                 window.history.pushState({}, '', '?page=benutzer');
                 handleRouting();
+            } else if (target === 'portfolio') {
+                window.history.pushState({}, '', '?page=portfolio');
+                handleRouting();
             }
+        }
+
+        function subNavClick(event, target) {
+            event.preventDefault();
+            navigateFromLanding(target);
+        }
+
+        function updateSubNav() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const page = urlParams.get('page');
+            const steckbriefId = urlParams.get('id');
+            const newMode = urlParams.get('neu');
+            const nav = document.getElementById('subNav');
+            if (!nav) return;
+
+            // Aktive Seite ermitteln
+            let activePage = null;
+            if (page === 'steckbriefe' || steckbriefId || newMode) activePage = 'steckbriefe';
+            else if (page === 'auswertung') activePage = 'auswertung';
+            else if (page === 'benutzer') activePage = 'benutzer';
+            else if (page === 'portfolio') activePage = 'portfolio';
+
+            // Sub-Nav nur anzeigen wenn nicht auf der Landing Page
+            nav.style.display = activePage ? 'flex' : 'none';
+
+            // Aktives Element markieren
+            nav.querySelectorAll('.sub-nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.nav === activePage);
+            });
+
+            // Admin-Items für Nicht-Admins sperren
+            const isAdmin = getEffectiveRole() === 'admin';
+            nav.querySelectorAll('.admin-nav-item').forEach(item => {
+                item.classList.toggle('locked', !isAdmin);
+            });
         }
 
         async function navigateToLanding() {
@@ -6173,8 +6570,10 @@
         // Badge mit Anzahl aktiver Filter aktualisieren
         function updateFilterBadge() {
             let count = 0;
-            const vals = Object.values(activeFilters);
-            for (const v of vals) { if (v) count++; }
+            for (const v of Object.values(activeFilters)) {
+                if (Array.isArray(v)) { if (v.length) count++; }
+                else if (v) count++;
+            }
             const badge = document.getElementById('filterBadge');
             if (count > 0) {
                 badge.textContent = count + ' aktiv';
@@ -6222,6 +6621,7 @@
                         s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
                         s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
                         s.start_datum = s.start || '';
+                        s.geplanter_abschluss = s.geplanter_abschluss || '';
                     });
                     isReadOnlyMode = false;
                     console.log(`${_steckbriefeCache.length} Steckbriefe von API geladen.`);
@@ -6273,34 +6673,33 @@
             if (activeFilters.id) {
                 steckbriefe = steckbriefe.filter(s => String(s.id).includes(activeFilters.id));
             }
-            if (activeFilters.cluster) {
-                steckbriefe = steckbriefe.filter(s => s.prozesscluster === activeFilters.cluster);
+            if (activeFilters.cluster && activeFilters.cluster.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.cluster.includes(s.prozesscluster));
             }
-            if (activeFilters.auftraggeber) {
+            if (activeFilters.auftraggeber && activeFilters.auftraggeber.length) {
                 steckbriefe = steckbriefe.filter(s => {
-                    // Multi-Auftraggeber: prüfe ob gesuchte Person enthalten
                     if (s.auftraggeber_multi) {
                         let data = s.auftraggeber_multi;
                         if (typeof data === 'string') { try { data = JSON.parse(data); } catch(e) { return false; } }
-                        if (Array.isArray(data)) return data.some(m => m.name === activeFilters.auftraggeber);
+                        if (Array.isArray(data)) return data.some(m => activeFilters.auftraggeber.includes(m.name));
                     }
-                    return s.auftraggeber === activeFilters.auftraggeber;
+                    return activeFilters.auftraggeber.includes(s.auftraggeber);
                 });
             }
-            if (activeFilters.prozessmanager) {
-                steckbriefe = steckbriefe.filter(s => s.prozessmanager === activeFilters.prozessmanager);
+            if (activeFilters.prozessmanager && activeFilters.prozessmanager.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.prozessmanager.includes(s.prozessmanager));
             }
-            if (activeFilters.anforderungsmanager) {
-                steckbriefe = steckbriefe.filter(s => s.anforderungsmanager === activeFilters.anforderungsmanager);
+            if (activeFilters.anforderungsmanager && activeFilters.anforderungsmanager.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.anforderungsmanager.includes(s.anforderungsmanager));
             }
-            if (activeFilters.gesamtstatus) {
-                steckbriefe = steckbriefe.filter(s => s.gesamtstatus === activeFilters.gesamtstatus);
+            if (activeFilters.gesamtstatus && activeFilters.gesamtstatus.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.gesamtstatus.includes(s.gesamtstatus));
             }
-            if (activeFilters.titel) {
-                steckbriefe = steckbriefe.filter(s => s.titel === activeFilters.titel);
+            if (activeFilters.titel && activeFilters.titel.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.titel.includes(s.titel));
             }
-            if (activeFilters.hep) {
-                steckbriefe = steckbriefe.filter(s => (s.teil_hochschulentwicklungsplan || '') === activeFilters.hep);
+            if (activeFilters.hep && activeFilters.hep.length) {
+                steckbriefe = steckbriefe.filter(s => activeFilters.hep.includes(s.teil_hochschulentwicklungsplan || ''));
             }
             
             // Textfilter anwenden (Schlagwort-Suche)
@@ -6535,46 +6934,34 @@
             const titel = [...new Set(steckbriefe.map(s => s.titel).filter(Boolean))].sort();
             
             // Cluster-Dropdown
-            const clusterSelect = document.getElementById('filterCluster');
-            clusterSelect.innerHTML = '<option value="">Alle Cluster</option>' + 
-                clusters.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+            populateOverviewMultiselect('filterClusterDropdown', 'filterClusterMultiselect', clusters);
             
             // Auftraggeber-Dropdown
-            const agSelect = document.getElementById('filterAuftraggeber');
-            agSelect.innerHTML = '<option value="">Alle Auftraggeber</option>' + 
-                auftraggeber.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+            populateOverviewMultiselect('filterAuftraggeberDropdown', 'filterAuftraggeberMultiselect', auftraggeber);
             
             // Prozessmanager-Dropdown
-            const pmSelect = document.getElementById('filterProzessmanager');
-            pmSelect.innerHTML = '<option value="">Alle Prozessmanager</option>' + 
-                prozessmanager.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+            populateOverviewMultiselect('filterProzessmanagerDropdown', 'filterProzessmanagerMultiselect', prozessmanager);
             
             // Anforderungsmanager-Dropdown
-            const amSelect = document.getElementById('filterAnforderungsmanager');
-            amSelect.innerHTML = '<option value="">Alle Anforderungsmanager</option>' + 
-                anforderungsmanager.map(a => `<option value="${escapeHtml(a)}">${escapeHtml(a)}</option>`).join('');
+            populateOverviewMultiselect('filterAnforderungsmanagerDropdown', 'filterAnforderungsmanagerMultiselect', anforderungsmanager);
             
             // Gesamtstatus-Dropdown
-            const gsSelect = document.getElementById('filterGesamtstatus');
-            gsSelect.innerHTML = '<option value="">Alle Gesamtstatus</option>' + 
-                gesamtstatusValues.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+            populateOverviewMultiselect('filterGesamtstatusDropdown', 'filterGesamtstatusMultiselect', gesamtstatusValues);
             
             // Titel-Dropdown
-            const titelSelect = document.getElementById('filterTitel');
-            titelSelect.innerHTML = '<option value="">Alle Titel</option>' + 
-                titel.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
+            populateOverviewMultiselect('filterTitelDropdown', 'filterTitelMultiselect', titel);
         }
 
         // Filter anwenden
         function applyFilters() {
             activeFilters.id = document.getElementById('filterId').value.trim();
-            activeFilters.cluster = document.getElementById('filterCluster').value;
-            activeFilters.auftraggeber = document.getElementById('filterAuftraggeber').value;
-            activeFilters.prozessmanager = document.getElementById('filterProzessmanager').value;
-            activeFilters.anforderungsmanager = document.getElementById('filterAnforderungsmanager').value;
-            activeFilters.gesamtstatus = document.getElementById('filterGesamtstatus').value;
-            activeFilters.titel = document.getElementById('filterTitel').value;
-            activeFilters.hep = document.getElementById('filterHEP').value;
+            activeFilters.cluster = getMultiselectValues('filterClusterDropdown');
+            activeFilters.auftraggeber = getMultiselectValues('filterAuftraggeberDropdown');
+            activeFilters.prozessmanager = getMultiselectValues('filterProzessmanagerDropdown');
+            activeFilters.anforderungsmanager = getMultiselectValues('filterAnforderungsmanagerDropdown');
+            activeFilters.gesamtstatus = getMultiselectValues('filterGesamtstatusDropdown');
+            activeFilters.titel = getMultiselectValues('filterTitelDropdown');
+            activeFilters.hep = getMultiselectValues('filterHEPDropdown');
             // Textfilter
             activeFilters.clusterText = document.getElementById('filterClusterText').value.toLowerCase().trim();
             activeFilters.auftraggeberText = document.getElementById('filterAuftraggeberText').value.toLowerCase().trim();
@@ -6606,17 +6993,24 @@
         // Filter zurücksetzen
         function resetFilters() {
             activeFilters = { 
-                id: '', cluster: '', auftraggeber: '', prozessmanager: '', anforderungsmanager: '', gesamtstatus: '', titel: '', hep: '',
+                id: '', cluster: [], auftraggeber: [], prozessmanager: [], anforderungsmanager: [], gesamtstatus: [], titel: [], hep: [],
                 clusterText: '', auftraggeberText: '', prozessmanagerText: '', anforderungsmanagerText: '', gesamtstatusText: '', titelText: ''
             };
             document.getElementById('filterId').value = '';
-            document.getElementById('filterCluster').value = '';
-            document.getElementById('filterAuftraggeber').value = '';
-            document.getElementById('filterProzessmanager').value = '';
-            document.getElementById('filterAnforderungsmanager').value = '';
-            document.getElementById('filterGesamtstatus').value = '';
-            document.getElementById('filterTitel').value = '';
-            document.getElementById('filterHEP').value = '';
+            // Alle Multiselect-Checkboxen zurücksetzen
+            const multiselects = [
+                'filterClusterDropdown', 'filterAuftraggeberDropdown', 'filterProzessmanagerDropdown',
+                'filterAnforderungsmanagerDropdown', 'filterGesamtstatusDropdown', 'filterTitelDropdown', 'filterHEPDropdown'
+            ];
+            multiselects.forEach(id => {
+                const dd = document.getElementById(id);
+                if (dd) dd.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            });
+            const wrappers = [
+                'filterClusterMultiselect', 'filterAuftraggeberMultiselect', 'filterProzessmanagerMultiselect',
+                'filterAnforderungsmanagerMultiselect', 'filterGesamtstatusMultiselect', 'filterTitelMultiselect', 'filterHEPMultiselect'
+            ];
+            wrappers.forEach(id => updateMultiselectLabel(id));
             // Textfelder zurücksetzen und ausblenden
             const textFilters = ['filterClusterText', 'filterAuftraggeberText', 'filterProzessmanagerText', 
                                  'filterAnforderungsmanagerText', 'filterGesamtstatusText', 'filterTitelText'];
@@ -6625,8 +7019,6 @@
                 input.value = '';
                 input.classList.remove('visible');
             });
-            // Toggle-Buttons zurücksetzen
-            document.querySelectorAll('.filter-search-toggle').forEach(btn => btn.classList.remove('active'));
             updateFilterBadge();
             renderOverview();
         }
@@ -6639,26 +7031,26 @@
             if (activeFilters.id) {
                 tags.push({ label: 'ID', value: activeFilters.id, key: 'id' });
             }
-            if (activeFilters.cluster) {
-                tags.push({ label: 'Cluster', value: activeFilters.cluster, key: 'cluster' });
+            if (activeFilters.cluster && activeFilters.cluster.length) {
+                tags.push({ label: 'Cluster', value: activeFilters.cluster.join(', '), key: 'cluster' });
             }
-            if (activeFilters.auftraggeber) {
-                tags.push({ label: 'Auftraggeber', value: activeFilters.auftraggeber, key: 'auftraggeber' });
+            if (activeFilters.auftraggeber && activeFilters.auftraggeber.length) {
+                tags.push({ label: 'Auftraggeber', value: activeFilters.auftraggeber.join(', '), key: 'auftraggeber' });
             }
-            if (activeFilters.prozessmanager) {
-                tags.push({ label: 'PM', value: activeFilters.prozessmanager, key: 'prozessmanager' });
+            if (activeFilters.prozessmanager && activeFilters.prozessmanager.length) {
+                tags.push({ label: 'PM', value: activeFilters.prozessmanager.join(', '), key: 'prozessmanager' });
             }
-            if (activeFilters.anforderungsmanager) {
-                tags.push({ label: 'AM', value: activeFilters.anforderungsmanager, key: 'anforderungsmanager' });
+            if (activeFilters.anforderungsmanager && activeFilters.anforderungsmanager.length) {
+                tags.push({ label: 'AM', value: activeFilters.anforderungsmanager.join(', '), key: 'anforderungsmanager' });
             }
-            if (activeFilters.gesamtstatus) {
-                tags.push({ label: 'Gesamtstatus', value: activeFilters.gesamtstatus, key: 'gesamtstatus' });
+            if (activeFilters.gesamtstatus && activeFilters.gesamtstatus.length) {
+                tags.push({ label: 'Gesamtstatus', value: activeFilters.gesamtstatus.join(', '), key: 'gesamtstatus' });
             }
-            if (activeFilters.titel) {
-                tags.push({ label: 'Titel', value: activeFilters.titel, key: 'titel' });
+            if (activeFilters.titel && activeFilters.titel.length) {
+                tags.push({ label: 'Titel', value: activeFilters.titel.join(', '), key: 'titel' });
             }
-            if (activeFilters.hep) {
-                tags.push({ label: 'Teil des HEP', value: activeFilters.hep === 'ja' ? 'Ja' : 'Nein', key: 'hep' });
+            if (activeFilters.hep && activeFilters.hep.length) {
+                tags.push({ label: 'Teil des HEP', value: activeFilters.hep.map(v => v === 'ja' ? 'Ja' : 'Nein').join(', '), key: 'hep' });
             }
             // Textfilter Tags
             if (activeFilters.clusterText) {
@@ -6690,37 +7082,40 @@
 
         // Einzelnen Filter entfernen
         function removeFilter(key) {
-            activeFilters[key] = '';
-            const selectId = {
-                id: 'filterId',
-                cluster: 'filterCluster',
-                auftraggeber: 'filterAuftraggeber',
-                prozessmanager: 'filterProzessmanager',
-                anforderungsmanager: 'filterAnforderungsmanager',
-                gesamtstatus: 'filterGesamtstatus',
-                titel: 'filterTitel',
-                hep: 'filterHEP'
-            }[key];
-            const textId = {
-                clusterText: 'filterClusterText',
-                auftraggeberText: 'filterAuftraggeberText',
-                prozessmanagerText: 'filterProzessmanagerText',
-                anforderungsmanagerText: 'filterAnforderungsmanagerText',
-                gesamtstatusText: 'filterGesamtstatusText',
-                titelText: 'filterTitelText'
-            }[key];
-            if (selectId) {
-                document.getElementById(selectId).value = '';
-            }
-            if (textId) {
-                const input = document.getElementById(textId);
-                input.value = '';
-                input.classList.remove('visible');
-                // Toggle-Button zurücksetzen
-                const wrapper = input.previousElementSibling;
-                if (wrapper) {
-                    const toggleBtn = wrapper.querySelector('.filter-search-toggle');
-                    if (toggleBtn) toggleBtn.classList.remove('active');
+            const multiselectKeys = {
+                cluster: { dropdown: 'filterClusterDropdown', wrapper: 'filterClusterMultiselect' },
+                auftraggeber: { dropdown: 'filterAuftraggeberDropdown', wrapper: 'filterAuftraggeberMultiselect' },
+                prozessmanager: { dropdown: 'filterProzessmanagerDropdown', wrapper: 'filterProzessmanagerMultiselect' },
+                anforderungsmanager: { dropdown: 'filterAnforderungsmanagerDropdown', wrapper: 'filterAnforderungsmanagerMultiselect' },
+                gesamtstatus: { dropdown: 'filterGesamtstatusDropdown', wrapper: 'filterGesamtstatusMultiselect' },
+                titel: { dropdown: 'filterTitelDropdown', wrapper: 'filterTitelMultiselect' },
+                hep: { dropdown: 'filterHEPDropdown', wrapper: 'filterHEPMultiselect' }
+            };
+            
+            if (multiselectKeys[key]) {
+                activeFilters[key] = [];
+                const ms = multiselectKeys[key];
+                const dd = document.getElementById(ms.dropdown);
+                if (dd) dd.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updateMultiselectLabel(ms.wrapper);
+            } else if (key === 'id') {
+                activeFilters.id = '';
+                document.getElementById('filterId').value = '';
+            } else {
+                // Textfilter
+                activeFilters[key] = '';
+                const textId = {
+                    clusterText: 'filterClusterText',
+                    auftraggeberText: 'filterAuftraggeberText',
+                    prozessmanagerText: 'filterProzessmanagerText',
+                    anforderungsmanagerText: 'filterAnforderungsmanagerText',
+                    gesamtstatusText: 'filterGesamtstatusText',
+                    titelText: 'filterTitelText'
+                }[key];
+                if (textId) {
+                    const input = document.getElementById(textId);
+                    input.value = '';
+                    input.classList.remove('visible');
                 }
             }
             renderOverview();
@@ -7028,6 +7423,7 @@
                 <div class="genesis-sub-header">Status & Planung</div>
                 <div class="form-grid">
                     ${renderField('Start', s.start_datum)}
+                    ${renderField('Geplanter Abschluss', s.geplanter_abschluss)}
                     ${renderField('Gesamtstatus', s.gesamtstatus)}
                     ${renderField('Status Steckbrief', s.status_steckbrief)}
                     ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
@@ -7036,7 +7432,7 @@
                     const phasen = parsePhasenData(s.phasen_data);
                     if (!phasen.length) return '';
                     return '<div class="genesis-sub-header" style="margin-top:14px;">Phasen</div><div class="form-grid">' +
-                        phasen.map((p, i) => renderField('Phase ' + (i+1) + ': ' + escapeHtml(p.name || ''), p.status || '-')).join('') +
+                        phasen.map((p, i) => renderField('Phase ' + (i+1) + ': ' + escapeHtml(p.name || ''), (p.status || '-') + (p.start_datum ? ' · Start: ' + p.start_datum : '') + (p.geplanter_abschluss ? ' · Abschluss: ' + p.geplanter_abschluss : ''))).join('') +
                         '</div>';
                 })()}
             `;
@@ -7089,6 +7485,16 @@
                             ${GESAMTSTATUS_OPTIONS.map(o => `<option value="${o}"${ph.status === o ? ' selected' : ''}>${o}</option>`).join('')}
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label>Start</label>
+                        <input type="date" value="${ph.start_datum || ''}"
+                               onchange="_currentPhasen[${idx}].start_datum = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Geplanter Abschluss</label>
+                        <input type="date" value="${ph.geplanter_abschluss || ''}"
+                               onchange="_currentPhasen[${idx}].geplanter_abschluss = this.value">
+                    </div>
                     <button type="button" class="btn-remove-phase" title="Phase entfernen" onclick="removePhaseRow(${idx})">🗑️</button>
                 `;
                 container.appendChild(row);
@@ -7100,7 +7506,7 @@
 
         function addPhaseRow() {
             if (_currentPhasen.length >= 3) return;
-            _currentPhasen.push({ name: '', status: '/' });
+            _currentPhasen.push({ name: '', status: '/', start_datum: '', geplanter_abschluss: '' });
             renderPhasenEdit();
         }
 
@@ -7242,7 +7648,8 @@
                 const barEndIdx = monthIndex(bar.endYear, bar.endMonth, startYear, startMonth);
                 const startHalf = bar.startHalf || 0; // 0 = mid, 1 = border (end of cell)
                 const endHalf = bar.endHalf || 0; // 0 = mid, 1 = border (end of cell)
-                html += `<tr data-bar-idx="${barIdx}">`;
+                const rowClass = bar.isGroup ? ' gantt-group-row' : (bar.isPhase ? ' gantt-phase-row' : '');
+                html += `<tr data-bar-idx="${barIdx}" class="${rowClass}">`;
                 html += `<td class="gantt-label-col">${editable ? '<span class="gantt-bar-label" data-bar-idx="'+barIdx+'" title="Doppelklick zum Umbenennen">'+escapeHtml(bar.label || '')+'</span>' : escapeHtml(bar.label || '')}</td>`;
                 for (let i = 0; i < totalCols; i++) {
                     const isInRange = (i >= barStartIdx && i <= barEndIdx);
@@ -8073,6 +8480,7 @@
             document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
             document.getElementById('status_steckbrief').value = s.status_steckbrief || '';
             document.getElementById('start_datum').value = s.start_datum || '';
+            document.getElementById('geplanter_abschluss').value = s.geplanter_abschluss || '';
             document.getElementById('gesamtstatus').value = s.gesamtstatus || '';
             document.getElementById('teil_hochschulentwicklungsplan').value = s.teil_hochschulentwicklungsplan || '';
             
@@ -8373,6 +8781,7 @@
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
                 status_steckbrief: document.getElementById('status_steckbrief').value,
                 start: document.getElementById('start_datum').value,
+                geplanter_abschluss: document.getElementById('geplanter_abschluss').value,
                 gesamtstatus: document.getElementById('gesamtstatus').value,
                 teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
                 
@@ -8590,6 +8999,7 @@
                     s.auftraggeber = buildPersonName(s, 'auftraggeber');
                     s.prozessmanager = buildPersonName(s, 'prozessmanager');
                     s.start_datum = s.start || s.beginn_datum || '';
+                    s.geplanter_abschluss = s.geplanter_abschluss || '';
                 });
             } catch (e) {
                 console.error('Archiv laden fehlgeschlagen:', e);
@@ -9576,7 +9986,7 @@
                 const pdfPhasen = parsePhasenData(s.phasen_data);
                 if (pdfPhasen.length) {
                     pdfPhasen.forEach((p, i) => {
-                        drawRow2('Phase ' + (i+1) + ': ' + (p.name || ''), p.status || '', null, s);
+                        drawRow2('Phase ' + (i+1) + ': ' + (p.name || ''), (p.status || '') + (p.start_datum ? ' · Start: ' + p.start_datum : '') + (p.geplanter_abschluss ? ' · Abschluss: ' + p.geplanter_abschluss : ''), null, s);
                     });
                 }
 
@@ -10462,6 +10872,7 @@
                 kommunikation_datum: v(s.kommunikation_datum),
                 auswertung_datum: v(s.auswertung_datum),
                 start: v(s.start) || v(s.start_datum),
+                geplanter_abschluss: v(s.geplanter_abschluss),
                 gesamtstatus: v(s.gesamtstatus),
                 status_steckbrief: v(s.status_steckbrief),
                 teil_hochschulentwicklungsplan: v(s.teil_hochschulentwicklungsplan)
@@ -10749,6 +11160,368 @@
             if (!currentUser || !currentUser.username) return false;
             const seen = JSON.parse(localStorage.getItem(TOUR_SEEN_KEY) || '{}');
             return !seen[currentUser.username];
+        }
+
+        // ====== PORTFOLIO GANTT ======
+        function resetPortfolioFilters() {
+            // Alle Multiselect-Checkboxen zurücksetzen
+            ['portfolioClusterDropdown', 'portfolioStatusDropdown', 'portfolioAuftraggeberDropdown', 'portfolioHEPDropdown'].forEach(id => {
+                const dd = document.getElementById(id);
+                if (dd) dd.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            });
+            ['portfolioClusterMultiselect', 'portfolioStatusMultiselect', 'portfolioAuftraggeberMultiselect', 'portfolioHEPMultiselect'].forEach(id => {
+                updateMultiselectLabel(id);
+            });
+            const ids = ['portfolioSearch', 'portfolioViewMode'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.tagName === 'SELECT' ? el.selectedIndex = 0 : el.value = ''; }
+            });
+            document.getElementById('portfolioDateFrom').value = '';
+            document.getElementById('portfolioDateTo').value = '';
+            renderPortfolioGantt();
+        }
+
+        let _portfolioZoomLevel = 100;
+        const PORTFOLIO_ZOOM_STEPS = [40, 50, 60, 70, 80, 90, 100, 120, 140, 170, 200];
+
+        function portfolioZoom(dir) {
+            if (dir === 0) {
+                _portfolioZoomLevel = 100;
+            } else {
+                const curIdx = PORTFOLIO_ZOOM_STEPS.indexOf(_portfolioZoomLevel);
+                const idx = curIdx >= 0 ? curIdx : PORTFOLIO_ZOOM_STEPS.findIndex(v => v >= _portfolioZoomLevel);
+                const newIdx = Math.max(0, Math.min(PORTFOLIO_ZOOM_STEPS.length - 1, idx + dir));
+                _portfolioZoomLevel = PORTFOLIO_ZOOM_STEPS[newIdx];
+            }
+            const label = document.getElementById('portfolioZoomLabel');
+            if (label) label.textContent = _portfolioZoomLevel + '%';
+            const container = document.getElementById('portfolioGanttContainer');
+            if (container) {
+                const colW = Math.round(72 * _portfolioZoomLevel / 100);
+                container.style.setProperty('--gantt-col-width', colW + 'px');
+            }
+        }
+
+        function renderPortfolioGantt() {
+            const container = document.getElementById('portfolioGanttContainer');
+            if (!container) return;
+            // Zoom-Level anwenden
+            const colW = Math.round(72 * _portfolioZoomLevel / 100);
+            container.style.setProperty('--gantt-col-width', colW + 'px');
+
+            const steckbriefe = _steckbriefeCache || [];
+            if (!steckbriefe.length) {
+                container.innerHTML = '<div class="gantt-empty-state"><p>Keine Steckbriefe vorhanden</p></div>';
+                return;
+            }
+
+            // Filter anwenden
+            const searchVal = (document.getElementById('portfolioSearch')?.value || '').toLowerCase();
+            const viewMode = document.getElementById('portfolioViewMode')?.value || 'auto';
+
+            // Multiselects befüllen
+            populateMultiselectDropdown('portfolioClusterDropdown', 'portfolioClusterMultiselect', steckbriefe.map(s => s.prozesscluster));
+            populateMultiselectDropdown('portfolioAuftraggeberDropdown', 'portfolioAuftraggeberMultiselect', steckbriefe.map(s => s.auftraggeber));
+
+            const selectedClusters = getMultiselectValues('portfolioClusterDropdown');
+            const selectedStatus = getMultiselectValues('portfolioStatusDropdown');
+            const selectedAuftraggeber = getMultiselectValues('portfolioAuftraggeberDropdown');
+            const selectedHEP = getMultiselectValues('portfolioHEPDropdown');
+
+            let filtered = steckbriefe.filter(s => {
+                if (searchVal && !(s.titel || '').toLowerCase().includes(searchVal)) return false;
+                if (selectedClusters.length > 0 && !selectedClusters.includes(s.prozesscluster)) return false;
+                if (selectedStatus.length > 0 && !selectedStatus.includes(s.gesamtstatus)) return false;
+                if (selectedAuftraggeber.length > 0 && !selectedAuftraggeber.includes(s.auftraggeber)) return false;
+                if (selectedHEP.length > 0 && !selectedHEP.includes(s.teil_hochschulentwicklungsplan)) return false;
+                return true;
+            });
+
+            // Dropdown-Optionen befüllen (einmalig)
+
+            // Count-Badge aktualisieren
+            const countBadge = document.getElementById('portfolioCount');
+            if (countBadge) countBadge.textContent = filtered.length;
+
+            if (!filtered.length) {
+                container.innerHTML = '<div class="gantt-empty-state"><p>Keine Steckbriefe für die gewählten Filter</p></div>';
+                return;
+            }
+
+            // Daten sammeln: Bars aus Start/Abschluss und Phasen
+            const bars = [];
+            let barsWithoutDate = 0;
+            let globalMinDate = null;
+            let globalMaxDate = null;
+
+            filtered.forEach(s => {
+                const phasen = parsePhasenData(s.phasen_data);
+                const hasPhasen = phasen.some(p => p.name && p.name.trim());
+                const startDate = parsePortfolioDate(s.start_datum || s.start);
+                const endDate = parsePortfolioDate(s.geplanter_abschluss);
+
+                if (viewMode === 'phasen' && !hasPhasen) return;
+
+                if ((viewMode === 'auto' && hasPhasen) || viewMode === 'phasen') {
+                    // Gesamt-Bar + Phasen darunter
+                    if (startDate || endDate) {
+                        if (startDate) updateMinMax(startDate);
+                        if (endDate) updateMinMax(endDate);
+                        bars.push({
+                            label: s.titel,
+                            start: startDate,
+                            end: endDate,
+                            status: s.gesamtstatus,
+                            steckbriefId: s.id,
+                            isGroup: true
+                        });
+                    } else {
+                        barsWithoutDate++;
+                    }
+                    phasen.forEach(p => {
+                        if (!p.name || !p.name.trim()) return;
+                        const pStart = parsePortfolioDate(p.start_datum) || startDate;
+                        const pEnd = parsePortfolioDate(p.geplanter_abschluss);
+                        if (!pStart && !pEnd) return;
+                        if (pStart) updateMinMax(pStart);
+                        if (pEnd) updateMinMax(pEnd);
+                        bars.push({
+                            label: '  ↳ ' + p.name,
+                            start: pStart,
+                            end: pEnd,
+                            status: p.status || s.gesamtstatus,
+                            steckbriefId: s.id,
+                            isPhase: true
+                        });
+                    });
+                } else {
+                    // Gesamtzeitraum als ein Bar
+                    if (!startDate && !endDate) { barsWithoutDate++; return; }
+                    if (startDate) updateMinMax(startDate);
+                    if (endDate) updateMinMax(endDate);
+                    bars.push({
+                        label: s.titel,
+                        start: startDate,
+                        end: endDate,
+                        status: s.gesamtstatus,
+                        steckbriefId: s.id
+                    });
+                }
+            });
+
+            function updateMinMax(d) {
+                if (!globalMinDate || d < globalMinDate) globalMinDate = d;
+                if (!globalMaxDate || d > globalMaxDate) globalMaxDate = d;
+            }
+
+            // Fallback: wenn keine Daten, aktuelles Jahr
+            if (!globalMinDate) globalMinDate = new Date();
+            if (!globalMaxDate) globalMaxDate = new Date(globalMinDate.getTime() + 365 * 24 * 60 * 60 * 1000);
+
+            // Zeitraum-Filter anwenden
+            const dateFromVal = document.getElementById('portfolioDateFrom')?.value;
+            const dateToVal = document.getElementById('portfolioDateTo')?.value;
+            if (dateFromVal) {
+                const d = new Date(dateFromVal);
+                if (!isNaN(d.getTime())) globalMinDate = new Date(d.getFullYear(), d.getMonth(), 1);
+            }
+            if (dateToVal) {
+                const d = new Date(dateToVal);
+                if (!isNaN(d.getTime())) globalMaxDate = new Date(d.getFullYear(), d.getMonth(), 28);
+            }
+
+            // 1 Monat Puffer links und rechts
+            const minYear = globalMinDate.getFullYear();
+            const minMonth = globalMinDate.getMonth();
+            const maxYear = globalMaxDate.getFullYear();
+            const maxMonth = globalMaxDate.getMonth();
+            const startYear = minMonth > 0 ? minYear : minYear - 1;
+            const startMonth = minMonth > 0 ? minMonth - 1 : 11;
+            const endMonthTotal = (maxYear * 12 + maxMonth) - (startYear * 12 + startMonth) + 3;
+            const totalCols = Math.max(endMonthTotal, 6);
+
+            // Gantt-Diagramm generieren (nutzt das bestehende Look&Feel)
+            if (!bars.length) {
+                let msg = '<div class="gantt-empty-state"><p>Keine Steckbriefe mit Start- oder Abschlussdatum vorhanden</p>';
+                if (barsWithoutDate) msg += `<p style="font-size:13px;margin-top:8px;">${barsWithoutDate} Steckbrief(e) ohne Datum ausgeblendet</p>`;
+                msg += '</div>';
+                container.innerHTML = msg;
+                return;
+            }
+
+            const ganttData = buildPortfolioGanttData(bars, startYear, startMonth, totalCols);
+            let ganttHtml = buildGanttHTML(ganttData, false);
+            if (barsWithoutDate) {
+                ganttHtml += `<div style="padding:8px 12px;font-size:12px;color:#888;">ℹ️ ${barsWithoutDate} Steckbrief(e) ohne Datum nicht dargestellt</div>`;
+            }
+            container.innerHTML = ganttHtml;
+
+            // Klick-Handler auf Labels für Navigation
+            container.querySelectorAll('.gantt-label-col').forEach(td => {
+                const barIdx = td.closest('tr')?.dataset?.barIdx;
+                if (barIdx !== undefined && ganttData.bars[barIdx]?.steckbriefId) {
+                    td.style.cursor = 'pointer';
+                    td.title = 'Klicken zum Öffnen';
+                    td.onclick = () => {
+                        window.history.pushState({}, '', '?id=' + ganttData.bars[barIdx].steckbriefId);
+                        handleRouting();
+                    };
+                }
+            });
+        }
+
+        function parsePortfolioDate(val) {
+            if (!val) return null;
+            const d = new Date(val);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function populatePortfolioSelect(selectId, values) {
+            const sel = document.getElementById(selectId);
+            if (!sel || sel.dataset.populated) return;
+            const unique = [...new Set(values.filter(Boolean))].sort();
+            unique.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = v;
+                sel.appendChild(opt);
+            });
+            sel.dataset.populated = '1';
+        }
+
+        // Generisches Multiselect
+        function populateMultiselectDropdown(dropdownId, wrapperId, values) {
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown || dropdown.dataset.populated) return;
+            const unique = [...new Set(values.filter(Boolean))].sort();
+            dropdown.innerHTML = unique.map(v =>
+                `<div class="multiselect-item" onclick="toggleMultiselectItem(this, '${wrapperId}')">
+                    <input type="checkbox" value="${escapeHtml(v)}">
+                    <label>${escapeHtml(v)}</label>
+                </div>`
+            ).join('');
+            dropdown.dataset.populated = '1';
+        }
+
+        // Für Overview-Filter: befüllt Dropdown und nutzt applyFilters
+        function populateOverviewMultiselect(dropdownId, wrapperId, values) {
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown || dropdown.dataset.populated) return;
+            const unique = [...new Set(values.filter(Boolean))].sort();
+            dropdown.innerHTML = unique.map(v =>
+                `<div class="multiselect-item" onclick="toggleOverviewMultiselectItem(this, '${wrapperId}')">
+                    <input type="checkbox" value="${escapeHtml(v)}">
+                    <label>${escapeHtml(v)}</label>
+                </div>`
+            ).join('');
+            dropdown.dataset.populated = '1';
+        }
+
+        function toggleOverviewMultiselectItem(item, wrapperId) {
+            const cb = item.querySelector('input[type="checkbox"]');
+            cb.checked = !cb.checked;
+            updateMultiselectLabel(wrapperId);
+            applyFilters();
+        }
+
+        function toggleMultiselect(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            const dropdown = wrapper.querySelector('.multiselect-dropdown');
+            const isOpen = dropdown.classList.contains('open');
+            document.querySelectorAll('.multiselect-dropdown.open').forEach(d => d.classList.remove('open'));
+            if (!isOpen) dropdown.classList.add('open');
+        }
+
+        function toggleMultiselectItem(item, wrapperId) {
+            const cb = item.querySelector('input[type="checkbox"]');
+            cb.checked = !cb.checked;
+            updateMultiselectLabel(wrapperId);
+            renderPortfolioGantt();
+        }
+
+        function getMultiselectValues(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            if (!dropdown) return [];
+            return [...dropdown.querySelectorAll('input[type="checkbox"]:checked')].map(cb => cb.value);
+        }
+
+        function updateMultiselectLabel(wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
+            const toggle = wrapper.querySelector('.multiselect-toggle');
+            const dropdown = wrapper.querySelector('.multiselect-dropdown');
+            const selected = [...dropdown.querySelectorAll('input[type="checkbox"]:checked')].map(cb => cb.value);
+            const defaultLabel = toggle.dataset.defaultLabel || 'Alle';
+            if (selected.length === 0) {
+                toggle.textContent = defaultLabel;
+                toggle.classList.remove('has-selection');
+            } else if (selected.length === 1) {
+                toggle.textContent = selected[0];
+                toggle.classList.add('has-selection');
+            } else {
+                toggle.textContent = selected.length + ' gewählt';
+                toggle.classList.add('has-selection');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.multiselect-wrapper')) {
+                document.querySelectorAll('.multiselect-dropdown.open').forEach(d => d.classList.remove('open'));
+            }
+        });
+
+        function buildPortfolioGanttData(bars, startYear, startMonth, totalCols) {
+            const ganttBars = [];
+
+            bars.forEach(b => {
+                let barStartIdx = -1;
+                let barEndIdx = -1;
+
+                if (b.start) {
+                    barStartIdx = (b.start.getFullYear() - startYear) * 12 + (b.start.getMonth() - startMonth);
+                }
+                if (b.end) {
+                    barEndIdx = (b.end.getFullYear() - startYear) * 12 + (b.end.getMonth() - startMonth);
+                }
+
+                // Mindestens ein Datum muss vorhanden sein
+                if (barStartIdx < 0 && barEndIdx < 0) {
+                    return; // Überspringen – wird vorher schon gefiltert
+                }
+
+                if (barStartIdx < 0) barStartIdx = barEndIdx;
+                if (barEndIdx < 0) barEndIdx = barStartIdx;
+                if (barEndIdx < barStartIdx) barEndIdx = barStartIdx;
+
+                // Clamp
+                barStartIdx = Math.max(0, Math.min(barStartIdx, totalCols - 1));
+                barEndIdx = Math.max(0, Math.min(barEndIdx, totalCols - 1));
+
+                const sMonth = monthFromIndex(barStartIdx, startYear, startMonth);
+                const eMonth = monthFromIndex(barEndIdx, startYear, startMonth);
+
+                ganttBars.push({
+                    label: b.label,
+                    startYear: sMonth.year,
+                    startMonth: sMonth.month,
+                    endYear: eMonth.year,
+                    endMonth: eMonth.month,
+                    startHalf: 0,
+                    endHalf: 0,
+                    isGroup: b.isGroup || false,
+                    isPhase: b.isPhase || false,
+                    steckbriefId: b.steckbriefId
+                });
+            });
+
+            return {
+                startYear: startYear,
+                startMonth: startMonth,
+                monthCount: totalCols,
+                globalMilestones: [],
+                bars: ganttBars
+            };
         }
     </script>
 
