@@ -2706,6 +2706,85 @@
             position: relative;
         }
 
+        /* Fortschrittsbalken */
+        .progress-bar-container {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            height: 18px;
+            position: relative;
+            min-width: 80px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        .progress-bar-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.7em;
+            line-height: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .progress-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .progress-input-group input[type="range"] {
+            flex: 1;
+        }
+        .progress-input-group .progress-value {
+            min-width: 45px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        /* Klappbare Status-Zelle in der Tabelle */
+        .status-toggle {
+            cursor: pointer;
+            font-size: 0.78em;
+            color: #666;
+            margin-top: 4px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-toggle:hover {
+            color: #333;
+        }
+        .status-toggle-icon {
+            font-size: 0.7em;
+            transition: transform 0.2s ease;
+            display: inline-block;
+        }
+        .status-expanded .status-toggle-icon {
+            transform: rotate(90deg);
+        }
+        .status-details {
+            display: none;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid #e8e8e8;
+        }
+        .status-expanded .status-details {
+            display: block;
+        }
+        .status-detail-row {
+            margin-bottom: 6px;
+        }
+        .status-detail-row .progress-bar-container {
+            margin-top: 2px;
+        }
+
         /* Tabellenansicht */
         .table-view {
             background: white;
@@ -4038,7 +4117,7 @@
         </div>
 
         <div class="landing-footer">
-            Steckbrief Manager v17.12.0 · FOM Hochschule für Oekonomie & Management
+            Steckbrief Manager v17.13.0 · FOM Hochschule für Oekonomie & Management
         </div>
     </div>
 
@@ -4367,6 +4446,7 @@
                                         <option value="/">/</option>
                                         <option value="Student-Life-Cycle">Student-Life-Cycle</option>
                                         <option value="Product-Life-Cycle">Product-Life-Cycle</option>
+                                        <option value="Lehrenden-Life-Cycle">Lehrenden-Life-Cycle</option>
                                     </select>
                                 </div>
                             </div>
@@ -4638,6 +4718,13 @@
                                         <option value="Pausiert">Pausiert</option>
                                         <option value="Abgebrochen">Abgebrochen</option>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fortschritt">Fortschritt</label>
+                                    <div class="progress-input-group">
+                                        <input type="range" id="fortschritt" min="0" max="100" step="5" value="0" oninput="document.getElementById('fortschrittValue').textContent = this.value + '%'">
+                                        <span class="progress-value" id="fortschrittValue">0%</span>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="status_steckbrief">Status Steckbrief</label>
@@ -5694,7 +5781,7 @@
                                 return;
                             }
                             dropdown.innerHTML = personen.map(p => {
-                                const fullName = [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ');
+                                const fullName = [filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' ');
                                 const uname = (p.Vorname.trim() + '.' + p.Nachname.trim()).toLowerCase();
                                 return `<div class="adduser-ac-item" data-username="${escapeHtml(uname)}" data-display="${escapeHtml(fullName)}"
                                     style="padding:8px 12px; cursor:pointer; font-size:0.9em; border-bottom:1px solid #f0f0f0; transition:background 0.1s;">
@@ -6077,7 +6164,7 @@
                             return;
                         }
                         dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
                                 ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
                                 ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
                             </div>
@@ -6105,6 +6192,12 @@
             });
         }
 
+        // Titel filtern: nur Prof. und Dr. anzeigen, andere Titel (Dipl.-Volksw. etc.) ausblenden
+        function filterTitel(titel) {
+            if (!titel) return '';
+            return titel.split(/\s+/).filter(p => /^(prof\.?|dr\.?)$/i.test(p)).join(' ');
+        }
+
         // ====== AUFTRAGGEBER VERWALTUNG (Multi-Person) ======
         let _currentAuftraggeber = [];
 
@@ -6113,7 +6206,7 @@
             if (!t) {
                 // Fallback: einzelner auftraggeberFID + Name
                 if (steckbrief.auftraggeberFID) {
-                    const name = [steckbrief.auftraggeber_titel, steckbrief.auftraggeber_vorname, steckbrief.auftraggeber_nachname].filter(Boolean).join(' ') || steckbrief.auftraggeber || '';
+                    const name = [filterTitel(steckbrief.auftraggeber_titel), steckbrief.auftraggeber_vorname, steckbrief.auftraggeber_nachname].filter(Boolean).join(' ') || steckbrief.auftraggeber || '';
                     return [{ fid: parseInt(steckbrief.auftraggeberFID), name: name }];
                 }
                 return [];
@@ -6134,11 +6227,22 @@
             let data = auftraggeber_multi;
             if (typeof data === 'string') {
                 try { data = JSON.parse(data); } catch(e) {
-                    return data.split(/[\n,;]+/).map(n => n.trim()).filter(Boolean).join(', ');
+                    return data.split(/[\n,;]+/).map(n => cleanNameTitel(n.trim())).filter(Boolean).join(', ');
                 }
             }
             if (!Array.isArray(data) || data.length === 0) return '';
-            return data.map(m => m.name).join(', ');
+            return data.map(m => cleanNameTitel(m.name)).join(', ');
+        }
+
+        // Gespeicherten vollen Namen bereinigen: nur Prof./Dr. Titel behalten
+        function cleanNameTitel(name) {
+            if (!name) return '';
+            return name.split(/\s+/).filter(p => {
+                if (/\./.test(p) || /^\w+\.-/.test(p)) {
+                    return /^(prof\.?|dr\.?)$/i.test(p);
+                }
+                return true;
+            }).join(' ');
         }
 
         function renderAuftraggeberTags() {
@@ -6191,7 +6295,7 @@
                             return;
                         }
                         dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
                                 ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
                                 ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
                             </div>
@@ -6273,7 +6377,7 @@
                             return;
                         }
                         dropdown.innerHTML = personen.map(p => `
-                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                            <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
                                 ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
                                 ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
                             </div>
@@ -6615,11 +6719,11 @@
                         if (s.auftraggeber_multi) {
                             s.auftraggeber = formatAuftraggeberDisplay(s.auftraggeber_multi);
                         } else {
-                            s.auftraggeber = [s.auftraggeber_titel, s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
+                            s.auftraggeber = [filterTitel(s.auftraggeber_titel), s.auftraggeber_vorname, s.auftraggeber_nachname].filter(Boolean).join(' ');
                         }
-                        s.prozessmanager = [s.prozessmanager_titel, s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
-                        s.anforderungsmanager = [s.anforderungsmanager_titel, s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
-                        s.prozessverantwortlicher = [s.prozessverantwortlicher_titel, s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
+                        s.prozessmanager = [filterTitel(s.prozessmanager_titel), s.prozessmanager_vorname, s.prozessmanager_nachname].filter(Boolean).join(' ');
+                        s.anforderungsmanager = [filterTitel(s.anforderungsmanager_titel), s.anforderungsmanager_vorname, s.anforderungsmanager_nachname].filter(Boolean).join(' ');
+                        s.prozessverantwortlicher = [filterTitel(s.prozessverantwortlicher_titel), s.prozessverantwortlicher_vorname, s.prozessverantwortlicher_nachname].filter(Boolean).join(' ');
                         s.start_datum = s.start || '';
                         s.geplanter_abschluss = s.geplanter_abschluss || '';
                     });
@@ -6774,6 +6878,33 @@
             updateSelectionUI();
         }
 
+        // Status-Klasse für farbige Badges
+        function getStatusClass(status) {
+            if (!status || status === '/') return 'status-grey';
+            const s = status.toLowerCase();
+            if (s.includes('im betrieb') || s.includes('abgeschlossen')) return 'status-green';
+            if (s.includes('idee') || s.includes('konzeption') || s.includes('geplant') || s.includes('pausiert')) return 'status-orange';
+            if (s.includes('in umsetzung') || s.includes('pilotierung')) return 'status-blue';
+            if (s.includes('abgebrochen')) return 'status-red';
+            return 'status-grey';
+        }
+
+        // Fortschrittsbalken
+        function getProgressColor(pct) {
+            if (pct <= 25) return '#e74c3c';
+            if (pct <= 50) return '#f39c12';
+            if (pct <= 75) return '#3498db';
+            return '#27ae60';
+        }
+
+        function renderProgressBar(pct) {
+            const p = Math.max(0, Math.min(100, parseInt(pct) || 0));
+            return `<div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width:${p}%;background:${getProgressColor(p)}"></div>
+                <span class="progress-bar-label">${p}%</span>
+            </div>`;
+        }
+
         // Tabellen-Ansicht rendern
         function renderTableView(container, steckbriefe) {
             container.className = 'table-view';
@@ -6793,8 +6924,8 @@
             }
 
             const columns = [
-                { key: 'titel', label: 'Titel' },
                 { key: 'prozesscluster', label: 'Prozesscluster' },
+                { key: 'titel', label: 'Anforderungen' },
                 { key: 'auftraggeber', label: 'Auftraggeber' },
                 { key: 'gesamtstatus', label: 'Gesamtstatus' },
             ];
@@ -6808,16 +6939,6 @@
                 if (tableSortColumn !== key) return 'sortable';
                 return `sortable sort-${tableSortDirection}`;
             };
-
-            function getStatusClass(status) {
-                if (!status || status === '/') return 'status-grey';
-                const s = status.toLowerCase();
-                if (s.includes('im betrieb') || s.includes('abgeschlossen')) return 'status-green';
-                if (s.includes('idee') || s.includes('konzeption') || s.includes('geplant') || s.includes('pausiert')) return 'status-orange';
-                if (s.includes('in umsetzung') || s.includes('pilotierung')) return 'status-blue';
-                if (s.includes('abgebrochen')) return 'status-red';
-                return 'status-grey';
-            }
 
             const isAdmin = getEffectiveRole() === 'admin';
 
@@ -6843,18 +6964,30 @@
                                 <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="cursor: pointer;">
                                     <div class="type-icon" title="ID: ${s.id}">📄</div>
                                 </td>
-                                <td class="title-cell" onclick="openSteckbrief('${s.id}')">${escapeHtml(s.titel)}</td>
                                 <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.prozesscluster || '–')}</td>
-                                <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.auftraggeber || '–')}</td>
+                                <td class="title-cell" onclick="openSteckbrief('${s.id}')">${escapeHtml(s.titel)}</td>
+                                <td onclick="openSteckbrief('${s.id}')">${(s.auftraggeber || '–').split(', ').map(n => escapeHtml(n)).join('<br>')}</td>
                                 <td onclick="openSteckbrief('${s.id}')">
                                     ${(() => {
                                         const phasen = parsePhasenData(s.phasen_data);
+                                        let statusHtml = '';
+                                        statusHtml += renderProgressBar(s.fortschritt);
                                         if (phasen.length > 0) {
-                                            return phasen.map(p => 
-                                                `<span class="status-badge ${getStatusClass(p.status)}" style="display:inline-block;margin:1px 3px;" title="${escapeHtml(p.name || '')}">${escapeHtml((p.name || '') + ': ' + (p.status || '/'))}</span>`
+                                            statusHtml += `<div class="status-toggle" onclick="event.stopPropagation(); this.parentElement.classList.toggle('status-expanded')">
+                                                <span class="status-toggle-icon">▶</span> ${phasen.length} Phase${phasen.length > 1 ? 'n' : ''}
+                                            </div>`;
+                                            statusHtml += `<div class="status-details">`;
+                                            statusHtml += phasen.map(p => 
+                                                `<div class="status-detail-row">
+                                                    <span class="status-badge ${getStatusClass(p.status)}" style="display:inline-block;margin:1px 0;font-size:0.8em;">${escapeHtml((p.name || '') + ': ' + (p.status || '/'))}</span>
+                                                    ${renderProgressBar(p.fortschritt)}
+                                                </div>`
                                             ).join('');
+                                            statusHtml += `</div>`;
+                                        } else {
+                                            statusHtml += `<span class="status-badge ${getStatusClass(s.gesamtstatus)}" style="margin-top:4px;display:inline-block;">${escapeHtml(s.gesamtstatus || '–')}</span>`;
                                         }
-                                        return `<span class="status-badge ${getStatusClass(s.gesamtstatus)}">${escapeHtml(s.gesamtstatus || '–')}</span>`;
+                                        return statusHtml;
                                     })()}
                                 </td>
                                 <td>
@@ -7190,7 +7323,7 @@
                             }
                             lastResults = personen;
                             dropdown.innerHTML = personen.map(p => `
-                                <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
+                                <div class="autocomplete-item" data-id="${p.PersonenID}" data-name="${escapeHtml([filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' '))}">
                                     ${escapeHtml(p.Nachname)}, ${escapeHtml(p.Vorname)}
                                     ${p.Titel_de ? '<span class="person-id">(' + escapeHtml(p.Titel_de) + ')</span>' : ''}
                                 </div>
@@ -7225,7 +7358,7 @@
                         if (q && !fidInput.value && lastResults.length > 0) {
                             if (lastResults.length === 1) {
                                 const p = lastResults[0];
-                                input.value = [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ');
+                                input.value = [filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' ');
                                 fidInput.value = p.PersonenID;
                             } else {
                                 const exact = lastResults.find(p =>
@@ -7233,7 +7366,7 @@
                                     [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase() === q.toLowerCase()
                                 );
                                 if (exact) {
-                                    input.value = [exact.Titel_de, exact.Vorname, exact.Nachname].filter(Boolean).join(' ');
+                                    input.value = [filterTitel(exact.Titel_de), exact.Vorname, exact.Nachname].filter(Boolean).join(' ');
                                     fidInput.value = exact.PersonenID;
                                 }
                             }
@@ -7327,6 +7460,9 @@
             
             // Alle Sektionen in View-Modus versetzen
             closeAllSectionEdits();
+            
+            // Alle Rubriken standardmäßig zuklappen
+            toggleAllSections(false);
             
             // Bei editMode=true alle Sektionen zum Bearbeiten öffnen
             if (editMode && canEditSteckbrief(steckbrief)) {
@@ -7425,15 +7561,27 @@
                     ${renderField('Start', s.start_datum)}
                     ${renderField('Geplanter Abschluss', s.geplanter_abschluss)}
                     ${renderField('Gesamtstatus', s.gesamtstatus)}
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Fortschritt</label>
+                        ${renderProgressBar(s.fortschritt)}
+                    </div>
                     ${renderField('Status Steckbrief', s.status_steckbrief)}
                     ${renderField('Teil des Hochschulentwicklungsplans', s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : (s.teil_hochschulentwicklungsplan || '-')))}
                 </div>
                 ${(() => {
                     const phasen = parsePhasenData(s.phasen_data);
                     if (!phasen.length) return '';
-                    return '<div class="genesis-sub-header" style="margin-top:14px;">Phasen</div><div class="form-grid">' +
-                        phasen.map((p, i) => renderField('Phase ' + (i+1) + ': ' + escapeHtml(p.name || ''), (p.status || '-') + (p.start_datum ? ' · Start: ' + p.start_datum : '') + (p.geplanter_abschluss ? ' · Abschluss: ' + p.geplanter_abschluss : ''))).join('') +
-                        '</div>';
+                    return '<div class="genesis-sub-header" style="margin-top:14px;">Phasen</div>' +
+                        phasen.map((p, i) => `<div style="margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                <strong>Phase ${i+1}: ${escapeHtml(p.name || '')}</strong>
+                                <span class="status-badge ${getStatusClass(p.status)}" style="font-size:0.8em;">${escapeHtml(p.status || '-')}</span>
+                            </div>
+                            ${renderProgressBar(p.fortschritt)}
+                            <div style="font-size:0.8em;color:#888;margin-top:3px;">
+                                ${p.start_datum ? 'Start: ' + p.start_datum : ''}${p.start_datum && p.geplanter_abschluss ? ' · ' : ''}${p.geplanter_abschluss ? 'Abschluss: ' + p.geplanter_abschluss : ''}
+                            </div>
+                        </div>`).join('');
                 })()}
             `;
 
@@ -7484,6 +7632,14 @@
                         <select onchange="_currentPhasen[${idx}].status = this.value">
                             ${GESAMTSTATUS_OPTIONS.map(o => `<option value="${o}"${ph.status === o ? ' selected' : ''}>${o}</option>`).join('')}
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fortschritt</label>
+                        <div class="progress-input-group">
+                            <input type="range" min="0" max="100" step="5" value="${ph.fortschritt || 0}"
+                                   oninput="_currentPhasen[${idx}].fortschritt = parseInt(this.value); this.nextElementSibling.textContent = this.value + '%'">
+                            <span class="progress-value">${ph.fortschritt || 0}%</span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Start</label>
@@ -8482,6 +8638,8 @@
             document.getElementById('start_datum').value = s.start_datum || '';
             document.getElementById('geplanter_abschluss').value = s.geplanter_abschluss || '';
             document.getElementById('gesamtstatus').value = s.gesamtstatus || '';
+            document.getElementById('fortschritt').value = s.fortschritt || 0;
+            document.getElementById('fortschrittValue').textContent = (s.fortschritt || 0) + '%';
             document.getElementById('teil_hochschulentwicklungsplan').value = s.teil_hochschulentwicklungsplan || '';
             
             // Phasen laden
@@ -8724,7 +8882,7 @@
                                 console.log(`[Auto-Zuordnung] Suche "${term}" → ${personen.length} Treffer`);
                                 if (personen.length === 1) {
                                     const p = personen[0];
-                                    txtEl.value = [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ');
+                                    txtEl.value = [filterTitel(p.Titel_de), p.Vorname, p.Nachname].filter(Boolean).join(' ');
                                     fidEl.value = p.PersonenID;
                                     console.log(`[Auto-Zuordnung] ✓ Eindeutig zugeordnet: ${txtEl.value} (FID=${p.PersonenID})`);
                                     resolved = true;
@@ -8738,7 +8896,7 @@
                                         [p.Titel_de, p.Vorname, p.Nachname].filter(Boolean).join(' ').toLowerCase() === lowerTxt
                                     );
                                     if (exact) {
-                                        txtEl.value = [exact.Titel_de, exact.Vorname, exact.Nachname].filter(Boolean).join(' ');
+                                        txtEl.value = [filterTitel(exact.Titel_de), exact.Vorname, exact.Nachname].filter(Boolean).join(' ');
                                         fidEl.value = exact.PersonenID;
                                         console.log(`[Auto-Zuordnung] ✓ Exakter Match: ${txtEl.value} (FID=${exact.PersonenID})`);
                                         resolved = true;
@@ -8783,6 +8941,7 @@
                 start: document.getElementById('start_datum').value,
                 geplanter_abschluss: document.getElementById('geplanter_abschluss').value,
                 gesamtstatus: document.getElementById('gesamtstatus').value,
+                fortschritt: parseInt(document.getElementById('fortschritt').value) || 0,
                 teil_hochschulentwicklungsplan: document.getElementById('teil_hochschulentwicklungsplan').value,
                 
                 phasen_data: _currentPhasen.length > 0 ? JSON.stringify(_currentPhasen.filter(p => p.name && p.name.trim())) : null,

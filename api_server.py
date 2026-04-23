@@ -444,7 +444,7 @@ def save_steckbrief():
         'beginn_datum', 'fertigstellung_datum', 'abnahme_datum',
         'kommunikation_datum', 'auswertung_datum',
         'status_optimierung',
-        'start', 'gesamtstatus', 'status_steckbrief', 'teil_hochschulentwicklungsplan',
+        'start', 'gesamtstatus', 'fortschritt', 'status_steckbrief', 'teil_hochschulentwicklungsplan',
         'geplanter_abschluss',
         'phasen_data',
         'zeitplan_data'
