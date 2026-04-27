@@ -10,15 +10,20 @@ Thumbs.db
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
 
 # Environment
 .env
 
 # Logs
 logs/
+*.log
 
 # Virtual Environment
 .venv/
+
+# Docker
+*.tar
 
 # Ignorierte Ordner
 Volle Steckbriefe_2026_03_02/

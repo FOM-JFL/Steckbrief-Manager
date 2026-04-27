@@ -10,13 +10,40 @@ import mysql.connector
 import jwt
 import datetime
 import os
+import sys
+import json
+import logging
+import re
 from dotenv import load_dotenv
 from ldap3 import Server, Connection, SIMPLE, ALL_ATTRIBUTES
+from ldap3.utils.conv import escape_filter_chars
 
 load_dotenv()
 
+# --- Structured JSON Logging (stdout) ---
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_entry = {
+            'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'level': record.levelname.lower(),
+            'message': record.getMessage(),
+            'logger': record.name,
+        }
+        if record.exc_info and record.exc_info[0]:
+            log_entry['exception'] = self.formatException(record.exc_info)
+        return json.dumps(log_entry, ensure_ascii=False)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(JsonFormatter())
+logging.root.handlers = [handler]
+logging.root.setLevel(logging.INFO)
+logger = logging.getLogger('steckbrief-manager')
+
 app = Flask(__name__)
 CORS(app)
+
+# Werkzeug-Logger auch auf JSON umstellen
+logging.getLogger('werkzeug').handlers = [handler]
 
 DB_CONFIG = {
     'host': os.environ.get('DB_HOST', 'mariadb.bcw-intern.local'),
@@ -29,7 +56,10 @@ DB_CONFIG = {
 LDAP_SERVER = os.environ.get('LDAP_SERVER', 'ldap://bcw-intern.local')
 LDAP_DOMAIN = os.environ.get('LDAP_DOMAIN', 'bcw-intern.local')
 LDAP_BASE_DN = os.environ.get('LDAP_BASE_DN', 'DC=bcw-intern,DC=local')
-JWT_SECRET = os.environ.get('JWT_SECRET', 'change-me-in-production')
+JWT_SECRET = os.environ.get('JWT_SECRET')
+if not JWT_SECRET:
+    logger.error('JWT_SECRET ist nicht gesetzt! Bitte in .env oder Umgebungsvariablen konfigurieren.')
+    sys.exit(1)
 JWT_EXPIRY_HOURS = int(os.environ.get('JWT_EXPIRY_HOURS', '8'))
 INITIAL_ADMIN = os.environ.get('INITIAL_ADMIN', '')
 
@@ -45,7 +75,8 @@ def authenticate_ad(username, password):
     try:
         conn = Connection(server, user=user_upn, password=password, authentication=SIMPLE, auto_bind=True)
         # Benutzerinfos abrufen
-        conn.search(LDAP_BASE_DN, f'(sAMAccountName={username})',
+        safe_username = escape_filter_chars(username)
+        conn.search(LDAP_BASE_DN, f'(sAMAccountName={safe_username})',
                      attributes=['displayName', 'mail'])
         if conn.entries:
             entry = conn.entries[0]
@@ -414,8 +445,8 @@ def get_steckbrief(sid):
 @require_role('editor', 'admin')
 def save_steckbrief():
     data = request.json
-    # DEBUG: Log received person FIDs
-    print(f"[SAVE DEBUG] Received FIDs: auftraggeber={data.get('auftraggeberFID')}, prozessmanager={data.get('prozessmanagerFID')}, anforderungsmanager={data.get('anforderungsmanagerFID')}, prozessverantwortlicher={data.get('prozessverantwortlicherFID')}, id={data.get('id')}")
+    if not data:
+        return jsonify({'error': 'Keine Daten empfangen'}), 400
     conn = get_db()
     cursor = conn.cursor()
 
@@ -525,5 +556,21 @@ def add_no_cache_headers(response):
     return response
 
 
+# --- Health-Endpoint (Basis-Monitoring) ---
+@app.route('/health')
+def health_check():
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute('SELECT 1')
+        cursor.fetchone()
+        conn.close()
+        return jsonify({'status': 'ok'}), 200
+    except Exception:
+        return jsonify({'status': 'error', 'detail': 'Datenbankverbindung fehlgeschlagen'}), 503
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    logger.info('Steckbrief-Manager API startet auf Port 5000')
+    debug_mode = os.environ.get('FLASK_DEBUG', '0') == '1'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
