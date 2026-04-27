@@ -421,7 +421,7 @@ def save_steckbrief():
 
     fields = [
         'titel', 'auftraggeberFID', 'auftraggeber_multi', 'prozessmanagerFID', 'anforderungsmanagerFID',
-        'prozessverantwortlicherFID', 'projektteam', 'prozesscluster', 'umsetzungsaufwand',
+        'prozessverantwortlicherFID', 'projektteam', 'it_unterstuetzung', 'prozesscluster', 'prioritaet', 'umsetzungsaufwand',
         'betroffener_lifecycle', 'ziel_vision', 'warum', 'wer', 'welche', 'was', 'wie', 'wo', 'wann',
         'einordnung_gesamtprozess',
         'bewertung_strategie', 'bewertung_strategie_text',
@@ -437,6 +437,7 @@ def save_steckbrief():
         'nutzen_reduktion', 'nutzen_reduktion_text',
         'nutzen_studierende', 'nutzen_studierende_text',
         'nutzen_qualitaet', 'nutzen_qualitaet_text',
+        'nutzen_vzae',
         'aenderungshistorie',
         'bearbeiter',
         'identifikationsnummer',

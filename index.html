@@ -4220,7 +4220,7 @@
                                 <label>Anforderungsmgr.</label>
                                 <div class="filter-select-wrapper">
                                     <div class="multiselect-wrapper" id="filterAnforderungsmanagerMultiselect" style="flex:1;min-width:0;">
-                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Anforderungsm." onclick="toggleMultiselect('filterAnforderungsmanagerMultiselect')" style="border-radius:4px 0 0 4px;">Alle Anforderungsm.</button>
+                                        <button type="button" class="multiselect-toggle" data-default-label="Alle Anf.-/Campusm." onclick="toggleMultiselect('filterAnforderungsmanagerMultiselect')" style="border-radius:4px 0 0 4px;">Alle Anf.-/Campusm.</button>
                                         <div class="multiselect-dropdown" id="filterAnforderungsmanagerDropdown"></div>
                                     </div>
                                     <button class="filter-search-toggle" onclick="toggleFilterSearch('filterAnforderungsmanagerText', this)" title="Schlagwort-Suche">🔍</button>
@@ -4251,6 +4251,9 @@
                                 <span class="sidebar-view-icon">📋</span> Tabellenansicht
                             </button>
                         </div>
+                        <button class="sidebar-action-btn" onclick="openColumnPicker()" title="Spalten der Tabellenansicht anpassen" style="margin-top:6px;">
+                            <span>⚙️</span> Spalten anpassen
+                        </button>
                     </div>
 
                     <div class="sidebar-section">
@@ -4353,46 +4356,6 @@
                                     <input type="text" id="titel" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="auftraggeber">Auftraggeber/-in</label>
-                                    <div class="team-members-container" id="auftraggeberMembersContainer"></div>
-                                    <div class="personen-autocomplete">
-                                        <input type="text" id="auftraggeberInput" autocomplete="off" placeholder="Person hinzufügen...">
-                                        <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="prozessmanager">Prozessmanager/-in</label>
-                                    <div class="personen-autocomplete">
-                                        <input type="text" id="prozessmanager" autocomplete="off" placeholder="Name eingeben...">
-                                        <input type="hidden" id="prozessmanagerFID">
-                                        <div class="autocomplete-dropdown" id="prozessmanager_dropdown"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="anforderungsmanager">Anforderungsmanager/-in</label>
-                                    <div class="personen-autocomplete">
-                                        <input type="text" id="anforderungsmanager" autocomplete="off" placeholder="Name eingeben...">
-                                        <input type="hidden" id="anforderungsmanagerFID">
-                                        <div class="autocomplete-dropdown" id="anforderungsmanager_dropdown"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
-                                    <div class="personen-autocomplete">
-                                        <input type="text" id="prozessverantwortlicher" autocomplete="off" placeholder="Name eingeben...">
-                                        <input type="hidden" id="prozessverantwortlicherFID">
-                                        <div class="autocomplete-dropdown" id="prozessverantwortlicher_dropdown"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Prozess-/Projektteam</label>
-                                    <div class="team-members-container" id="teamMembersContainer"></div>
-                                    <div class="personen-autocomplete">
-                                        <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
-                                        <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
                                     <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
                                     <select id="prozesscluster" autocomplete="off">
                                         <option value="">-- Bitte wählen --</option>
@@ -4432,13 +4395,60 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
-                                    <select id="umsetzungsaufwand" autocomplete="off">
+                                    <label for="prioritaet">Priorität</label>
+                                    <select id="prioritaet" autocomplete="off">
                                         <option value="">-- Bitte wählen --</option>
-                                        <option value="klein">Klein</option>
-                                        <option value="mittel">Mittel</option>
-                                        <option value="gross">Groß</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auftraggeber">Auftraggeber/-in</label>
+                                    <div class="team-members-container" id="auftraggeberMembersContainer"></div>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="auftraggeberInput" autocomplete="off" placeholder="Person hinzufügen...">
+                                        <div class="autocomplete-dropdown" id="auftraggeber_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prozessverantwortlicher">Prozessverantwortliche/r</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="prozessverantwortlicher" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="prozessverantwortlicherFID">
+                                        <div class="autocomplete-dropdown" id="prozessverantwortlicher_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="anforderungsmanager">Anforderungs.-/Campusmanager/in</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="anforderungsmanager" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="anforderungsmanagerFID">
+                                        <div class="autocomplete-dropdown" id="anforderungsmanager_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prozessmanager">Prozessmanager/-in</label>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="prozessmanager" autocomplete="off" placeholder="Name eingeben...">
+                                        <input type="hidden" id="prozessmanagerFID">
+                                        <div class="autocomplete-dropdown" id="prozessmanager_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Prozess-/Projektteam</label>
+                                    <div class="team-members-container" id="teamMembersContainer"></div>
+                                    <div class="personen-autocomplete">
+                                        <input type="text" id="projektteamInput" autocomplete="off" placeholder="Person hinzufügen...">
+                                        <div class="autocomplete-dropdown" id="projektteam_dropdown"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="it_unterstuetzung">IT-Unterstützung</label>
+                                    <input type="text" id="it_unterstuetzung" placeholder="z. B. Name der unterstützenden IT-Abteilung oder Person">
                                 </div>
                                 <div class="form-group">
                                     <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
@@ -4447,6 +4457,15 @@
                                         <option value="Student-Life-Cycle">Student-Life-Cycle</option>
                                         <option value="Product-Life-Cycle">Product-Life-Cycle</option>
                                         <option value="Lehrenden-Life-Cycle">Lehrenden-Life-Cycle</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
+                                    <select id="umsetzungsaufwand" autocomplete="off">
+                                        <option value="">-- Bitte wählen --</option>
+                                        <option value="klein">Klein</option>
+                                        <option value="mittel">Mittel</option>
+                                        <option value="gross">Groß</option>
                                     </select>
                                 </div>
                             </div>
@@ -4474,11 +4493,20 @@
                         <div class="section-edit" id="editBeschreibung" style="display:none">
                             <div class="form-group">
                                 <label for="ziel_vision">Vision</label>
-                                <textarea id="ziel_vision"></textarea>
+                                <textarea id="ziel_vision" placeholder="Formulieren Sie einen prägnanten Satz, der das Zielbild beschreibt – wie soll der Zustand nach erfolgreicher Umsetzung aussehen?
+
+Beispiel: »Ein vollständig digitalisierter Anmeldeprozess, der Studierenden in Echtzeit Rückmeldung gibt und manuelle Schritte eliminiert.«"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="warum">Warum soll der Prozess optimiert werden? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Ist-Situation & Ausformulierung von 4.)</span></label>
-                                <textarea id="warum"></textarea>
+                                <textarea id="warum" placeholder="Beschreiben Sie die aktuelle Ausgangssituation und Problemlage:
+
+• Wie läuft der Prozess heute ab?
+• Welche konkreten Probleme oder Engpässe gibt es?
+• Welche Auswirkungen hat die aktuelle Situation (z. B. Zeitverlust, Fehleranfälligkeit, Unzufriedenheit)?
+• Was war der Auslöser für den Optimierungsbedarf?
+
+Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-Listen erfasst. Dies führt zu langen Bearbeitungszeiten (ø 5 Werktage), häufigen Dateninkonsistenzen und fehlender Transparenz über den Bearbeitungsstand.«"></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="wer">Wer ist an der Prozessoptimierung direkt beteiligt bzw. davon indirekt betroffen? <span style="color: #888; font-size: 0.85em; font-weight: normal;">(Aufzählung der Organisationseinheiten)</span></label>
@@ -4675,6 +4703,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="nutzen_vzae">Wie viel Arbeitsaufwand entfällt in VZÄ?</label>
+                                <input type="text" id="nutzen_vzae" placeholder="z. B. 0,5 VZÄ oder 2,0 VZÄ – geschätzter Arbeitsaufwand, der durch die Optimierung entfällt">
+                            </div>
                             <div class="section-edit-actions">
                                 <button type="button" class="btn btn-success" onclick="saveSectionAndClose('optimierungen')">💾 Speichern</button>
                                 <button type="button" class="btn btn-secondary" onclick="cancelSectionEdit('optimierungen')">Abbrechen</button>
@@ -6063,12 +6095,13 @@
                 alert('XLSX-Bibliothek nicht geladen.');
                 return;
             }
-            const headers = ['ID', 'Titel', 'Prozesscluster', 'Auftraggeber', 'Prozessmanager', 'Anforderungsmanager', 'Prozessverantwortlicher', 'Umsetzungsaufwand', 'Gesamtstatus', 'Status Steckbrief', 'Teil des HEP', 'Betroffener Life-Cycle'];
+            const headers = ['ID', 'Titel', 'Prozesscluster', 'Priorität', 'Auftraggeber', 'Prozessmanager', 'Anforderungs.-/Campusmanager/in', 'Prozessverantwortlicher', 'IT-Unterstützung', 'Umsetzungsaufwand', 'Gesamtstatus', 'Status Steckbrief', 'Teil des HEP', 'Betroffener Life-Cycle'];
             const data = [headers];
             steckbriefe.forEach(s => {
                 data.push([
-                    s.id, s.titel, s.prozesscluster || '', s.auftraggeber || '',
+                    s.id, s.titel, s.prozesscluster || '', s.prioritaet || '', s.auftraggeber || '',
                     s.prozessmanager || '', s.anforderungsmanager || '', s.prozessverantwortlicher || '',
+                    s.it_unterstuetzung || '',
                     s.umsetzungsaufwand || '', s.gesamtstatus || '',
                     s.status_steckbrief || '', s.teil_hochschulentwicklungsplan || '', s.betroffener_lifecycle || ''
                 ]);
@@ -6923,12 +6956,45 @@
                 });
             }
 
-            const columns = [
-                { key: 'prozesscluster', label: 'Prozesscluster' },
-                { key: 'titel', label: 'Anforderungen' },
-                { key: 'auftraggeber', label: 'Auftraggeber' },
-                { key: 'gesamtstatus', label: 'Gesamtstatus' },
+            const allTableColumns = [
+                { key: 'prozesscluster', label: 'Prozesscluster', render: s => escapeHtml(s.prozesscluster || '–') },
+                { key: 'titel', label: 'Anforderungen', cssClass: 'title-cell', render: s => escapeHtml(s.titel) },
+                { key: 'prioritaet', label: 'Priorität', render: s => escapeHtml(s.prioritaet || '–') },
+                { key: 'auftraggeber', label: 'Auftraggeber', render: s => (s.auftraggeber || '–').split(', ').map(n => escapeHtml(n)).join('<br>') },
+                { key: 'prozessmanager', label: 'Prozessmanager', render: s => escapeHtml(s.prozessmanager || '–') },
+                { key: 'anforderungsmanager', label: 'Anf.-/Campusmgr.', render: s => escapeHtml(s.anforderungsmanager || '–') },
+                { key: 'prozessverantwortlicher', label: 'Prozessverantw.', render: s => escapeHtml(s.prozessverantwortlicher || '–') },
+                { key: 'it_unterstuetzung', label: 'IT-Unterstützung', render: s => escapeHtml(s.it_unterstuetzung || '–') },
+                { key: 'betroffener_lifecycle', label: 'Life-Cycle', render: s => escapeHtml(s.betroffener_lifecycle || '–') },
+                { key: 'umsetzungsaufwand', label: 'Aufwand', render: s => escapeHtml(getAufwandLabel(s.umsetzungsaufwand) || '–') },
+                { key: 'gesamtstatus', label: 'Gesamtstatus', render: s => {
+                    const phasen = parsePhasenData(s.phasen_data);
+                    let statusHtml = '';
+                    statusHtml += renderProgressBar(s.fortschritt);
+                    if (phasen.length > 0) {
+                        statusHtml += `<div class="status-toggle" onclick="event.stopPropagation(); this.parentElement.classList.toggle('status-expanded')">
+                            <span class="status-toggle-icon">▶</span> ${phasen.length} Phase${phasen.length > 1 ? 'n' : ''}
+                        </div>`;
+                        statusHtml += `<div class="status-details">`;
+                        statusHtml += phasen.map(p => 
+                            `<div class="status-detail-row">
+                                <span class="status-badge ${getStatusClass(p.status)}" style="display:inline-block;margin:1px 0;font-size:0.8em;">${escapeHtml((p.name || '') + ': ' + (p.status || '/'))}</span>
+                                ${renderProgressBar(p.fortschritt)}
+                            </div>`
+                        ).join('');
+                        statusHtml += `</div>`;
+                    } else {
+                        statusHtml += `<span class="status-badge ${getStatusClass(s.gesamtstatus)}" style="margin-top:4px;display:inline-block;">${escapeHtml(s.gesamtstatus || '–')}</span>`;
+                    }
+                    return statusHtml;
+                }},
+                { key: 'status_steckbrief', label: 'Status Steckbrief', render: s => escapeHtml(s.status_steckbrief || '–') },
+                { key: 'teil_hochschulentwicklungsplan', label: 'Teil des HEP', render: s => s.teil_hochschulentwicklungsplan === 'ja' ? 'Ja' : (s.teil_hochschulentwicklungsplan === 'nein' ? 'Nein' : '–') },
             ];
+
+            const defaultVisibleKeys = ['prozesscluster', 'titel', 'prioritaet', 'auftraggeber', 'gesamtstatus'];
+            const visibleKeys = getVisibleTableColumns();
+            const columns = visibleKeys.map(k => allTableColumns.find(c => c.key === k)).filter(Boolean);
 
             const getSortIcon = (key) => {
                 if (tableSortColumn !== key) return '↕';
@@ -6964,32 +7030,7 @@
                                 <td onclick="event.stopPropagation(); toggleSelection('${s.id}')" style="cursor: pointer;">
                                     <div class="type-icon" title="ID: ${s.id}">📄</div>
                                 </td>
-                                <td onclick="openSteckbrief('${s.id}')">${escapeHtml(s.prozesscluster || '–')}</td>
-                                <td class="title-cell" onclick="openSteckbrief('${s.id}')">${escapeHtml(s.titel)}</td>
-                                <td onclick="openSteckbrief('${s.id}')">${(s.auftraggeber || '–').split(', ').map(n => escapeHtml(n)).join('<br>')}</td>
-                                <td onclick="openSteckbrief('${s.id}')">
-                                    ${(() => {
-                                        const phasen = parsePhasenData(s.phasen_data);
-                                        let statusHtml = '';
-                                        statusHtml += renderProgressBar(s.fortschritt);
-                                        if (phasen.length > 0) {
-                                            statusHtml += `<div class="status-toggle" onclick="event.stopPropagation(); this.parentElement.classList.toggle('status-expanded')">
-                                                <span class="status-toggle-icon">▶</span> ${phasen.length} Phase${phasen.length > 1 ? 'n' : ''}
-                                            </div>`;
-                                            statusHtml += `<div class="status-details">`;
-                                            statusHtml += phasen.map(p => 
-                                                `<div class="status-detail-row">
-                                                    <span class="status-badge ${getStatusClass(p.status)}" style="display:inline-block;margin:1px 0;font-size:0.8em;">${escapeHtml((p.name || '') + ': ' + (p.status || '/'))}</span>
-                                                    ${renderProgressBar(p.fortschritt)}
-                                                </div>`
-                                            ).join('');
-                                            statusHtml += `</div>`;
-                                        } else {
-                                            statusHtml += `<span class="status-badge ${getStatusClass(s.gesamtstatus)}" style="margin-top:4px;display:inline-block;">${escapeHtml(s.gesamtstatus || '–')}</span>`;
-                                        }
-                                        return statusHtml;
-                                    })()}
-                                </td>
+                                ${columns.map(col => `<td class="${col.cssClass || ''}" onclick="openSteckbrief('${s.id}')">${col.render(s)}</td>`).join('')}
                                 <td>
                                     <div class="actions-cell">
                                         <button class="action-btn btn-view" onclick="event.stopPropagation(); openSteckbrief('${s.id}')" title="Ansehen">👁</button>
@@ -7015,6 +7056,188 @@
                 tableSortDirection = 'asc';
             }
             renderOverview();
+        }
+
+        // ====== Spalten-Konfiguration ======
+        const TABLE_COLUMNS_STORAGE_KEY = 'steckbrief_visible_columns';
+        const DEFAULT_VISIBLE_COLUMNS = ['prozesscluster', 'titel', 'prioritaet', 'auftraggeber', 'gesamtstatus'];
+
+        function getVisibleTableColumns() {
+            try {
+                const stored = localStorage.getItem(TABLE_COLUMNS_STORAGE_KEY);
+                if (stored) return JSON.parse(stored);
+            } catch(e) {}
+            return DEFAULT_VISIBLE_COLUMNS;
+        }
+
+        function saveVisibleTableColumns(keys) {
+            localStorage.setItem(TABLE_COLUMNS_STORAGE_KEY, JSON.stringify(keys));
+        }
+
+        function openColumnPicker() {
+            const allCols = [
+                { key: 'prozesscluster', label: 'Prozesscluster' },
+                { key: 'titel', label: 'Anforderungen' },
+                { key: 'prioritaet', label: 'Priorität' },
+                { key: 'auftraggeber', label: 'Auftraggeber' },
+                { key: 'prozessmanager', label: 'Prozessmanager' },
+                { key: 'anforderungsmanager', label: 'Anf.-/Campusmanager/in' },
+                { key: 'prozessverantwortlicher', label: 'Prozessverantwortliche/r' },
+                { key: 'it_unterstuetzung', label: 'IT-Unterstützung' },
+                { key: 'betroffener_lifecycle', label: 'Betroffener Life-Cycle' },
+                { key: 'umsetzungsaufwand', label: 'Umsetzungsaufwand' },
+                { key: 'gesamtstatus', label: 'Gesamtstatus' },
+                { key: 'status_steckbrief', label: 'Status Steckbrief' },
+                { key: 'teil_hochschulentwicklungsplan', label: 'Teil des HEP' },
+            ];
+            const visible = getVisibleTableColumns();
+            // Sortierte Liste: sichtbare zuerst in gespeicherter Reihenfolge, dann unsichtbare
+            const sorted = [...allCols].sort((a, b) => {
+                const ai = visible.indexOf(a.key), bi = visible.indexOf(b.key);
+                if (ai !== -1 && bi !== -1) return ai - bi;
+                if (ai !== -1) return -1;
+                if (bi !== -1) return 1;
+                return 0;
+            });
+
+            const overlay = document.createElement('div');
+            overlay.id = 'columnPickerOverlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:10000;display:flex;align-items:center;justify-content:center;';
+            overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+
+            const dialog = document.createElement('div');
+            dialog.style.cssText = 'background:#fff;border-radius:12px;padding:24px;min-width:360px;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,0.2);';
+            dialog.innerHTML = `
+                <h3 style="margin:0 0 6px 0;font-size:1.1em;">⚙️ Tabellenspalten anpassen</h3>
+                <p style="margin:0 0 16px 0;font-size:0.85em;color:#666;">Spalten per Drag & Drop sortieren. Häkchen setzt die Sichtbarkeit.</p>
+                <div id="colPickerList" style="max-height:400px;overflow-y:auto;"></div>
+                <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;">
+                    <button onclick="resetColumnPicker()" style="padding:8px 16px;border:1px solid #ddd;border-radius:6px;background:#f5f5f5;cursor:pointer;font-size:0.9em;">Standard</button>
+                    <button onclick="document.getElementById('columnPickerOverlay').remove()" style="padding:8px 16px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:0.9em;">Abbrechen</button>
+                    <button onclick="applyColumnPicker()" style="padding:8px 16px;border:none;border-radius:6px;background:#00c4b0;color:#fff;cursor:pointer;font-size:0.9em;font-weight:600;">Übernehmen</button>
+                </div>
+            `;
+            overlay.appendChild(dialog);
+            document.body.appendChild(overlay);
+
+            // Drag & Drop Items rendern
+            const list = document.getElementById('colPickerList');
+            sorted.forEach(c => {
+                const item = document.createElement('div');
+                item.className = 'col-picker-item';
+                item.draggable = true;
+                item.dataset.key = c.key;
+                item.style.cssText = 'display:flex;align-items:center;padding:9px 10px;border-radius:6px;margin-bottom:3px;border:2px solid transparent;transition:all 0.15s;background:#fff;user-select:none;';
+                item.innerHTML = `
+                    <span class="col-drag-handle" style="cursor:grab;margin-right:8px;color:#aaa;font-size:1.1em;">☰</span>
+                    <input type="checkbox" value="${c.key}" ${visible.includes(c.key) ? 'checked' : ''} 
+                           style="width:18px;height:18px;margin-right:10px;accent-color:#00c4b0;cursor:pointer;">
+                    <span style="font-size:0.95em;flex:1;">${c.label}</span>
+                `;
+                item.addEventListener('dragstart', colPickerDragStart);
+                item.addEventListener('dragover', colPickerDragOver);
+                item.addEventListener('dragenter', colPickerDragEnter);
+                item.addEventListener('dragleave', colPickerDragLeave);
+                item.addEventListener('drop', colPickerDrop);
+                item.addEventListener('dragend', colPickerDragEnd);
+                // Touch-Support
+                item.addEventListener('touchstart', colPickerTouchStart, { passive: false });
+                item.addEventListener('touchmove', colPickerTouchMove, { passive: false });
+                item.addEventListener('touchend', colPickerTouchEnd);
+                list.appendChild(item);
+            });
+        }
+
+        let _colPickerDragItem = null;
+        let _colPickerTouchItem = null;
+        let _colPickerTouchClone = null;
+        let _colPickerTouchStartY = 0;
+
+        function colPickerDragStart(e) {
+            _colPickerDragItem = this;
+            this.style.opacity = '0.4';
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        function colPickerDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+        function colPickerDragEnter(e) {
+            e.preventDefault();
+            if (this !== _colPickerDragItem) this.style.borderTop = '2px solid #00c4b0';
+        }
+        function colPickerDragLeave() { this.style.borderTop = ''; this.style.border = '2px solid transparent'; }
+        function colPickerDrop(e) {
+            e.preventDefault();
+            this.style.border = '2px solid transparent';
+            if (_colPickerDragItem && this !== _colPickerDragItem) {
+                const list = document.getElementById('colPickerList');
+                const items = [...list.children];
+                const from = items.indexOf(_colPickerDragItem);
+                const to = items.indexOf(this);
+                if (from < to) this.after(_colPickerDragItem);
+                else list.insertBefore(_colPickerDragItem, this);
+            }
+        }
+        function colPickerDragEnd() {
+            this.style.opacity = '1';
+            document.querySelectorAll('.col-picker-item').forEach(el => { el.style.border = '2px solid transparent'; });
+            _colPickerDragItem = null;
+        }
+
+        // Touch-Support für mobile Geräte
+        function colPickerTouchStart(e) {
+            _colPickerTouchItem = this;
+            _colPickerTouchStartY = e.touches[0].clientY;
+            this.style.opacity = '0.6';
+            this.style.background = '#f0f7f6';
+        }
+        function colPickerTouchMove(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const list = document.getElementById('colPickerList');
+            const items = [...list.querySelectorAll('.col-picker-item')];
+            items.forEach(el => { el.style.borderTop = ''; });
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetItem = target?.closest?.('.col-picker-item');
+            if (targetItem && targetItem !== _colPickerTouchItem) {
+                targetItem.style.borderTop = '2px solid #00c4b0';
+            }
+        }
+        function colPickerTouchEnd(e) {
+            if (!_colPickerTouchItem) return;
+            _colPickerTouchItem.style.opacity = '1';
+            _colPickerTouchItem.style.background = '#fff';
+            const touch = e.changedTouches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            const targetItem = target?.closest?.('.col-picker-item');
+            if (targetItem && targetItem !== _colPickerTouchItem) {
+                const list = document.getElementById('colPickerList');
+                const items = [...list.children];
+                const from = items.indexOf(_colPickerTouchItem);
+                const to = items.indexOf(targetItem);
+                if (from < to) targetItem.after(_colPickerTouchItem);
+                else list.insertBefore(_colPickerTouchItem, targetItem);
+            }
+            document.querySelectorAll('.col-picker-item').forEach(el => { el.style.borderTop = ''; el.style.border = '2px solid transparent'; });
+            _colPickerTouchItem = null;
+        }
+
+        function applyColumnPicker() {
+            const items = document.querySelectorAll('#colPickerList .col-picker-item');
+            const keys = [];
+            items.forEach(item => {
+                const cb = item.querySelector('input[type=checkbox]');
+                if (cb && cb.checked) keys.push(cb.value);
+            });
+            if (keys.length === 0) { alert('Mindestens eine Spalte muss ausgewählt sein.'); return; }
+            saveVisibleTableColumns(keys);
+            document.getElementById('columnPickerOverlay').remove();
+            renderOverview();
+        }
+
+        function resetColumnPicker() {
+            saveVisibleTableColumns(DEFAULT_VISIBLE_COLUMNS);
+            document.getElementById('columnPickerOverlay').remove();
+            renderOverview();
+            openColumnPicker();
         }
 
         // Ansicht wechseln
@@ -7481,23 +7704,22 @@
         // Ansicht rendern (füllt die View-Bereiche der einzelnen Sektionen)
         function renderViewContent(s) {
             document.getElementById('viewRahmendaten').innerHTML = `
-                <div class="genesis-sub-header">Identifikation</div>
                 <div class="form-grid">
                     ${renderField('ID', s.id)}
                     ${renderField('Titel', s.titel)}
                     ${renderField('Prozesscluster', s.prozesscluster)}
-                    ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
+                    ${renderField('Priorität', s.prioritaet)}
                 </div>
-                <div class="genesis-sub-header">Verantwortliche</div>
                 <div class="form-grid">
                     ${renderField('Auftraggeber/-in', s.auftraggeber)}
-                    ${renderField('Prozessmanager/-in', s.prozessmanager)}
-                    ${renderField('Anforderungsmanager/-in', s.anforderungsmanager)}
                     ${renderField('Prozessverantwortliche/r', s.prozessverantwortlicher)}
-                    ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam), true)}
+                    ${renderField('Anforderungs.-/Campusmanager/in', s.anforderungsmanager)}
+                    ${renderField('Prozessmanager/-in', s.prozessmanager)}
                 </div>
-                <div class="genesis-sub-header">Aufwand</div>
                 <div class="form-grid">
+                    ${renderField('Prozess-/Projektteam', formatTeamDisplay(s.projektteam), true)}
+                    ${renderField('IT-Unterstützung', s.it_unterstuetzung)}
+                    ${renderField('Betroffener Life-Cycle', s.betroffener_lifecycle)}
                     ${renderField('Geschätzter Umsetzungsaufwand', getAufwandLabel(s.umsetzungsaufwand))}
                 </div>
             `;
@@ -7553,6 +7775,7 @@
                         ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
                     </tbody>
                 </table>
+                ${renderField('Wie viel Arbeitsaufwand entfällt in VZÄ?', s.nutzen_vzae)}
             `;
 
             document.getElementById('viewStatus').innerHTML = `
@@ -8632,8 +8855,10 @@
             _currentTeamMembers = parseTeamMembers(s);
             renderTeamTags();
             document.getElementById('prozesscluster').value = s.prozesscluster || '';
+            document.getElementById('prioritaet').value = s.prioritaet || '';
             document.getElementById('umsetzungsaufwand').value = s.umsetzungsaufwand || '';
             document.getElementById('betroffener_lifecycle').value = s.betroffener_lifecycle || '';
+            document.getElementById('it_unterstuetzung').value = s.it_unterstuetzung || '';
             document.getElementById('status_steckbrief').value = s.status_steckbrief || '';
             document.getElementById('start_datum').value = s.start_datum || '';
             document.getElementById('geplanter_abschluss').value = s.geplanter_abschluss || '';
@@ -8686,6 +8911,7 @@
             document.getElementById('nutzen_studierende_text').value = s.nutzen_studierende_text || '';
             document.getElementById('nutzen_qualitaet').value = s.nutzen_qualitaet || '0';
             document.getElementById('nutzen_qualitaet_text').value = s.nutzen_qualitaet_text || '';
+            document.getElementById('nutzen_vzae').value = s.nutzen_vzae || '';
             
             // Nach dem Befüllen: Formular ist "sauber"
             setTimeout(() => { _formDirty = false; }, 0);
@@ -8761,9 +8987,9 @@
         // Feldnamen für menschenlesbare Labels
         const FELD_LABELS = {
             titel: 'Titel', auftraggeber: 'Auftraggeber', auftraggeber_multi: 'Auftraggeber', prozessmanager: 'Prozessmanager',
-            anforderungsmanager: 'Anforderungsmanager', prozessverantwortlicher: 'Prozessverantwortlicher',
-            projektteam: 'Projektteam', prozesscluster: 'Prozesscluster', umsetzungsaufwand: 'Umsetzungsaufwand',
-            betroffener_lifecycle: 'Betroffener Lifecycle', status_steckbrief: 'Status Steckbrief',
+            anforderungsmanager: 'Anforderungs.-/Campusmanager/in', prozessverantwortlicher: 'Prozessverantwortlicher',
+            projektteam: 'Projektteam', prozesscluster: 'Prozesscluster', prioritaet: 'Priorität', umsetzungsaufwand: 'Umsetzungsaufwand',
+            betroffener_lifecycle: 'Betroffener Lifecycle', it_unterstuetzung: 'IT-Unterstützung', status_steckbrief: 'Status Steckbrief',
             start: 'Start', gesamtstatus: 'Gesamtstatus', teil_hochschulentwicklungsplan: 'Teil des HEP',
             ziel_vision: 'Ziel / Vision', warum: 'Warum', wer: 'Wer', welche: 'Welche', was: 'Was',
             wie: 'Wie', wo: 'Wo', wann: 'Wann', einordnung_gesamtprozess: 'Einordnung Gesamtprozess',
@@ -8780,6 +9006,7 @@
             nutzen_reduktion: 'Nutzen Reduktion', nutzen_reduktion_text: 'Reduktion Text',
             nutzen_studierende: 'Nutzen Studierende', nutzen_studierende_text: 'Studierende Text',
             nutzen_qualitaet: 'Nutzen Qualität', nutzen_qualitaet_text: 'Qualität Text',
+            nutzen_vzae: 'Arbeitsaufwand VZÄ',
             zeitplan_data: 'Zeitplan',
             phasen_data: 'Phasen'
         };
@@ -8848,7 +9075,7 @@
             // Automatisch per API-Suche zuordnen, falls FID leer aber Text vorhanden
             const personenFelder = [
                 { text: 'prozessmanager', fid: 'prozessmanagerFID', label: 'Prozessmanager/-in' },
-                { text: 'anforderungsmanager', fid: 'anforderungsmanagerFID', label: 'Anforderungsmanager/-in' },
+                { text: 'anforderungsmanager', fid: 'anforderungsmanagerFID', label: 'Anforderungs.-/Campusmanager/in' },
                 { text: 'prozessverantwortlicher', fid: 'prozessverantwortlicherFID', label: 'Prozessverantwortliche/r' }
             ];
             // Für jedes Personenfeld ohne FID: versuche automatische Zuordnung per API
@@ -8935,8 +9162,10 @@
                 prozessverantwortlicherFID: document.getElementById('prozessverantwortlicherFID').value || null,
                 projektteam: _currentTeamMembers.length > 0 ? JSON.stringify(_currentTeamMembers) : null,
                 prozesscluster: document.getElementById('prozesscluster').value,
+                prioritaet: document.getElementById('prioritaet').value,
                 umsetzungsaufwand: document.getElementById('umsetzungsaufwand').value,
                 betroffener_lifecycle: document.getElementById('betroffener_lifecycle').value,
+                it_unterstuetzung: document.getElementById('it_unterstuetzung').value,
                 status_steckbrief: document.getElementById('status_steckbrief').value,
                 start: document.getElementById('start_datum').value,
                 geplanter_abschluss: document.getElementById('geplanter_abschluss').value,
@@ -8984,7 +9213,8 @@
                 nutzen_studierende: document.getElementById('nutzen_studierende').value,
                 nutzen_studierende_text: document.getElementById('nutzen_studierende_text').value,
                 nutzen_qualitaet: document.getElementById('nutzen_qualitaet').value,
-                nutzen_qualitaet_text: document.getElementById('nutzen_qualitaet_text').value
+                nutzen_qualitaet_text: document.getElementById('nutzen_qualitaet_text').value,
+                nutzen_vzae: document.getElementById('nutzen_vzae').value
             };
             
             // Automatische Änderungshistorie erstellen
@@ -9446,7 +9676,9 @@
                     { key: 'prozessmanager', label: 'Prozessmanager/-in', check: s => s.prozessmanager || s.prozessmanagerFID },
                     { key: 'prozessverantwortlicher', label: 'Prozessverantwortliche/r', check: s => s.prozessverantwortlicher || s.prozessverantwortlicherFID },
                     { key: 'projektteam', label: 'Prozess-/Projektteam', check: s => { try { const t = typeof s.projektteam === 'string' ? JSON.parse(s.projektteam) : s.projektteam; return Array.isArray(t) && t.length > 0; } catch(e) { return false; } } },
+                    { key: 'it_unterstuetzung', label: 'IT-Unterstützung' },
                     { key: 'prozesscluster', label: 'Prozesscluster' },
+                    { key: 'prioritaet', label: 'Priorität' },
                     { key: 'umsetzungsaufwand', label: 'Umsetzungsaufwand' },
                     { key: 'betroffener_lifecycle', label: 'Betroffener Life-Cycle' },
                     { key: 'status_steckbrief', label: 'Status Steckbrief' },
@@ -9481,7 +9713,8 @@
                     { key: 'nutzen_kosten_text', label: 'Kosten Erläuterung' },
                     { key: 'nutzen_reduktion_text', label: 'Reduktion Erläuterung' },
                     { key: 'nutzen_studierende_text', label: 'Studierende Erläuterung' },
-                    { key: 'nutzen_qualitaet_text', label: 'Qualität Erläuterung' }
+                    { key: 'nutzen_qualitaet_text', label: 'Qualität Erläuterung' },
+                    { key: 'nutzen_vzae', label: 'Arbeitsaufwand VZÄ' }
                 ]},
                 { name: 'Meilensteine', fields: [
                     { key: 'identifikationsnummer', label: 'Identifikationsnummer' },
@@ -10058,10 +10291,12 @@
                 drawRow2('Titel*', s.titel || '', null, s);
                 drawRow2('Auftraggeber/-in', s.auftraggeber || '', null, s);
                 drawRow2('Prozessmanager/-in', s.prozessmanager || '', null, s);
-                drawRow2('Ggf. Anforderungsmanager/-in\n(wenn IT-Systeme betroffen sind)', s.anforderungsmanager || '', null, s);
+                drawRow2('Ggf. Anforderungs.-/Campusmanager/in\n(wenn IT-Systeme betroffen sind)', s.anforderungsmanager || '', null, s);
                 drawRow2('Prozessverantwortliche/r', s.prozessverantwortlicher || '', null, s);
                 drawRow2('Prozess-/Projektteam (Name & OE)', formatTeamDisplay(s.projektteam) || '', null, s);
+                drawRow2('IT-Unterstützung', s.it_unterstuetzung || '', null, s);
                 drawRow2('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || '', null, s);
+                drawRow2('Priorität', s.prioritaet || '', null, s);
                 drawRow2('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || '', null, s);
 
                 // ========== 2. BESCHREIBUNG ==========
@@ -10132,6 +10367,10 @@
                 nutzen.forEach(([label, wert, text]) => {
                     drawRow3([label, wert, text], cw3, { labelCol: 0 }, s);
                 });
+
+                if (s.nutzen_vzae) {
+                    drawDescRow('Wie viel Arbeitsaufwand entfällt in VZÄ?', '', s.nutzen_vzae, s);
+                }
 
                 // ========== 6. STATUS ==========
                 yPos += 6;
@@ -10264,7 +10503,9 @@
                         createTableRow2Col('Prozessmanager/-in', s.prozessmanager || ''),
                         createTableRow2Col('Prozessverantwortliche/r', s.prozessverantwortlicher || ''),
                         createTableRow2Col('Prozessteam (Name & OE)', formatTeamDisplay(s.projektteam) || ''),
+                        createTableRow2Col('IT-Unterstützung', s.it_unterstuetzung || ''),
                         createTableRow2Col('Prozesscluster\n(gemäß Prozesslandkarte)', s.prozesscluster || ''),
+                        createTableRow2Col('Priorität', s.prioritaet || ''),
                         createTableRow2Col('Geschätzter Umsetzungsaufwand\nklein | mittel | groß', s.umsetzungsaufwand || ''),
                         createTableRow2Col('Betroffener Life-Cycle', s.betroffener_lifecycle || ''),
                         createTableRow2Col('Status Steckbrief', s.status_steckbrief || '')
@@ -10330,6 +10571,16 @@
                         createBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet || '0', s.nutzen_qualitaet_text || '')
                     ]
                 }));
+
+                if (s.nutzen_vzae) {
+                    children.push(new Paragraph({
+                        children: [
+                            new TextRun({ text: 'Wie viel Arbeitsaufwand entfällt in VZÄ? ', bold: true, size: 20 }),
+                            new TextRun({ text: s.nutzen_vzae, size: 20 })
+                        ],
+                        spacing: { before: 100, after: 100 }
+                    }));
+                }
                 
                 children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
                 
@@ -10826,6 +11077,8 @@
                     } else if (key.includes('qualität')) {
                         steckbrief.nutzen_qualitaet = extractNumber(value);
                         steckbrief.nutzen_qualitaet_text = value2;
+                    } else if (key.includes('vzä') || key.includes('arbeitsaufwand')) {
+                        steckbrief.nutzen_vzae = value;
                     }
                     // Zeitplan
                     else if (key.includes('identifikationsnummer')) {
