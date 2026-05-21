@@ -53,6 +53,14 @@ DB_CONFIG = {
     'ssl_disabled': False
 }
 
+LOOKUP_DB_CONFIG = {
+    'host': os.environ.get('LOOKUP_DB_HOST', os.environ.get('DB_HOST', 'mariadb.bcw-intern.local')),
+    'user': os.environ.get('LOOKUP_DB_USER', 'HochschulorgaApps'),
+    'password': os.environ.get('LOOKUP_DB_PASS', '%z8J9xjZha)9,)Jn'),
+    'database': os.environ.get('LOOKUP_DB_NAME', 'HochschulorgaApps'),
+    'ssl_disabled': False
+}
+
 LDAP_SERVER = os.environ.get('LDAP_SERVER', 'ldap://bcw-intern.local')
 LDAP_DOMAIN = os.environ.get('LDAP_DOMAIN', 'bcw-intern.local')
 LDAP_BASE_DN = os.environ.get('LDAP_BASE_DN', 'DC=bcw-intern,DC=local')
@@ -65,6 +73,27 @@ INITIAL_ADMIN = os.environ.get('INITIAL_ADMIN', '')
 
 def get_db():
     return mysql.connector.connect(**DB_CONFIG)
+
+def get_lookup_db():
+    return mysql.connector.connect(**LOOKUP_DB_CONFIG)
+
+# Cache für gültige Rollen aus der Lookup-DB
+_valid_roles_cache = None
+
+def get_valid_roles():
+    """Lädt die gültigen Rollen aus der Lookup-DB (mit Cache)."""
+    global _valid_roles_cache
+    if _valid_roles_cache is None:
+        conn = get_lookup_db()
+        cursor = conn.cursor()
+        cursor.execute('SELECT rolle FROM SteckbriefManager_rollen')
+        _valid_roles_cache = {row[0] for row in cursor.fetchall()}
+        conn.close()
+    return _valid_roles_cache
+
+def get_assignable_roles():
+    """Rollen die einem User zugewiesen werden können (ohne 'deactivated')."""
+    return {r for r in get_valid_roles() if r != 'deactivated'}
 
 
 # --- AD/LDAP Authentifizierung ---
@@ -222,7 +251,7 @@ def create_user_manual():
 
     if not username or not display_name:
         return jsonify({'error': 'Benutzername und Anzeigename sind erforderlich'}), 400
-    if role not in ('viewer', 'editor', 'admin'):
+    if role not in get_assignable_roles():
         return jsonify({'error': 'Ungültige Rolle'}), 400
 
     conn = get_db()
@@ -248,7 +277,7 @@ def create_user_manual():
 def update_user_role(uid):
     data = request.json or {}
     new_role = data.get('role', '')
-    if new_role not in ('viewer', 'editor', 'admin'):
+    if new_role not in get_valid_roles():
         return jsonify({'error': 'Ungültige Rolle'}), 400
 
     # Eigene Rolle darf nicht geändert werden
@@ -547,6 +576,44 @@ def delete_steckbrief(sid):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
+
+# --- Lookup-Tabellen-Endpoints ---
+@app.route('/api/lookup/all', methods=['GET'])
+@require_auth
+def get_all_lookups():
+    """Liefert alle Lookup-Daten in einem Request für das Frontend."""
+    conn = get_lookup_db()
+    cursor = conn.cursor(dictionary=True)
+
+    result = {}
+
+    cursor.execute('SELECT rolle, bezeichnung, farbe_bg, farbe_text, sortierung FROM SteckbriefManager_rollen ORDER BY sortierung')
+    result['rollen'] = cursor.fetchall()
+
+    cursor.execute('SELECT bezeichnung, sortierung FROM SteckbriefManager_prozesscluster ORDER BY sortierung')
+    result['prozesscluster'] = cursor.fetchall()
+
+    cursor.execute('SELECT status, css_klasse, farbe_bg, farbe_text, sortierung FROM SteckbriefManager_gesamtstatus ORDER BY sortierung')
+    result['gesamtstatus'] = cursor.fetchall()
+
+    cursor.execute('SELECT status, sortierung FROM SteckbriefManager_status_steckbrief ORDER BY sortierung')
+    result['status_steckbrief'] = cursor.fetchall()
+
+    cursor.execute('SELECT bezeichnung, sortierung FROM SteckbriefManager_lifecycle ORDER BY sortierung')
+    result['lifecycle'] = cursor.fetchall()
+
+    cursor.execute('SELECT aufwand, bezeichnung, farbe_bg, farbe_text, sortierung FROM SteckbriefManager_umsetzungsaufwand ORDER BY sortierung')
+    result['umsetzungsaufwand'] = cursor.fetchall()
+
+    cursor.execute('SELECT kategorie, db_feld, bezeichnung, beschreibung, skala_0, skala_1, skala_2, skala_3, sortierung FROM SteckbriefManager_bewertungskriterien ORDER BY kategorie, sortierung')
+    result['bewertungskriterien'] = cursor.fetchall()
+
+    cursor.execute('SELECT wert, bezeichnung, sortierung FROM SteckbriefManager_prioritaeten ORDER BY sortierung')
+    result['prioritaeten'] = cursor.fetchall()
+
+    conn.close()
+    return jsonify(result)
 
 
 @app.after_request

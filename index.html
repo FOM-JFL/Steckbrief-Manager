@@ -4051,8 +4051,6 @@
                 <span>👁 Ansicht:</span>
                 <select id="rolePreviewSelect" onchange="setRolePreview(this.value)">
                     <option value="">Eigene Rolle</option>
-                    <option value="editor">Editor</option>
-                    <option value="viewer">Viewer</option>
                 </select>
             </div>
             <div class="user-info" id="userInfo">
@@ -4402,51 +4400,12 @@
                                     <label for="prozesscluster">Prozesscluster <span style="color: #888; font-size: 0.85em; font-weight: normal;">(gemäß Prozesslandkarte)</span></label>
                                     <select id="prozesscluster" autocomplete="off">
                                         <option value="">-- Bitte wählen --</option>
-                                        <option value="/">/</option>
-                                        <option value="Leitbild &amp; Charta entwickeln">Leitbild &amp; Charta entwickeln</option>
-                                        <option value="(Hochschul-)Entwicklung planen">(Hochschul-)Entwicklung planen</option>
-                                        <option value="Organisation &amp; QM lenken">Organisation &amp; QM lenken</option>
-                                        <option value="Organisation &amp; QM weiterentwickeln">Organisation &amp; QM weiterentwickeln</option>
-                                        <option value="Studiengänge (weiter-)entwickeln">Studiengänge (weiter-)entwickeln</option>
-                                        <option value="Studieneinstieg durchführen">Studieneinstieg durchführen</option>
-                                        <option value="Semesterplanung durchführen">Semesterplanung durchführen</option>
-                                        <option value="Lehren &amp; Lernen inkl. Feedback gestalten">Lehren &amp; Lernen inkl. Feedback gestalten</option>
-                                        <option value="Studienbegleitende Prüfungen organisieren">Studienbegleitende Prüfungen organisieren</option>
-                                        <option value="Studierende &amp; Lehrende beraten">Studierende &amp; Lehrende beraten</option>
-                                        <option value="Studienabschluss umsetzen">Studienabschluss umsetzen</option>
-                                        <option value="Lehre &amp; Studium evaluieren">Lehre &amp; Studium evaluieren</option>
-                                        <option value="Forschungsfragen identifizieren">Forschungsfragen identifizieren</option>
-                                        <option value="Forschungsmittel akquirieren">Forschungsmittel akquirieren</option>
-                                        <option value="Forschungsprojekte organisieren">Forschungsprojekte organisieren</option>
-                                        <option value="Forschungsprojekte durchführen">Forschungsprojekte durchführen</option>
-                                        <option value="Forschungsergebnisse transferieren">Forschungsergebnisse transferieren</option>
-                                        <option value="Forschungsprojekte abschließen">Forschungsprojekte abschließen</option>
-                                        <option value="Forschung evaluieren">Forschung evaluieren</option>
-                                        <option value="Lehrgänge (weiter-)entwickeln">Lehrgänge (weiter-)entwickeln</option>
-                                        <option value="Lehrgangseinstieg durchführen">Lehrgangseinstieg durchführen</option>
-                                        <option value="Lehrgangsplanung durchführen">Lehrgangsplanung durchführen</option>
-                                        <option value="Lehrgangsbegleitende Prüfungen organisieren">Lehrgangsbegleitende Prüfungen organisieren</option>
-                                        <option value="Lehrgangsteilnehmende &amp; Lehrende beraten">Lehrgangsteilnehmende &amp; Lehrende beraten</option>
-                                        <option value="Lehrgangsabschluss umsetzen">Lehrgangsabschluss umsetzen</option>
-                                        <option value="Fort-/Weiterbildung evaluieren">Fort-/Weiterbildung evaluieren</option>
-                                        <option value="Lehrangebot vermarkten &amp; Informationen bereitstellen">Lehrangebot vermarkten &amp; Informationen bereitstellen</option>
-                                        <option value="Studierende &amp; Teilnehmende gewinnen">Studierende &amp; Teilnehmende gewinnen</option>
-                                        <option value="(Lehr-)Personal bereitstellen">(Lehr-)Personal bereitstellen</option>
-                                        <option value="Räumliche &amp; sächliche Infrastruktur bereitstellen">Räumliche &amp; sächliche Infrastruktur bereitstellen</option>
-                                        <option value="IT-Strukturen bereitstellen">IT-Strukturen bereitstellen</option>
-                                        <option value="Finanzen bewirtschaften">Finanzen bewirtschaften</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="prioritaet">Priorität</label>
                                     <select id="prioritaet" autocomplete="off">
                                         <option value="">-- Bitte wählen --</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -4496,19 +4455,12 @@
                                 <div class="form-group">
                                     <label for="betroffener_lifecycle">Betroffener Life-Cycle</label>
                                     <select id="betroffener_lifecycle" autocomplete="off">
-                                        <option value="/">/</option>
-                                        <option value="Student-Life-Cycle">Student-Life-Cycle</option>
-                                        <option value="Product-Life-Cycle">Product-Life-Cycle</option>
-                                        <option value="Lehrenden-Life-Cycle">Lehrenden-Life-Cycle</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="umsetzungsaufwand">Geschätzter Umsetzungsaufwand <span style="color: #888; font-size: 0.85em; font-weight: normal;">(klein | mittel | groß)</span></label>
                                     <select id="umsetzungsaufwand" autocomplete="off">
                                         <option value="">-- Bitte wählen --</option>
-                                        <option value="klein">Klein</option>
-                                        <option value="mittel">Mittel</option>
-                                        <option value="gross">Groß</option>
                                     </select>
                                 </div>
                             </div>
@@ -4623,12 +4575,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                     <div class="genesis-section-body">
                         <div class="section-view" id="viewZwaenge"></div>
                         <div class="section-edit" id="editZwaenge" style="display:none">
-                            <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                                <strong>Gewichtung</strong><br>
-                                0 = irrelevant<br>
-                                1 = förderlich<br>
-                                2 = wichtig<br>
-                                3 = zwingend notwendig
+                            <div class="bewertung-legende" id="zwaengeLegende" style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
                             </div>
                             <table class="bewertung-table">
                                 <thead>
@@ -4638,42 +4585,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                                         <th style="width: 45%">Erläuterung</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Unternehmensstrategische Anforderungen<br><span style="color: #888; font-size: 0.85em;">(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)</span></td>
-                                        <td><select id="bewertung_strategie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_strategie_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Rechtliche Vorschriften<br><span style="color: #888; font-size: 0.85em;">(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)</span></td>
-                                        <td><select id="bewertung_recht"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_recht_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Technische Zwänge<br><span style="color: #888; font-size: 0.85em;">(bspw. Ablösung VB6)</span></td>
-                                        <td><select id="bewertung_technik"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_technik_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anforderungen Kunden<br><span style="color: #888; font-size: 0.85em; font-style: italic;">Interessenten, Studierende, Teilnehmende</span><br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
-                                        <td><select id="bewertung_kunden"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_kunden_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anforderungen Lehrende<br><span style="color: #888; font-size: 0.85em;">(Digitalisierung von Verwaltungstätigkeiten etc.)</span></td>
-                                        <td><select id="bewertung_lehrende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_lehrende_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anforderungen Lieferanten<br><span style="color: #888; font-size: 0.85em;">(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)</span></td>
-                                        <td><select id="bewertung_lieferanten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_lieferanten_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anforderungen Mitarbeitende<br><span style="color: #888; font-size: 0.85em;">(Optimierung der Arbeitsabläufe etc.)</span></td>
-                                        <td><select id="bewertung_mitarbeitende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="bewertung_mitarbeitende_text"></td>
-                                    </tr>
+                                <tbody id="zwaengeTbody">
                                 </tbody>
                             </table>
                             <div class="section-edit-actions">
@@ -4698,12 +4610,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                     <div class="genesis-section-body">
                         <div class="section-view" id="viewOptimierungen"></div>
                         <div class="section-edit" id="editOptimierungen" style="display:none">
-                            <div style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
-                                <strong>Gewichtung</strong><br>
-                                0 = irrelevant<br>
-                                1 = geringerer Nutzen<br>
-                                2 = mittlerer Nutzen<br>
-                                3 = hoher Nutzen
+                            <div class="bewertung-legende" id="nutzenLegende" style="background: #f5f5f5; padding: 12px 15px; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; color: #555;">
                             </div>
                             <table class="bewertung-table">
                                 <thead>
@@ -4713,37 +4620,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                                         <th style="width: 45%">Erläuterung</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Senkung der Durchlaufzeiten</td>
-                                        <td><select id="nutzen_durchlaufzeiten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_durchlaufzeiten_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Vermeidung von Fehlerwiederholungsraten</td>
-                                        <td><select id="nutzen_fehler"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_fehler_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Senkung der Prozesskosten</td>
-                                        <td><select id="nutzen_kosten"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_kosten_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Reduktion nicht wertschöpfender Prozesse</td>
-                                        <td><select id="nutzen_reduktion"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_reduktion_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Steigerung der Studierendenzahlen</td>
-                                        <td><select id="nutzen_studierende"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_studierende_text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Qualitätszuwachs</td>
-                                        <td><select id="nutzen_qualitaet"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
-                                        <td><input type="text" id="nutzen_qualitaet_text"></td>
-                                    </tr>
+                                <tbody id="nutzenTbody">
                                 </tbody>
                             </table>
                             <div class="form-group" style="margin-top: 15px;">
@@ -4784,14 +4661,6 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                                 <div class="form-group">
                                     <label for="gesamtstatus">Gesamtstatus</label>
                                     <select id="gesamtstatus" autocomplete="off">
-                                        <option value="/">/</option>
-                                        <option value="Idee / Konzeption">Idee / Konzeption</option>
-                                        <option value="Geplant">Geplant</option>
-                                        <option value="In Umsetzung">In Umsetzung</option>
-                                        <option value="Pilotierung">Pilotierung</option>
-                                        <option value="Im Betrieb">Im Betrieb</option>
-                                        <option value="Pausiert">Pausiert</option>
-                                        <option value="Abgebrochen">Abgebrochen</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -4804,10 +4673,6 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                                 <div class="form-group">
                                     <label for="status_steckbrief">Status Steckbrief</label>
                                     <select id="status_steckbrief" autocomplete="off">
-                                        <option value="/">/</option>
-                                        <option value="Noch nicht gefüllt">Noch nicht gefüllt</option>
-                                        <option value="Rahmendaten hinterlegt">Rahmendaten hinterlegt</option>
-                                        <option value="Gefüllt">Gefüllt</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -5109,13 +4974,6 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                                     <div class="multiselect-wrapper" id="portfolioStatusMultiselect">
                                         <button type="button" class="multiselect-toggle" data-default-label="Alle" onclick="toggleMultiselect('portfolioStatusMultiselect')">Alle</button>
                                         <div class="multiselect-dropdown" id="portfolioStatusDropdown">
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Idee / Konzeption"><label>Idee / Konzeption</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Geplant"><label>Geplant</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="In Umsetzung"><label>In Umsetzung</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Pilotierung"><label>Pilotierung</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Im Betrieb"><label>Im Betrieb</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Pausiert"><label>Pausiert</label></div>
-                                            <div class="multiselect-item" onclick="toggleMultiselectItem(this, 'portfolioStatusMultiselect')"><input type="checkbox" value="Abgebrochen"><label>Abgebrochen</label></div>
                                         </div>
                                     </div>
                                 </div>
@@ -5333,6 +5191,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                 };
                 currentUser._loginTime = new Date();
                 hideLoginOverlay();
+                await loadLookups();
                 updateUIForRole();
                 await loadSteckbriefeFromAPI();
                 initPersonenAutocomplete();
@@ -5379,6 +5238,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                 };
                 currentUser._loginTime = new Date();
                 hideLoginOverlay();
+                await loadLookups();
                 updateUIForRole();
                 return true;
             } catch (e) {
@@ -5500,8 +5360,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
             if (ddName) ddName.textContent = currentUser.name;
             if (ddUser) ddUser.textContent = currentUser.username;
             if (ddRole) {
-                const roleLabelsDD = { admin: 'Administrator', editor: 'Editor', viewer: 'Nur Lesen' };
-                ddRole.textContent = roleLabelsDD[effectiveRole] || effectiveRole;
+                ddRole.textContent = getLookupRoleLabel(effectiveRole);
             }
             if (ddTime && currentUser._loginTime) {
                 const t = currentUser._loginTime;
@@ -5662,7 +5521,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
 
             document.getElementById('userMgmtCount').textContent = total + ' Benutzer';
 
-            const roleLabels = { admin: 'Administrator', editor: 'Editor', viewer: 'Leser', deactivated: 'Deaktiviert' };
+            const roleLabels = LOOKUPS && LOOKUPS.rollen ? Object.fromEntries(LOOKUPS.rollen.map(r => [r.rolle, r.bezeichnung])) : { admin: 'Administrator', editor: 'Editor', viewer: 'Leser', deactivated: 'Deaktiviert' };
             const roleSvg = `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
             const editSvg = `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`;
             const deleteSvg = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
@@ -5714,8 +5573,9 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
 
         async function editUserRole(userId, currentRole, username) {
             if (username === currentUser.username) return;
-            const roleLabels = { admin: 'Administrator', editor: 'Editor', viewer: 'Leser' };
-            const otherRoles = ['admin', 'editor', 'viewer'].filter(r => r !== currentRole);
+            const roleLabels = LOOKUPS && LOOKUPS.rollen ? Object.fromEntries(LOOKUPS.rollen.map(r => [r.rolle, r.bezeichnung])) : { admin: 'Administrator', editor: 'Editor', viewer: 'Leser' };
+            const allRoles = LOOKUPS && LOOKUPS.rollen ? LOOKUPS.rollen.filter(r => r.rolle !== 'deactivated').map(r => r.rolle) : ['admin', 'editor', 'viewer'];
+            const otherRoles = allRoles.filter(r => r !== currentRole);
             const buttons = otherRoles.map(r => ({ text: roleLabels[r], class: 'primary', value: r }));
             buttons.push({ text: 'Abbrechen', class: 'secondary', value: null });
             const chosen = await showCustomDialog({
@@ -5802,13 +5662,13 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                     <div>
                         <label style="display:block; font-weight:600; margin-bottom:4px; font-size:0.9em;">Rolle</label>
                         <select id="addUserRole" style="width:100%; padding:8px 12px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.95em; background:white;">
-                            <option value="viewer">🔵 Leser</option>
-                            <option value="editor">🟢 Editor</option>
-                            <option value="admin">🔴 Administrator</option>
                         </select>
                     </div>
                 </div>
             `;
+
+            // Rollen-Dropdown dynamisch befüllen
+            applyLookups();
 
             const result = await new Promise((resolve) => {
                 buttonsEl.innerHTML = '';
@@ -6565,6 +6425,181 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
         let isReadOnlyMode = false; // true wenn API nicht erreichbar (Nur-Lese-Modus)
         let tableSortColumn = null;
         let tableSortDirection = 'asc'; // 'asc' oder 'desc'
+
+        // Lookup-Daten aus der Datenbank
+        let LOOKUPS = null;
+
+        async function loadLookups() {
+            try {
+                const response = await authFetch(API_URL + '/lookup/all');
+                if (!response.ok) throw new Error('Lookup-Daten konnten nicht geladen werden');
+                LOOKUPS = await response.json();
+                applyLookups();
+            } catch (err) {
+                console.error('Lookup-Laden fehlgeschlagen:', err);
+            }
+        }
+
+        function populateSelect(selectId, items, valueKey, labelKey, placeholder) {
+            const sel = document.getElementById(selectId);
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = '';
+            if (placeholder) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = placeholder;
+                sel.appendChild(opt);
+            }
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item[valueKey];
+                opt.textContent = item[labelKey] || item[valueKey];
+                sel.appendChild(opt);
+            });
+            if (currentVal) sel.value = currentVal;
+        }
+
+        function applyLookups() {
+            if (!LOOKUPS) return;
+
+            // Prozesscluster
+            populateSelect('prozesscluster', LOOKUPS.prozesscluster, 'bezeichnung', 'bezeichnung', '-- Bitte wählen --');
+
+            // Prioritäten
+            populateSelect('prioritaet', LOOKUPS.prioritaeten, 'wert', 'wert', '-- Bitte wählen --');
+
+            // Life-Cycle
+            populateSelect('betroffener_lifecycle', LOOKUPS.lifecycle, 'bezeichnung', 'bezeichnung', null);
+
+            // Umsetzungsaufwand
+            populateSelect('umsetzungsaufwand', LOOKUPS.umsetzungsaufwand, 'aufwand', 'bezeichnung', '-- Bitte wählen --');
+
+            // Gesamtstatus
+            populateSelect('gesamtstatus', LOOKUPS.gesamtstatus, 'status', 'status', null);
+
+            // Status Steckbrief
+            populateSelect('status_steckbrief', LOOKUPS.status_steckbrief, 'status', 'status', null);
+
+            // Portfolio-Filter: Gesamtstatus-Checkboxen
+            const portfolioStatusDropdown = document.getElementById('portfolioStatusDropdown');
+            if (portfolioStatusDropdown && LOOKUPS.gesamtstatus) {
+                portfolioStatusDropdown.innerHTML = '';
+                LOOKUPS.gesamtstatus.filter(s => s.status !== '/').forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'multiselect-item';
+                    div.setAttribute('onclick', "toggleMultiselectItem(this, 'portfolioStatusMultiselect')");
+                    div.innerHTML = `<input type="checkbox" value="${escapeHtml(s.status)}"><label>${escapeHtml(s.status)}</label>`;
+                    portfolioStatusDropdown.appendChild(div);
+                });
+            }
+
+            // Rollen in Rollenvorschau-Dropdown (nur editor, viewer)
+            const rolePreviewSel = document.getElementById('rolePreviewSelect');
+            if (rolePreviewSel && LOOKUPS.rollen) {
+                rolePreviewSel.innerHTML = '<option value="">Eigene Rolle</option>';
+                LOOKUPS.rollen.filter(r => r.rolle !== 'admin' && r.rolle !== 'deactivated').forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.rolle;
+                    opt.textContent = r.bezeichnung;
+                    rolePreviewSel.appendChild(opt);
+                });
+            }
+
+            // Neuen-Benutzer-Rollen-Dropdown
+            const addUserRoleSel = document.getElementById('addUserRole');
+            if (addUserRoleSel && LOOKUPS.rollen) {
+                addUserRoleSel.innerHTML = '';
+                const roleEmojis = { viewer: '🔵', editor: '🟢', admin: '🔴' };
+                LOOKUPS.rollen.filter(r => r.rolle !== 'deactivated').forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.rolle;
+                    opt.textContent = (roleEmojis[r.rolle] || '') + ' ' + r.bezeichnung;
+                    addUserRoleSel.appendChild(opt);
+                });
+            }
+
+            // Dynamische CSS-Variablen für Rollen-Farben
+            injectLookupStyles();
+
+            // Bewertungskriterien-Tabellen dynamisch aufbauen
+            if (LOOKUPS.bewertungskriterien) {
+                buildBewertungsTable('zwang', 'zwaengeTbody', 'zwaengeLegende');
+                buildBewertungsTable('nutzen', 'nutzenTbody', 'nutzenLegende');
+            }
+        }
+
+        function buildBewertungsTable(kategorie, tbodyId, legendeId) {
+            const tbody = document.getElementById(tbodyId);
+            const legende = document.getElementById(legendeId);
+            if (!tbody || !LOOKUPS || !LOOKUPS.bewertungskriterien) return;
+
+            const kriterien = LOOKUPS.bewertungskriterien.filter(k => k.kategorie === kategorie);
+            if (kriterien.length === 0) return;
+
+            // Legende aus dem ersten Kriterium
+            const first = kriterien[0];
+            if (legende) {
+                legende.innerHTML = `<strong>Gewichtung</strong><br>` +
+                    `0 = ${escapeHtml(first.skala_0)}<br>` +
+                    `1 = ${escapeHtml(first.skala_1)}<br>` +
+                    `2 = ${escapeHtml(first.skala_2)}<br>` +
+                    `3 = ${escapeHtml(first.skala_3)}`;
+            }
+
+            // Tabellenzeilen
+            tbody.innerHTML = kriterien.map(k => {
+                const beschr = k.beschreibung
+                    ? k.beschreibung.split('|').map(part => `<br><span style="color: #888; font-size: 0.85em;">${escapeHtml(part.trim())}</span>`).join('')
+                    : '';
+                return `<tr>
+                    <td>${escapeHtml(k.bezeichnung)}${beschr}</td>
+                    <td><select id="${k.db_feld}"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></td>
+                    <td><input type="text" id="${k.db_feld}_text"></td>
+                </tr>`;
+            }).join('');
+        }
+
+        function injectLookupStyles() {
+            let styleEl = document.getElementById('lookup-dynamic-styles');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'lookup-dynamic-styles';
+                document.head.appendChild(styleEl);
+            }
+            let css = '';
+            // Rollen-Farben
+            if (LOOKUPS.rollen) {
+                LOOKUPS.rollen.forEach(r => {
+                    css += `.user-mgmt-role-badge.${r.rolle} { background: ${r.farbe_bg}; color: ${r.farbe_text}; }\n`;
+                });
+            }
+            // Status-Farben
+            if (LOOKUPS.gesamtstatus) {
+                LOOKUPS.gesamtstatus.forEach(s => {
+                    if (s.css_klasse) {
+                        css += `.overview-table .status-badge.${s.css_klasse} { background: ${s.farbe_bg}; color: ${s.farbe_text}; }\n`;
+                    }
+                });
+            }
+            // Aufwand-Farben
+            if (LOOKUPS.umsetzungsaufwand) {
+                LOOKUPS.umsetzungsaufwand.forEach(a => {
+                    css += `.aufwand-${a.aufwand} { background: ${a.farbe_bg}; color: ${a.farbe_text}; }\n`;
+                });
+            }
+            styleEl.textContent = css;
+        }
+
+        function getLookupRoleLabel(role) {
+            if (!LOOKUPS || !LOOKUPS.rollen) {
+                const fallback = { admin: 'Administrator', editor: 'Editor', viewer: 'Nur Lesen', deactivated: 'Deaktiviert' };
+                return fallback[role] || role;
+            }
+            const found = LOOKUPS.rollen.find(r => r.rolle === role);
+            return found ? found.bezeichnung : role;
+        }
+
         let activeFilters = {
             id: '',
             cluster: [],
@@ -6954,9 +6989,14 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
             updateSelectionUI();
         }
 
-        // Status-Klasse für farbige Badges
+        // Status-Klasse für farbige Badges (dynamisch aus Lookup-Daten)
         function getStatusClass(status) {
             if (!status || status === '/') return 'status-grey';
+            if (LOOKUPS && LOOKUPS.gesamtstatus) {
+                const found = LOOKUPS.gesamtstatus.find(s => s.status === status);
+                if (found && found.css_klasse) return found.css_klasse;
+            }
+            // Fallback
             const s = status.toLowerCase();
             if (s.includes('im betrieb') || s.includes('abgeschlossen')) return 'status-green';
             if (s.includes('idee') || s.includes('konzeption') || s.includes('geplant') || s.includes('pausiert')) return 'status-orange';
@@ -7521,6 +7561,10 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
         }
 
         function getAufwandLabel(aufwand) {
+            if (LOOKUPS && LOOKUPS.umsetzungsaufwand) {
+                const found = LOOKUPS.umsetzungsaufwand.find(a => a.aufwand === aufwand);
+                if (found) return found.bezeichnung;
+            }
             const labels = {
                 'klein': 'Klein',
                 'mittel': 'Mittel',
@@ -7787,35 +7831,24 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
 
             document.getElementById('viewZwaenge').innerHTML = `
                 <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
-                    <strong>Gewichtung:</strong> 0 = irrelevant · 1 = förderlich · 2 = wichtig · 3 = zwingend notwendig
+                    <strong>Gewichtung:</strong> ${getBewertungsLegendeInline('zwang')}
                 </div>
                 <table class="bewertung-table">
                     <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
                     <tbody>
-                        ${renderBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie, s.bewertung_strategie_text)}
-                        ${renderBewertungRow('Rechtliche Vorschriften', s.bewertung_recht, s.bewertung_recht_text)}
-                        ${renderBewertungRow('Technische Zwänge', s.bewertung_technik, s.bewertung_technik_text)}
-                        ${renderBewertungRow('Anforderungen Kunden', s.bewertung_kunden, s.bewertung_kunden_text)}
-                        ${renderBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende, s.bewertung_lehrende_text)}
-                        ${renderBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten, s.bewertung_lieferanten_text)}
-                        ${renderBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text)}
+                        ${renderBewertungsRows('zwang', s)}
                     </tbody>
                 </table>
             `;
 
             document.getElementById('viewOptimierungen').innerHTML = `
                 <div style="background: #f5f7f8; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; font-size: 0.82em; color: #666;">
-                    <strong>Gewichtung:</strong> 0 = irrelevant · 1 = geringerer Nutzen · 2 = mittlerer Nutzen · 3 = hoher Nutzen
+                    <strong>Gewichtung:</strong> ${getBewertungsLegendeInline('nutzen')}
                 </div>
                 <table class="bewertung-table">
                     <thead><tr><th>Kriterium</th><th>Gew.</th><th>Erläuterung</th></tr></thead>
                     <tbody>
-                        ${renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)}
-                        ${renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)}
-                        ${renderBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten, s.nutzen_kosten_text)}
-                        ${renderBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion, s.nutzen_reduktion_text)}
-                        ${renderBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende, s.nutzen_studierende_text)}
-                        ${renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text)}
+                        ${renderBewertungsRows('nutzen', s)}
                     </tbody>
                 </table>
                 ${renderField('Wie viel Arbeitsaufwand entfällt in VZÄ?', s.nutzen_vzae)}
@@ -7870,7 +7903,13 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
 
         // ====== PHASEN-VERWALTUNG ======
         let _currentPhasen = [];
-        const GESAMTSTATUS_OPTIONS = ['/', 'Idee / Konzeption', 'Geplant', 'In Umsetzung', 'Pilotierung', 'Im Betrieb', 'Pausiert', 'Abgebrochen'];
+
+        function getGesamtstatusOptions() {
+            if (LOOKUPS && LOOKUPS.gesamtstatus) {
+                return LOOKUPS.gesamtstatus.map(s => s.status);
+            }
+            return ['/', 'Idee / Konzeption', 'Geplant', 'In Umsetzung', 'Pilotierung', 'Im Betrieb', 'Pausiert', 'Abgebrochen'];
+        }
 
         function parsePhasenData(raw) {
             if (!raw) return [];
@@ -7896,7 +7935,7 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                     <div class="form-group">
                         <label>Status</label>
                         <select onchange="_currentPhasen[${idx}].status = this.value">
-                            ${GESAMTSTATUS_OPTIONS.map(o => `<option value="${o}"${ph.status === o ? ' selected' : ''}>${o}</option>`).join('')}
+                            ${getGesamtstatusOptions().map(o => `<option value="${o}"${ph.status === o ? ' selected' : ''}>${o}</option>`).join('')}
                         </select>
                     </div>
                     <div class="form-group">
@@ -8880,6 +8919,42 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
 
         function renderBewertungRow(label, gewichtung, text) {
             return `<tr><td>${label}</td><td>${gewichtung || '0'}</td><td>${escapeHtml(text) || '-'}</td></tr>`;
+        }
+
+        function getBewertungsLegendeInline(kategorie) {
+            if (LOOKUPS && LOOKUPS.bewertungskriterien) {
+                const first = LOOKUPS.bewertungskriterien.find(k => k.kategorie === kategorie);
+                if (first) {
+                    return `0 = ${escapeHtml(first.skala_0)} · 1 = ${escapeHtml(first.skala_1)} · 2 = ${escapeHtml(first.skala_2)} · 3 = ${escapeHtml(first.skala_3)}`;
+                }
+            }
+            if (kategorie === 'zwang') return '0 = irrelevant · 1 = förderlich · 2 = wichtig · 3 = zwingend notwendig';
+            return '0 = irrelevant · 1 = geringerer Nutzen · 2 = mittlerer Nutzen · 3 = hoher Nutzen';
+        }
+
+        function renderBewertungsRows(kategorie, s) {
+            if (LOOKUPS && LOOKUPS.bewertungskriterien) {
+                return LOOKUPS.bewertungskriterien
+                    .filter(k => k.kategorie === kategorie)
+                    .map(k => renderBewertungRow(escapeHtml(k.bezeichnung), s[k.db_feld], s[k.db_feld + '_text']))
+                    .join('');
+            }
+            // Fallback
+            if (kategorie === 'zwang') {
+                return renderBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie, s.bewertung_strategie_text)
+                     + renderBewertungRow('Rechtliche Vorschriften', s.bewertung_recht, s.bewertung_recht_text)
+                     + renderBewertungRow('Technische Zwänge', s.bewertung_technik, s.bewertung_technik_text)
+                     + renderBewertungRow('Anforderungen Kunden', s.bewertung_kunden, s.bewertung_kunden_text)
+                     + renderBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende, s.bewertung_lehrende_text)
+                     + renderBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten, s.bewertung_lieferanten_text)
+                     + renderBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende, s.bewertung_mitarbeitende_text);
+            }
+            return renderBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten, s.nutzen_durchlaufzeiten_text)
+                 + renderBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler, s.nutzen_fehler_text)
+                 + renderBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten, s.nutzen_kosten_text)
+                 + renderBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion, s.nutzen_reduktion_text)
+                 + renderBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende, s.nutzen_studierende_text)
+                 + renderBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet, s.nutzen_qualitaet_text);
         }
 
         // Formular füllen
@@ -10411,47 +10486,62 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                 const cw3 = [PW * 0.38, PW * 0.28, PW * 0.34];
 
                 // Header
-                drawRow3(
-                    ['Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig', 'Erläuterung'],
-                    cw3, { header: true, bg: C.headingBg }, s
-                );
+                {
+                    const zwangKriterien = LOOKUPS && LOOKUPS.bewertungskriterien ? LOOKUPS.bewertungskriterien.filter(k => k.kategorie === 'zwang') : [];
+                    const zwangFirst = zwangKriterien[0] || {};
+                    const zwangLegende = zwangFirst.skala_0
+                        ? `Gewichtung\n0 = ${zwangFirst.skala_0}\n1 = ${zwangFirst.skala_1}\n2 = ${zwangFirst.skala_2}\n3 = ${zwangFirst.skala_3}`
+                        : 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig';
+                    drawRow3(['Bewertungskriterien', zwangLegende, 'Erläuterung'], cw3, { header: true, bg: C.headingBg }, s);
 
-                const anforderungen = [
-                    ['Unternehmensstrategische Anforderungen\n(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)', s.bewertung_strategie || '', s.bewertung_strategie_text || ''],
-                    ['Rechtliche Vorschriften\n(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)', s.bewertung_recht || '', s.bewertung_recht_text || ''],
-                    ['Technische Zwänge\n(bspw. Ablösung VB6)', s.bewertung_technik || '', s.bewertung_technik_text || ''],
-                    ['Anforderungen Kunden\nInteressenten, Studierende, Teilnehmende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_kunden || '', s.bewertung_kunden_text || ''],
-                    ['Anforderungen Lehrende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_lehrende || '', s.bewertung_lehrende_text || ''],
-                    ['Anforderungen Lieferanten\n(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)', s.bewertung_lieferanten || '', s.bewertung_lieferanten_text || ''],
-                    ['Anforderungen Mitarbeitende\n(Optimierung der Arbeitsabläufe etc.)', s.bewertung_mitarbeitende || '', s.bewertung_mitarbeitende_text || '']
-                ];
+                    const anforderungen = zwangKriterien.length > 0
+                        ? zwangKriterien.map(k => {
+                            const label = k.beschreibung ? k.bezeichnung + '\n' + k.beschreibung.replace(/\|/g, '\n') : k.bezeichnung;
+                            return [label, s[k.db_feld] || '', s[k.db_feld + '_text'] || ''];
+                          })
+                        : [
+                            ['Unternehmensstrategische Anforderungen', s.bewertung_strategie || '', s.bewertung_strategie_text || ''],
+                            ['Rechtliche Vorschriften', s.bewertung_recht || '', s.bewertung_recht_text || ''],
+                            ['Technische Zwänge', s.bewertung_technik || '', s.bewertung_technik_text || ''],
+                            ['Anforderungen Kunden', s.bewertung_kunden || '', s.bewertung_kunden_text || ''],
+                            ['Anforderungen Lehrende', s.bewertung_lehrende || '', s.bewertung_lehrende_text || ''],
+                            ['Anforderungen Lieferanten', s.bewertung_lieferanten || '', s.bewertung_lieferanten_text || ''],
+                            ['Anforderungen Mitarbeitende', s.bewertung_mitarbeitende || '', s.bewertung_mitarbeitende_text || '']
+                          ];
 
-                anforderungen.forEach(([label, wert, text]) => {
-                    drawRow3([label, wert, text], cw3, { labelCol: 0 }, s);
-                });
+                    anforderungen.forEach(([label, wert, text]) => {
+                        drawRow3([label, wert, text], cw3, { labelCol: 0 }, s);
+                    });
+                }
 
                 // ========== 5. ZU ERWARTENDE OPTIMIERUNGEN ==========
                 yPos += 6;
                 ensureSpace(40, s);
                 drawSectionTitle('5', 'Zu erwartende Optimierungen', s);
 
-                drawRow3(
-                    ['Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen', 'Erläuterung'],
-                    cw3, { header: true, bg: C.headingBg }, s
-                );
+                {
+                    const nutzenKriterien = LOOKUPS && LOOKUPS.bewertungskriterien ? LOOKUPS.bewertungskriterien.filter(k => k.kategorie === 'nutzen') : [];
+                    const nutzenFirst = nutzenKriterien[0] || {};
+                    const nutzenLegende = nutzenFirst.skala_0
+                        ? `Gewichtung\n0 = ${nutzenFirst.skala_0}\n1 = ${nutzenFirst.skala_1}\n2 = ${nutzenFirst.skala_2}\n3 = ${nutzenFirst.skala_3}`
+                        : 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen';
+                    drawRow3(['Bewertungskriterien', nutzenLegende, 'Erläuterung'], cw3, { header: true, bg: C.headingBg }, s);
 
-                const nutzen = [
-                    ['Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '', s.nutzen_durchlaufzeiten_text || ''],
-                    ['Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '', s.nutzen_fehler_text || ''],
-                    ['Senkung der Prozesskosten', s.nutzen_kosten || '', s.nutzen_kosten_text || ''],
-                    ['Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '', s.nutzen_reduktion_text || ''],
-                    ['Steigerung der Studierendenzahlen', s.nutzen_studierende || '', s.nutzen_studierende_text || ''],
-                    ['Qualitätszuwachs', s.nutzen_qualitaet || '', s.nutzen_qualitaet_text || '']
-                ];
+                    const nutzen = nutzenKriterien.length > 0
+                        ? nutzenKriterien.map(k => [k.bezeichnung, s[k.db_feld] || '', s[k.db_feld + '_text'] || ''])
+                        : [
+                            ['Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '', s.nutzen_durchlaufzeiten_text || ''],
+                            ['Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '', s.nutzen_fehler_text || ''],
+                            ['Senkung der Prozesskosten', s.nutzen_kosten || '', s.nutzen_kosten_text || ''],
+                            ['Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '', s.nutzen_reduktion_text || ''],
+                            ['Steigerung der Studierendenzahlen', s.nutzen_studierende || '', s.nutzen_studierende_text || ''],
+                            ['Qualitätszuwachs', s.nutzen_qualitaet || '', s.nutzen_qualitaet_text || '']
+                          ];
 
-                nutzen.forEach(([label, wert, text]) => {
-                    drawRow3([label, wert, text], cw3, { labelCol: 0 }, s);
-                });
+                    nutzen.forEach(([label, wert, text]) => {
+                        drawRow3([label, wert, text], cw3, { labelCol: 0 }, s);
+                    });
+                }
 
                 if (s.nutzen_vzae) {
                     drawDescRow('Wie viel Arbeitsaufwand entfällt in VZÄ?', '', s.nutzen_vzae, s);
@@ -10627,35 +10717,56 @@ Beispiel: »Aktuell werden Anträge manuell per E-Mail eingereicht und in Excel-
                 children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
                 
                 // ===== TABELLE 4: BEWERTUNGSKRITERIEN (ANFORDERUNGEN) =====
-                children.push(new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createBewertungRow('Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig', 'Erläuterung', true),
-                        createBewertungRow('Unternehmensstrategische\nAnforderungen\n(gesamtbetriebliche Kennziffern, Entscheidungsgrundlagen, Produktivität, Wirtschaftlichkeit, Rentabilität)', s.bewertung_strategie || '0', s.bewertung_strategie_text || ''),
-                        createBewertungRow('Rechtliche Vorschriften\n(Hochschulrecht, Arbeitsrecht, Compliance, DSGVO, GoBD, UStG, Betriebsrat etc.)', s.bewertung_recht || '0', s.bewertung_recht_text || ''),
-                        createBewertungRow('Technische Zwänge\n(bspw. Ablösung VB6)', s.bewertung_technik || '0', s.bewertung_technik_text || ''),
-                        createBewertungRow('Anforderungen Kunden\nInteressenten, Studierende, Teilnehmende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_kunden || '0', s.bewertung_kunden_text || ''),
-                        createBewertungRow('Anforderungen Lehrende\n(Digitalisierung von Verwaltungstätigkeiten etc.)', s.bewertung_lehrende || '0', s.bewertung_lehrende_text || ''),
-                        createBewertungRow('Anforderungen Lieferanten\n(Anpassungszwänge aufgrund Änderungen an ext. Software etc.)', s.bewertung_lieferanten || '0', s.bewertung_lieferanten_text || ''),
-                        createBewertungRow('Anforderungen Mitarbeitende\n(Optimierung der Arbeitsabläufe etc.)', s.bewertung_mitarbeitende || '0', s.bewertung_mitarbeitende_text || '')
-                    ]
-                }));
+                {
+                    const zwangK = LOOKUPS && LOOKUPS.bewertungskriterien ? LOOKUPS.bewertungskriterien.filter(k => k.kategorie === 'zwang') : [];
+                    const zwangF = zwangK[0] || {};
+                    const zwangLeg = zwangF.skala_0
+                        ? `Gewichtung\n0 = ${zwangF.skala_0}\n1 = ${zwangF.skala_1}\n2 = ${zwangF.skala_2}\n3 = ${zwangF.skala_3}`
+                        : 'Gewichtung\n0 = irrelevant\n1 = förderlich\n2 = wichtig\n3 = zwingend notwendig';
+                    const zwangRows = zwangK.length > 0
+                        ? zwangK.map(k => {
+                            const label = k.beschreibung ? k.bezeichnung + '\n' + k.beschreibung.replace(/\|/g, '\n') : k.bezeichnung;
+                            return createBewertungRow(label, s[k.db_feld] || '0', s[k.db_feld + '_text'] || '');
+                          })
+                        : [
+                            createBewertungRow('Unternehmensstrategische Anforderungen', s.bewertung_strategie || '0', s.bewertung_strategie_text || ''),
+                            createBewertungRow('Rechtliche Vorschriften', s.bewertung_recht || '0', s.bewertung_recht_text || ''),
+                            createBewertungRow('Technische Zwänge', s.bewertung_technik || '0', s.bewertung_technik_text || ''),
+                            createBewertungRow('Anforderungen Kunden', s.bewertung_kunden || '0', s.bewertung_kunden_text || ''),
+                            createBewertungRow('Anforderungen Lehrende', s.bewertung_lehrende || '0', s.bewertung_lehrende_text || ''),
+                            createBewertungRow('Anforderungen Lieferanten', s.bewertung_lieferanten || '0', s.bewertung_lieferanten_text || ''),
+                            createBewertungRow('Anforderungen Mitarbeitende', s.bewertung_mitarbeitende || '0', s.bewertung_mitarbeitende_text || '')
+                          ];
+                    children.push(new Table({
+                        width: { size: 100, type: WidthType.PERCENTAGE },
+                        rows: [createBewertungRow('Bewertungskriterien', zwangLeg, 'Erläuterung', true), ...zwangRows]
+                    }));
+                }
                 
                 children.push(new Paragraph({ text: '', spacing: { after: 200 } }));
                 
                 // ===== TABELLE 4: BEWERTUNGSKRITERIEN (NUTZEN) =====
-                children.push(new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        createBewertungRow('Bewertungskriterien', 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen', 'Erläuterung', true),
-                        createBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '0', s.nutzen_durchlaufzeiten_text || ''),
-                        createBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '0', s.nutzen_fehler_text || ''),
-                        createBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten || '0', s.nutzen_kosten_text || ''),
-                        createBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '0', s.nutzen_reduktion_text || ''),
-                        createBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende || '0', s.nutzen_studierende_text || ''),
-                        createBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet || '0', s.nutzen_qualitaet_text || '')
-                    ]
-                }));
+                {
+                    const nutzenK = LOOKUPS && LOOKUPS.bewertungskriterien ? LOOKUPS.bewertungskriterien.filter(k => k.kategorie === 'nutzen') : [];
+                    const nutzenF = nutzenK[0] || {};
+                    const nutzenLeg = nutzenF.skala_0
+                        ? `Gewichtung\n0 = ${nutzenF.skala_0}\n1 = ${nutzenF.skala_1}\n2 = ${nutzenF.skala_2}\n3 = ${nutzenF.skala_3}`
+                        : 'Gewichtung\n0 = irrelevant\n1 = geringerer Nutzen\n2 = mittlerer Nutzen\n3 = hoher Nutzen';
+                    const nutzenRows = nutzenK.length > 0
+                        ? nutzenK.map(k => createBewertungRow(k.bezeichnung, s[k.db_feld] || '0', s[k.db_feld + '_text'] || ''))
+                        : [
+                            createBewertungRow('Senkung der Durchlaufzeiten', s.nutzen_durchlaufzeiten || '0', s.nutzen_durchlaufzeiten_text || ''),
+                            createBewertungRow('Vermeidung von Fehlerwiederholungsraten', s.nutzen_fehler || '0', s.nutzen_fehler_text || ''),
+                            createBewertungRow('Senkung der Prozesskosten', s.nutzen_kosten || '0', s.nutzen_kosten_text || ''),
+                            createBewertungRow('Reduktion nicht wertschöpfender Prozesse', s.nutzen_reduktion || '0', s.nutzen_reduktion_text || ''),
+                            createBewertungRow('Steigerung der Studierendenzahlen', s.nutzen_studierende || '0', s.nutzen_studierende_text || ''),
+                            createBewertungRow('Qualitätszuwachs', s.nutzen_qualitaet || '0', s.nutzen_qualitaet_text || '')
+                          ];
+                    children.push(new Table({
+                        width: { size: 100, type: WidthType.PERCENTAGE },
+                        rows: [createBewertungRow('Bewertungskriterien', nutzenLeg, 'Erläuterung', true), ...nutzenRows]
+                    }));
+                }
 
                 if (s.nutzen_vzae) {
                     children.push(new Paragraph({
